@@ -19,27 +19,51 @@
     <Filter Include="src\tofu">
       <UniqueIdentifier>{a7f6a92b-1658-4c79-8790-a7d222d76d65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\tofu\base">
+      <UniqueIdentifier>{173a4b9d-d179-498a-bfdb-30c5e64608f9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\tofu\config">
       <UniqueIdentifier>{9353be78-8135-434c-abd0-55f6e3e9a0e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\tofu\math">
+      <UniqueIdentifier>{d1649927-1bae-49d8-86ba-aa5c4f591a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tofu\misc">
+      <UniqueIdentifier>{22a221d1-a5e4-48e0-a502-eabf7c2750ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\tofu.cpp">
+    <ClCompile Include="..\..\Source\tofu.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\tofu\misc\TypeInfo.cpp">
+      <Filter>src\tofu\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\tofu\base\Assert.cpp">
+      <Filter>src\tofu\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\tofu.hpp">
+    <ClInclude Include="..\..\Source\tofu.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\tofu\config\Compiler.hpp">
+    <ClInclude Include="..\..\Source\tofu\config\Compiler.hpp">
       <Filter>src\tofu\config</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\tofu\config\Config.hpp">
+    <ClInclude Include="..\..\Source\tofu\config\Config.hpp">
       <Filter>src\tofu\config</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\tofu\config\Platform.hpp">
+    <ClInclude Include="..\..\Source\tofu\config\Platform.hpp">
       <Filter>src\tofu\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\tofu\misc\TypeInfo.hpp">
+      <Filter>src\tofu\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\tofu\base\Assert.hpp">
+      <Filter>src\tofu\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\tofu\base\countof.hpp">
+      <Filter>src\tofu\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
