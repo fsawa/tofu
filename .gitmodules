@@ -1,6 +1,3 @@
-[submodule "External/iutest"]
-	path = External/iutest
-	url = https://github.com/srz-zumix/iutest.git
 [submodule "Submodule/iutest"]
 	path = Submodule/iutest
 	url = https://github.com/srz-zumix/iutest.git
