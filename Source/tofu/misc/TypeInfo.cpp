@@ -10,38 +10,81 @@
 */
 //------------------------------------------------------------------------------
 
+#include <tofu.hpp>
 #include <tofu/misc/TypeInfo.hpp>
+
+// 文字列のプリントテスト
+//#define TEST_PRINT
+
+#ifdef TEST_PRINT
+#include <iostream>
+#endif
 
 namespace tofu {
 
-const char* TypeInfo::ParseTypeName( char* str ) noexcept
+const char* TypeInfo::ParseTypeName(char* dst, const char* src, int len) noexcept
 {
-// Microsoft Visual C++
-#if defined(_MSC_VER)
-	// tofu::TTypeInfo<struct XXX>::TTypeInfo
-	// という形式のstrが来る。
+#ifdef TEST_PRINT
+	std::cout << src << std::endl;
+	std::cout << len << std::endl;
+#endif
+
+// clang
+#if defined(TOFU_COMPILER_IS_CLANG)
+// tofu::TTypeInfo<int>::TTypeInfo() [T = int]
+// という形式の文字列が来る
 	int begin = 0;
-	for( ; str[begin]; ++begin )
+	for (; src[begin]; ++begin)
 	{
-		if( str[begin] == ' ' )
+		if (src[begin] == '=')
+		{
+			begin += 2;
+			break;
+		}
+	}
+	int end = begin;
+	int count = 0;
+	for (; end < len && src[end]; ++end, ++count)
+	{
+		dst[count] = src[end];
+		if (src[end] == ']')
+		{
+			dst[count] = 0; // null終端化
+			break;
+		}
+	}
+#ifdef TEST_PRINT
+	std::cout << dst << std::endl;
+#endif
+	return dst;
+// Microsoft Visual C++
+#elif defined(_MSC_VER)
+// tofu::TTypeInfo<struct XXX>::TTypeInfo
+// という形式の文字列が来る
+	int begin = 0;
+	for (; src[begin]; ++begin)
+	{
+		if (src[begin] == ' ')
 		{
 			++begin;
 			break;
 		}
 	}
-	int end = begin+1;
-	for( ; str[end]; ++end )
+	int end = begin + 1;
+	int count = 0;
+	for (; src[end]; ++end, ++count)
 	{
-		if( str[end] == '>' )
+		dst[count] = src[end];
+		if (src[end] == '>')
 		{
-			str[end] = 0; // null終端化
+			dst[count] = 0; // null終端化
 			break;
 		}
 	}
-	return str + begin;
+	return dst;
 #else
-	/// @todo 
-	return str;
+/// @todo 
+	return dst;
 #endif
 }
 

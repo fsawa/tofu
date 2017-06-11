@@ -33,36 +33,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\tofu.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\tofu\misc\TypeInfo.cpp">
+    <ClCompile Include="..\..\..\Source\tofu\misc\TypeInfo.cpp">
       <Filter>src\tofu\misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\tofu\base\Assert.cpp">
+    <ClCompile Include="..\..\..\Source\tofu\base\Assert.cpp">
       <Filter>src\tofu\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\tofu.hpp">
+    <ClInclude Include="..\..\..\Source\tofu.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\tofu\config\Compiler.hpp">
-      <Filter>src\tofu\config</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\tofu\config\Config.hpp">
-      <Filter>src\tofu\config</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\tofu\config\Platform.hpp">
-      <Filter>src\tofu\config</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\tofu\misc\TypeInfo.hpp">
+    <ClInclude Include="..\..\..\Source\tofu\misc\TypeInfo.hpp">
       <Filter>src\tofu\misc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\tofu\base\Assert.hpp">
+    <ClInclude Include="..\..\..\Source\tofu\base\Assert.hpp">
       <Filter>src\tofu\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\tofu\base\countof.hpp">
+    <ClInclude Include="..\..\..\Source\tofu\config\Compiler.hpp">
+      <Filter>src\tofu\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\config\Config.hpp">
+      <Filter>src\tofu\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\config\Platform.hpp">
+      <Filter>src\tofu\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\base\countof.hpp">
       <Filter>src\tofu\base</Filter>
     </ClInclude>
   </ItemGroup>

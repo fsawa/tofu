@@ -51,6 +51,18 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -61,21 +73,25 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\SourceTreeWorking\tofu\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\SourceTreeWorking\tofu\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\SourceTreeWorking\tofu\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</RuntimeTypeInfo>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</RuntimeTypeInfo>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</RuntimeTypeInfo>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</RuntimeTypeInfo>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\tofu.cpp" />
-    <ClCompile Include="..\..\Source\tofu\base\Assert.cpp" />
-    <ClCompile Include="..\..\Source\tofu\misc\TypeInfo.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\base\Assert.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\misc\TypeInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\tofu.hpp" />
-    <ClInclude Include="..\..\Source\tofu\base\Assert.hpp" />
-    <ClInclude Include="..\..\Source\tofu\base\countof.hpp" />
-    <ClInclude Include="..\..\Source\tofu\config\Compiler.hpp" />
-    <ClInclude Include="..\..\Source\tofu\config\Config.hpp" />
-    <ClInclude Include="..\..\Source\tofu\config\Platform.hpp" />
-    <ClInclude Include="..\..\Source\tofu\misc\TypeInfo.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\base\Assert.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\base\countof.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\config\Compiler.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\config\Config.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\config\Platform.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\misc\TypeInfo.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -60,7 +60,7 @@ protected:
 	TypeInfo() {}
 	//virtual ~TypeInfo();
 	
-	static const char* ParseTypeName( char* str ) noexcept;
+	static const char* ParseTypeName( char* str, const char* src, int len ) noexcept;
 	
 protected:
 	
@@ -75,7 +75,6 @@ protected:
 	bool m_isVolatile = false;
 };
 // << TypeInfo
-
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief      型毎の型情報クラス
@@ -96,6 +95,7 @@ public:
 	static self_type&  Instance() noexcept
 	{
 		static self_type  sInstance;
+		sInstance._initialize();
 		return sInstance;
 	}
 	
@@ -103,32 +103,52 @@ public:
 	
 	TTypeInfo()
 	{
-		static char sNameBuffer[] = TOFU_FUNCTION_NAME;
-		m_name = ParseTypeName( sNameBuffer );
-		
-		m_addConst = this;
-		if( !std::is_const<T>::value ){
-			m_addConst = &TTypeInfo< typename std::add_const<T>::type >::Instance();
+		_initTypeName(TOFU_FUNCTION_NAME);
+	}
+
+private:
+	
+	void  _initialize()
+	{
+		if (m_isInitialized) {
+			return;
 		}
-		
-		m_removeConst = this;
-		if(std::is_const<T>::value ){
-			m_removeConst = &TTypeInfo< typename std::remove_const<T>::type >::Instance();
-		}
-		
-		m_addVolatile = this;
-		if( !std::is_volatile<T>::value ){
-			m_addVolatile = &TTypeInfo< typename std::add_volatile<T>::type >::Instance();
-		}
-		
-		m_removeVolatile = this;
-		if(std::is_volatile<T>::value ){
-			m_removeVolatile = &TTypeInfo< typename std::remove_volatile<T>::type >::Instance();
-		}
-		
+		m_isInitialized = true;
+
 		m_isConst = std::is_const<T>::value;
 		m_isVolatile = std::is_volatile<T>::value;
+
+		m_addConst = this;
+		if (!std::is_const<T>::value) {
+			m_addConst = &TTypeInfo< typename std::add_const<T>::type >::Instance();
+		}
+
+		m_removeConst = this;
+		if (std::is_const<T>::value) {
+			m_removeConst = &TTypeInfo< typename std::remove_const<T>::type >::Instance();
+		}
+
+		m_addVolatile = this;
+		if (!std::is_volatile<T>::value) {
+			m_addVolatile = &TTypeInfo< typename std::add_volatile<T>::type >::Instance();
+		}
+
+		m_removeVolatile = this;
+		if (std::is_volatile<T>::value) {
+			m_removeVolatile = &TTypeInfo< typename std::remove_volatile<T>::type >::Instance();
+		}
 	}
+
+	template <int N>
+	void  _initTypeName(const char (&src)[N] )
+	{
+		static char sNameBuffer[N]{ 0 };
+		m_name = ParseTypeName(sNameBuffer, src, N);
+	}
+
+private:
+	
+	bool  m_isInitialized = false;
 };
 // << TTypeInfo
 

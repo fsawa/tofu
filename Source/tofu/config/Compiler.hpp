@@ -11,8 +11,27 @@
 //------------------------------------------------------------------------------
 #pragma once
 
+// clang
+#if defined(__clang__)
+
+/// @ingroup compiler
+/// @brief	コンパイラを識別するマクロ
+#define TOFU_COMPILER_IS_CLANG
+
+/// @ingroup compiler
+/// @brief	ファイル名マクロ
+#define TOFU_FILE  __FILE__
+
+/// @ingroup compiler
+/// @brief	行番号を表すマクロ
+#define TOFU_LINE  __LINE__
+
+/// @ingroup compiler
+/// @brief	関数のフルネームを表すマクロ
+#define TOFU_FUNCTION_NAME  __PRETTY_FUNCTION__
+
 // Miscrosoft Visual C++
-#if defined( _MSC_VER ) && defined(_WIN32)
+#elif defined( _MSC_VER ) && defined(_WIN32)
 
 	/// @ingroup compiler
 	/// @brief	コンパイラを識別するマクロ
