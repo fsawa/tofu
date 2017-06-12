@@ -49,10 +49,10 @@ public:
 	
 	//------------------------------------------------------------------------------
 	
-	/// constかどうか
+	/// const修飾されているか
 	bool  isConst() const noexcept  { return m_isConst; }
 	
-	/// volatileかどうか
+	/// volatile修飾されているか
 	bool  isVolatile() const noexcept  { return m_isVolatile; }
 	
 protected:
