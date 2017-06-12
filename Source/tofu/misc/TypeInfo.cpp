@@ -30,7 +30,7 @@ const char* TypeInfo::ParseTypeName(char* dst, const char* src, int len) noexcep
 #endif
 
 // clang
-#if defined(TOFU_COMPILER_IS_CLANG)
+#if defined(TOFU_COMPILER_CLANG)
 // tofu::TTypeInfo<int>::TTypeInfo() [T = int]
 // という形式の文字列が来る
 	int begin = 0;

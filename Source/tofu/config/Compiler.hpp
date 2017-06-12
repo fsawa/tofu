@@ -16,7 +16,7 @@
 
 /// @ingroup compiler
 /// @brief	コンパイラを識別するマクロ
-#define TOFU_COMPILER_IS_CLANG
+#define TOFU_COMPILER_CLANG
 
 /// @ingroup compiler
 /// @brief	ファイル名マクロ
