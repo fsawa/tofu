@@ -59,26 +59,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetExt>.exe</TargetExt>
     <IncludePath>C:\SourceTreeWorking\tofu\Source;C:\SourceTreeWorking\tofu\Submodule\iutest\include;$(IncludePath)</IncludePath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
-    <LibraryPath>C:\SourceTreeWorking\tofu\Build\vs2017\tofu\$(Configuration);$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDIr)tofu\$(PlatformTarget)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetExt>.exe</TargetExt>
     <IncludePath>C:\SourceTreeWorking\tofu\Source;C:\SourceTreeWorking\tofu\Submodule\iutest\include;$(IncludePath)</IncludePath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
-    <LibraryPath>C:\SourceTreeWorking\tofu\Build\vs2017\tofu\$(Configuration);$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDIr)tofu\$(PlatformTarget)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.exe</TargetExt>
     <IncludePath>C:\SourceTreeWorking\tofu\Source;C:\SourceTreeWorking\tofu\Submodule\iutest\include;$(IncludePath)</IncludePath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
-    <LibraryPath>C:\SourceTreeWorking\tofu\Build\vs2017\tofu\$(Configuration);$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDIr)tofu\$(PlatformTarget)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetExt>.exe</TargetExt>
     <IncludePath>C:\SourceTreeWorking\tofu\Source;C:\SourceTreeWorking\tofu\Submodule\iutest\include;$(IncludePath)</IncludePath>
-    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
-    <LibraryPath>C:\SourceTreeWorking\tofu\Build\vs2017\tofu\$(Configuration);$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDIr)tofu\$(PlatformTarget)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
