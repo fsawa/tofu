@@ -5,7 +5,7 @@
  * 
  * @author      y.fujisawa
  * @par         copyright
- * Copyright (C) 2016 Yasuhito Fujisawa\n
+ * Copyright (C) 2017 Yasuhito Fujisawa\n
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ public:
 	
 protected:
 
-	TypeInfo() {}
+	TypeInfo() noexcept;
 	//virtual ~TypeInfo();
 	
 	static const char* ParseTypeName( char* str, const char* src, int len ) noexcept;
@@ -101,14 +101,14 @@ public:
 	
 	//------------------------------------------------------------------------------
 	
-	TTypeInfo()
+	TTypeInfo() noexcept
 	{
 		_initTypeName(TOFU_FUNCTION_NAME);
 	}
 
 private:
 	
-	void  _initialize()
+	void  _initialize() noexcept
 	{
 		if (m_isInitialized) {
 			return;
@@ -140,7 +140,7 @@ private:
 	}
 
 	template <int N>
-	void  _initTypeName(const char (&src)[N] )
+	void  _initTypeName(const char (&src)[N] ) noexcept
 	{
 		static char sNameBuffer[N]{ 0 };
 		m_name = ParseTypeName(sNameBuffer, src, N);
@@ -169,9 +169,9 @@ class TypeId
 {
 public:
 	
-	TypeId() {}
-	explicit TypeId( const TypeInfo* info ) : m_pTypeInfo(info) {}
-	explicit TypeId( const TypeInfo& info ) : m_pTypeInfo(&info) {}
+	TypeId() noexcept {}
+	explicit TypeId( const TypeInfo* info ) noexcept : m_pTypeInfo(info) {}
+	explicit TypeId( const TypeInfo& info ) noexcept : m_pTypeInfo(&info) {}
 	
 	/// 指定した型のIDを設定
 	template <typename T>
@@ -187,7 +187,7 @@ public:
 	}
 	
 	/// TypeInfo取得
-	const TypeInfo&  info() const noexcept  { TOFU_ASSERT(m_pTypeInfo); return *m_pTypeInfo; }
+	const TypeInfo&  info() const  { TOFU_ASSERT(m_pTypeInfo); return *m_pTypeInfo; }
 	
 	/// const修飾ありのTypeId取得
 	TypeId  makeAddConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getAddConst() ) : TypeId(); }

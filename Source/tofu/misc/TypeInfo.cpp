@@ -5,7 +5,7 @@
  * 
  * @author      y.fujisawa
  * @par         copyright
- * Copyright (C) 2016 Yasuhito Fujisawa\n
+ * Copyright (C) 2017 Yasuhito Fujisawa\n
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
@@ -21,6 +21,11 @@
 #endif
 
 namespace tofu {
+
+TypeInfo::TypeInfo() noexcept
+{
+	// nop
+}
 
 const char* TypeInfo::ParseTypeName(char* dst, const char* src, int len) noexcept
 {
