@@ -16,6 +16,7 @@
 #include <tofu/config/Compiler.hpp>
 #include <tofu/base/countof.hpp>
 #include <tofu/base/Assert.hpp>
+#include <tofu/base/BaseTypes.hpp>
 
 /// tofu Library
 namespace tofu {}

@@ -82,15 +82,19 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\Source\tofu.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\base\Assert.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\math\Angle.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\misc\TypeInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Source\tofu.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\base\Assert.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\base\BaseTypes.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\base\countof.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\config\Compiler.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\config\Config.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\config\Platform.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\math\Angle.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\math\MathCommon.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\misc\TypeInfo.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

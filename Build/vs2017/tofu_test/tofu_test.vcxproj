@@ -101,6 +101,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\Test\math\Angle_test.cpp" />
     <ClCompile Include="..\..\..\Test\TypeInfo_test.cpp" />
     <ClCompile Include="tofu_test.cpp" />
   </ItemGroup>
