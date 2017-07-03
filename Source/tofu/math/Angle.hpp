@@ -16,7 +16,7 @@ namespace tofu {
 namespace math {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief      型クラス
+/// @brief      角度クラス
 /// 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
@@ -48,6 +48,12 @@ public:
 	
 	/// 値取得
 	value_type  value() const noexcept { return m_value; }
+	
+	/// ラジアン値取得
+	value_type  radian() const noexcept { return Konst<T>::pi2 * m_value; }
+	
+	/// 弧度値取得
+	value_type  degree() const noexcept { return 360 * m_value; }
 	
 	//------------------------------------------------------------------------------
 	// 四則演算
@@ -123,6 +129,19 @@ public:
 	
 	/// 絶対値
 	self_type  abs() const noexcept { return self_type(Abs(m_value)); }
+	
+	/// 正規化 [0度～360度)の範囲に変換
+	self_type  normalize() const noexcept
+	{
+		return self_type( m_value - floor(m_value) );
+	}
+	
+	/// 負方向も含めた正規化 (-360度～360度)の範囲に変換
+	self_type  signedNormalize() const noexcept
+	{
+		value_type v = Abs(m_value);
+		return self_type( copysign( v - floor(v), m_value ) );
+	}
 	
 //**************************************************************
 //              : private
