@@ -14,6 +14,22 @@
 namespace tofu {
 namespace math {
 
+//------------------------------------------------------------------------------
+template <typename T>
+BasicAngle<T>  BasicAngle<T>::distanceFrom( self_type from ) const noexcept
+{
+	self_type diff = *this - from;
+	// 0.0～1.0に正規化
+	diff = diff.normalize();
+	// -0.5～0.5に変換
+	if( diff >= Half() ){
+		diff -= One();
+	}
+	return diff;
+}
+
+//------------------------------------------------------------------------------
+
 // インスタンス化
 template class BasicAngle<float>;
 template class BasicAngle<double>;

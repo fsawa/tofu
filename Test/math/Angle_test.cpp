@@ -66,7 +66,7 @@ IUTEST(math, Angle)
 	a = Angle(-2.6f);
 	IUTEST_ASSERT_GT( 0.001f, Abs((a % 0.5f).value() + 0.1f) );
 	
-	// 正規化 [0度～360度)の範囲に変換
+	// 正規化 [0.0～1.0)の範囲に変換 = [0度～360度)
 	a = Angle(2.25f).normalize();
 	IUTEST_ASSERT_EQ( 0.25f, a.value() );
 	
@@ -79,7 +79,7 @@ IUTEST(math, Angle)
 	a = Angle(-2.0f).normalize();
 	IUTEST_ASSERT_EQ( 0.f, a.value() );
 	
-	// 負方向も含めた正規化 (-360度～360度)の範囲に変換
+	// 正と負それぞれの方向で正規化 (-1.0～1.0) = (-360度～360度)
 	a = Angle(2.25f).signedNormalize();
 	IUTEST_ASSERT_EQ( 0.25f, a.value() );
 	
@@ -92,20 +92,26 @@ IUTEST(math, Angle)
 	a = Angle(-2.0f).signedNormalize();
 	IUTEST_ASSERT_EQ( 0.f, a.value() );
 	
-	#if 0
 	// 角度差（最短距離）[-180度～180度)
 	{
-		IUTEST_ASSERT_EQ( 0.5f, Angle(0.5f).distanceFrom( Angle(1.0f) ).value() );
-		IUTEST_ASSERT_EQ( 0.5f, Angle(0.5f).distanceFrom( Angle(-1.0f) ).value() );
+		IUTEST_ASSERT_EQ( -0.5f, Angle(0.5f).distanceFrom( Angle(1.0f) ).value() );
+		IUTEST_ASSERT_EQ( -0.5f, Angle(0.5f).distanceFrom( Angle(-1.0f) ).value() );
+		
+		IUTEST_ASSERT_EQ( 0.25f, Angle(1.5f).distanceFrom( Angle(4.25f) ).value() );
+		IUTEST_ASSERT_EQ( -0.25f, Angle(6.0f).distanceFrom( Angle(4.25f) ).value() );
+		IUTEST_ASSERT_EQ( 0.0f, Angle(-3.75f).distanceFrom( Angle(4.25f) ).value() );
+		IUTEST_ASSERT_EQ( -0.5f, Angle(-3.25f).distanceFrom( Angle(4.25f) ).value() );
 	}
 	
 	// 0度からの角度差（最短距離）[-180度～180度)
 	IUTEST_ASSERT_EQ( 0.25f, Angle(1.25f).distanceFromZero().value() );
-	IUTEST_ASSERT_EQ( 0.25f, Angle(-1.25f).distanceFromZero().value() );
+	IUTEST_ASSERT_EQ( -0.25f, Angle(-1.25f).distanceFromZero().value() );
 	IUTEST_ASSERT_EQ( 0.25f, Angle(-1.75f).distanceFromZero().value() );
 	IUTEST_ASSERT_EQ( -0.5f, Angle(-1.5f).distanceFromZero().value() );
 	IUTEST_ASSERT_EQ( -0.5f, Angle(1.5f).distanceFromZero().value() );
 	
+	#if 0
+
 	// 三角関数
 	
 	// 定数
