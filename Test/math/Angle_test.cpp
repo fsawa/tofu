@@ -141,8 +141,9 @@ IUTEST(math, Angle)
 
 	// constexpr
 	{
-		constexpr Angle a2(1.0f);
-		static_assert( a2.value() == 1.0f, "constexpr Angle");
+		constexpr Angle a2 = Angle(1.f) + Degree::One();
+		static_assert( a2.degree().radian().angle().value() == 2.0f, "constexpr Angle");
+		static_assert( a2 == Angle(2.0f), "constexpr Angle");
 	}
 	
 	#if 0

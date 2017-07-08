@@ -57,18 +57,21 @@ namespace detail
 		using value_type = T; ///< 値の型
 		using policy = Policy<T>; ///< ポリシー
 		
+		using angle_type  = BasicAngles<T, AnglePolicy>;
 		using radian_type = BasicAngles<T, RadianPolicy>;
 		using degree_type = BasicAngles<T, DegreePolicy>;
-		using angle_type  = BasicAngles<T, AnglePolicy>;
 		
+		/// 0度
 		static constexpr self_type Zero() noexcept { return self_type(static_cast<T>(0.0)); }
+		/// 360度
 		static constexpr self_type One()  noexcept { return self_type(policy::kCycle); }
+		/// 180度
 		static constexpr self_type Half() noexcept { return self_type(static_cast<T>(policy::kCycle*0.5)); }
 		
 	// FUNCTION
 
 		/// constructor
-		BasicAngles() noexcept {}
+		constexpr BasicAngles() noexcept {}
 		
 		/// 初期値指定コンストラクタ
 		constexpr explicit BasicAngles( value_type v ) noexcept : m_value(v) {}
@@ -96,18 +99,9 @@ namespace detail
 		/// 値取得
 		constexpr value_type  value() const noexcept { return m_value; }
 		
-		/// 正規化角度値（0.0～1.0変換）取得
-		constexpr value_type  angleValue() const noexcept { return m_value / policy::kCycle; }
-		
-		/// ラジアン値取得
-		constexpr value_type  radianValue() const noexcept { return radian_type::policy::kCycle * m_value; }
-		
-		/// デグリー値取得
-		constexpr value_type  degreeValue() const noexcept { return degree_type::policy::kCycle * m_value; }
-		
-		angle_type   angle()  const noexcept { return *this; }
-		radian_type  radian() const noexcept { return *this; }
-		degree_type  degree() const noexcept { return *this; }
+		constexpr angle_type   angle()  const noexcept { return *this; }
+		constexpr radian_type  radian() const noexcept { return *this; }
+		constexpr degree_type  degree() const noexcept { return *this; }
 		
 		//------------------------------------------------------------------------------
 		
@@ -140,35 +134,35 @@ namespace detail
 		// 四則演算
 		
 		/// 加算
-		self_type&  operator+=( self_type rhs ) noexcept
+		constexpr self_type&  operator+=( self_type rhs ) noexcept
 		{
 			m_value += rhs.value();
 			return *this;
 		}
 		
 		/// 減算
-		self_type&  operator-=( self_type rhs ) noexcept
+		constexpr self_type&  operator-=( self_type rhs ) noexcept
 		{
 			m_value -= rhs.value();
 			return *this;
 		}
 		
 		/// 乗算
-		self_type&  operator*=( value_type v ) noexcept
+		constexpr self_type&  operator*=( value_type v ) noexcept
 		{
 			m_value *= v;
 			return *this;
 		}
 		
 		/// 除算
-		self_type&  operator/=( value_type v ) noexcept
+		constexpr self_type&  operator/=( value_type v ) noexcept
 		{
 			m_value /= v;
 			return *this;
 		}
 		
 		/// 剰余
-		self_type&  operator%=( value_type v ) noexcept
+		constexpr self_type&  operator%=( value_type v ) noexcept
 		{
 			m_value = Mod( m_value, v );
 			return *this;
@@ -177,31 +171,31 @@ namespace detail
 		//------------------------------------------------------------------------------
 		
 		/// 加算
-		self_type  operator+( self_type rhs ) const noexcept
+		constexpr self_type  operator+( self_type rhs ) const noexcept
 		{
 			return self_type(m_value + rhs.value());
 		}
 		
 		/// 減算
-		self_type  operator-( self_type rhs ) const noexcept
+		constexpr self_type  operator-( self_type rhs ) const noexcept
 		{
 			return self_type(m_value - rhs.value());
 		}
 		
 		/// 乗算
-		self_type  operator*( value_type v ) const noexcept
+		constexpr self_type  operator*( value_type v ) const noexcept
 		{
 			return self_type(m_value * v);
 		}
 		
 		/// 除算
-		self_type  operator/( value_type v ) const noexcept
+		constexpr self_type  operator/( value_type v ) const noexcept
 		{
 			return self_type(m_value / v);
 		}
 		
 		/// 剰余
-		self_type  operator%( value_type v ) const noexcept
+		constexpr self_type  operator%( value_type v ) const noexcept
 		{
 			return self_type(Mod( m_value, v ));
 		}
@@ -209,32 +203,32 @@ namespace detail
 		//------------------------------------------------------------------------------
 		// 比較演算子
 		
-		bool  operator==( self_type rhs ) const noexcept
+		constexpr bool  operator==( self_type rhs ) const noexcept
 		{
 			return m_value == rhs.m_value;
 		}
 		
-		bool  operator!=( self_type rhs ) const noexcept
+		constexpr bool  operator!=( self_type rhs ) const noexcept
 		{
 			return m_value != rhs.m_value;
 		}
 		
-		bool  operator<=( self_type rhs ) const noexcept
+		constexpr bool  operator<=( self_type rhs ) const noexcept
 		{
 			return m_value <= rhs.m_value;
 		}
 		
-		bool  operator>=( self_type rhs ) const noexcept
+		constexpr bool  operator>=( self_type rhs ) const noexcept
 		{
 			return m_value >= rhs.m_value;
 		}
 		
-		bool  operator<( self_type rhs ) const noexcept
+		constexpr bool  operator<( self_type rhs ) const noexcept
 		{
 			return m_value < rhs.m_value;
 		}
 		
-		bool  operator>( self_type rhs ) const noexcept
+		constexpr bool  operator>( self_type rhs ) const noexcept
 		{
 			return m_value > rhs.m_value;
 		}
