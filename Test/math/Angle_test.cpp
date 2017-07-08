@@ -115,10 +115,34 @@ IUTEST(math, Angle)
 		MakeRadian(10.f);
 		MakeDegree(10.f);
 		MakeAngle(10.f);
+		
+		// radian to angle
+		{
+			Angle a2 = Radian::One();
+			IUTEST_ASSERT_EQ( 1.f, a2.value() );
+			Radian x = a2;
+			IUTEST_ASSERT_EQ( Radian::One().value(), x.value() );
+		}
+		// degree to angle
+		{
+			Angle a2 = Degree::One();
+			IUTEST_ASSERT_EQ( 1.f, a2.value() );
+			Degree x = a2;
+			IUTEST_ASSERT_EQ( Degree::One().value(), x.value() );
+		}
+		// degree to radian
+		{
+			Radian a2 = Degree::One();
+			IUTEST_ASSERT_EQ( Radian::One().value(), a2.value() );
+			Degree x = a2;
+			IUTEST_ASSERT_EQ( Degree::One().value(), x.value() );
+		}
+	}
 
-		Degree d = MakeRadian(0.f);
-		Angle a2 = MakeRadian(0.f);
-		Angle a3 = MakeDegree(0.f);
+	// constexpr
+	{
+		constexpr Angle a2(1.0f);
+		static_assert( a2.value() == 1.0f, "constexpr Angle");
 	}
 	
 	#if 0
