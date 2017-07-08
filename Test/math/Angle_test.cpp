@@ -109,6 +109,17 @@ IUTEST(math, Angle)
 	IUTEST_ASSERT_EQ( 0.25f, Angle(-1.75f).distanceFromZero().value() );
 	IUTEST_ASSERT_EQ( -0.5f, Angle(-1.5f).distanceFromZero().value() );
 	IUTEST_ASSERT_EQ( -0.5f, Angle(1.5f).distanceFromZero().value() );
+
+	// 
+	{
+		MakeRadian(10.f);
+		MakeDegree(10.f);
+		MakeAngle(10.f);
+
+		Degree d = MakeRadian(0.f);
+		Angle a2 = MakeRadian(0.f);
+		Angle a3 = MakeDegree(0.f);
+	}
 	
 	#if 0
 
