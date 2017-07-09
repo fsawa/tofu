@@ -70,6 +70,34 @@ namespace detail
 			return angle().distanceFrom( from.angle() );
 		}
 	}
+	
+	//------------------------------------------------------------------------------
+	template <typename T, template <typename> class Policy>
+	BasicAngles<T, Policy>  BasicAngles<T, Policy>::reflect( self_type axis ) const noexcept
+	{
+		return *this + axis.distanceFrom( *this ) * static_cast<value_type>(2);
+	}
+	
+	//------------------------------------------------------------------------------
+	template <typename T, template <typename> class Policy>
+	T  BasicAngles<T, Policy>::sin() const
+	{
+		return std::sin( radian().value() );
+	}
+	
+	//------------------------------------------------------------------------------
+	template <typename T, template <typename> class Policy>
+	T  BasicAngles<T, Policy>::cos() const
+	{
+		return std::cos( radian().value() );
+	}
+	
+	//------------------------------------------------------------------------------
+	template <typename T, template <typename> class Policy>
+	T  BasicAngles<T, Policy>::tan() const
+	{
+		return std::tan( radian().value() );
+	}
 
 	//------------------------------------------------------------------------------
 

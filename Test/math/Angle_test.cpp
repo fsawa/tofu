@@ -110,6 +110,28 @@ IUTEST(math, Angle)
 	IUTEST_ASSERT_EQ( -0.5f, Angle(-1.5f).distanceFromZero().value() );
 	IUTEST_ASSERT_EQ( -0.5f, Angle(1.5f).distanceFromZero().value() );
 
+	// 反射
+	{
+		auto diff = MakeDegree(10.f).reflect( MakeDegree(20.f) ) - MakeDegree(30.f);
+		// 誤差が出るのである程度許容
+		IUTEST_ASSERT_GT( 0.1f, diff.value() );
+	}
+	{
+		auto diff = MakeDegree(0.f).reflect( MakeDegree(180.f) ) - MakeDegree(-360.f);
+		// 誤差が出るのである程度許容
+		IUTEST_ASSERT_GT( 0.1f, diff.value() );
+	}
+	{
+		auto diff = MakeDegree(0.f).reflect( MakeDegree(170.f) ) - MakeDegree(340.f);
+		// 誤差が出るのである程度許容
+		IUTEST_ASSERT_GT( 0.1f, diff.value() );
+	}
+	{
+		auto diff = MakeDegree(350.f).reflect( MakeDegree(10.f) ) - MakeDegree(390.f);
+		// 誤差が出るのである程度許容
+		IUTEST_ASSERT_GT( 0.1f, diff.value() );
+	}
+
 	// 
 	{
 		MakeRadian(10.f);
@@ -146,9 +168,35 @@ IUTEST(math, Angle)
 		static_assert( a2 == Angle(2.0f), "constexpr Angle");
 	}
 	
-	#if 0
-
 	// 三角関数
+	{
+		Degree v( 0.f );
+		IUTEST_ASSERT_EQ( 0.f, v.sin() );
+		IUTEST_ASSERT_EQ( 1.f, v.cos() );
+		IUTEST_ASSERT_EQ( 0.f, v.tan() );
+				
+		v.value(30.f);
+		IUTEST_ASSERT_EQ( 0.5f, v.sin() );
+		//IUTEST_ASSERT_EQ( 0.f, v.cos() );
+		//IUTEST_ASSERT_EQ( 0.f, v.tan() );
+		
+		v.value(90.f);
+		IUTEST_ASSERT_GT( 0.001f, v.sin() - 1.f );
+		IUTEST_ASSERT_GT( 0.001f, v.cos() - 0.f );
+		//IUTEST_ASSERT_EQ( 0.f, v.tan() );
+		
+		v.value(180.f);
+		IUTEST_ASSERT_GT( 0.001f, v.sin() - 0.f );
+		IUTEST_ASSERT_GT( 0.001f, v.cos() + 1.f );
+		IUTEST_ASSERT_GT( 0.001f, v.tan() - 0.f );
+		
+		v.value(270.f);
+		IUTEST_ASSERT_GT( 0.001f, v.sin() + 1.f );
+		IUTEST_ASSERT_GT( 0.001f, v.cos() - 0.f );
+		//IUTEST_ASSERT_EQ( 0.f ,v.tan() );
+	}
+
+	#if 0
 	
 	// 定数
 	Angle::kHalf;

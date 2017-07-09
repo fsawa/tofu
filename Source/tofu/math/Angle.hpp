@@ -121,14 +121,18 @@ namespace detail
 		self_type  distanceFromZero() const noexcept { return distanceFrom(Zero()); }
 		
 		/// 指定した角度を中心に反転させた角度を計算する
-		//self_type  reflection( self_type axis ) const noexcept;
+		self_type  reflect( self_type axis ) const noexcept;
 		
 		//------------------------------------------------------------------------------
 		
 		// sin
+		value_type  sin() const;
+		
 		// cos
+		value_type  cos() const;
+		
 		// tan
-		// cossin (２次元平面でx,yの順になるようにcos,sinの順にしている）
+		value_type  tan() const;
 		
 		//------------------------------------------------------------------------------
 		// 四則演算
