@@ -68,6 +68,9 @@ namespace detail
 		/// 180度
 		static constexpr self_type Half() noexcept { return self_type(static_cast<T>(policy::kCycle*0.5)); }
 		
+		/// デフォルトの、ほぼ等しいと判定する範囲
+		//static constexpr value_type DefaultNearlyRange() noexcept { return static_cast<T>(0.0001); }
+		
 	// FUNCTION
 
 		/// constructor
@@ -99,11 +102,20 @@ namespace detail
 		/// 値取得
 		constexpr value_type  value() const noexcept { return m_value; }
 		
+		/// 値へのキャスト
+		constexpr operator value_type() const noexcept { return m_value; }
+		
 		constexpr angle_type   angle()  const noexcept { return *this; }
 		constexpr radian_type  radian() const noexcept { return *this; }
 		constexpr degree_type  degree() const noexcept { return *this; }
 		
 		//------------------------------------------------------------------------------
+		
+		/// 指定した角度とほぼ同じ角度なら、その角度に丸めてしまう
+		//self_type  round( self_type target, value_type range = kDefaultRoundRange ) const noexcept;
+		
+		/// 指定した角度とほぼ等しいか
+		//bool  nearlyEqual( self_type target, value_type range = DefaultNearlyRange() ) const noexcept;
 		
 		/// 絶対値
 		self_type  abs() const noexcept { return self_type(Abs(m_value)); }
@@ -282,6 +294,17 @@ constexpr BasicRadian<T>  MakeRadian( T value ) noexcept { return BasicRadian<T>
 /// デグリーインスタンス作成
 template <typename T>
 constexpr BasicDegree<T>  MakeDegree( T value ) noexcept { return BasicDegree<T>(value); }
+
+//------------------------------------------------------------------------------
+
+/// x,y平面の値から角度計算
+/// @note
+/// atan2を呼び出しているだけ
+template <typename T>
+BasicAngle<T>  CalcAngle( T x, T y )
+{
+	return BasicRadian<T>( std::atan2(x,y) );
+}
 
 } // math
 } // tofu

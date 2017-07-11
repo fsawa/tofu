@@ -39,8 +39,6 @@ IUTEST(math, Angle)
 	{
 		Angle(0.5f);
 		Angle( a );
-		
-		Angle a2( 0.5f );
 	}
 	
 	// 値を直接代入　あまり推奨しない
@@ -69,6 +67,12 @@ IUTEST(math, Angle)
 	// 正規化 [0.0～1.0)の範囲に変換 = [0度～360度)
 	a = Angle(2.25f).normalize();
 	IUTEST_ASSERT_EQ( 0.25f, a.value() );
+	IUTEST_ASSERT_EQ( 0.0f, Angle(0.0f).normalize().value() );
+	IUTEST_ASSERT_EQ( 0.0f, Angle(1.0f).normalize().value() );
+	IUTEST_ASSERT_EQ( 0.0f, Angle(-1.0f).normalize() );
+	IUTEST_ASSERT_EQ( 350.f, Degree(-10.f).normalize() );
+	IUTEST_ASSERT_EQ( 10.f, Degree(10.f).normalize() );
+	IUTEST_ASSERT_GE( 0.001f, Abs(Degree(370.f).normalize().value() - 10.0f) );
 	
 	a = Angle(-2.25f).normalize();
 	IUTEST_ASSERT_EQ( 0.75f, a.value() );
@@ -194,6 +198,16 @@ IUTEST(math, Angle)
 		IUTEST_ASSERT_GT( 0.001f, v.sin() + 1.f );
 		IUTEST_ASSERT_GT( 0.001f, v.cos() - 0.f );
 		//IUTEST_ASSERT_EQ( 0.f ,v.tan() );
+	}
+
+	// 角度計算
+	{
+		IUTEST_ASSERT_EQ( 0.0f, CalcAngle(0.f, 0.f).value() );
+		IUTEST_ASSERT_EQ( 0.5f, CalcAngle(0.f, -0.f).value() );
+		IUTEST_ASSERT_GT( 0.001f, CalcAngle(0.f, 10.f).value() - 0.25f );
+		IUTEST_ASSERT_GT( 0.001f, CalcAngle(0.f, -10.f).value() - 0.75f );
+		IUTEST_ASSERT_GT( 0.001f, CalcAngle(1.f, 1.f).degree().value() - 45.0f );
+		//IUTEST_ASSERT_GT( 0.001f, CalcAngle(0.f, 0.f) - 0.f );
 	}
 
 	#if 0

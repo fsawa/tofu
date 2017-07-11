@@ -19,9 +19,23 @@ namespace math {
 namespace detail
 {
 	//------------------------------------------------------------------------------
+	#if 0
+	template <typename T, template <typename> class Policy>
+	bool  BasicAngles<T, Policy>::nearlyEqual( self_type target, value_type range ) const noexcept
+	{
+		auto diff = Abs(target.value() - value());
+		return diff <= range;
+	}
+	#endif
+	
+	//------------------------------------------------------------------------------
 	template <typename T, template <typename> class Policy>
 	BasicAngles<T, Policy>  BasicAngles<T, Policy>::normalize() const noexcept
 	{
+		if( m_value >= Zero().value() && m_value < One().value() ){
+			return *this;
+		}
+		
 		// if constexpr にしたい
 		if( std::is_same<policy, AnglePolicy<T>>::value )
 		{
@@ -37,6 +51,10 @@ namespace detail
 	template <typename T, template <typename> class Policy>
 	BasicAngles<T, Policy>  BasicAngles<T, Policy>::signedNormalize() const noexcept
 	{
+		if( m_value > -One().value() && m_value < One().value() ){
+			return *this;
+		}
+		
 		// if constexpr にしたい
 		if( std::is_same<policy, AnglePolicy<T>>::value )
 		{
@@ -53,22 +71,14 @@ namespace detail
 	template <typename T, template <typename> class Policy>
 	BasicAngles<T, Policy>  BasicAngles<T, Policy>::distanceFrom( self_type from ) const noexcept
 	{
-		// if constexpr にしたい
-		if( std::is_same<policy, AnglePolicy<T>>::value )
-		{
-			self_type diff = *this - from;
-			// 0.0～1.0に正規化
-			diff = diff.normalize();
-			// -0.5～0.5に変換
-			if( diff >= Half() ){
-				diff -= One();
-			}
-			return diff;
+		auto diff = *this - from;
+		// 0.0～1.0に正規化
+		diff = diff.normalize();
+		// -0.5～0.5に変換
+		if( diff >= Half() ){
+			diff -= One();
 		}
-		else
-		{
-			return angle().distanceFrom( from.angle() );
-		}
+		return diff;
 	}
 	
 	//------------------------------------------------------------------------------
