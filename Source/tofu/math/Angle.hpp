@@ -105,9 +105,9 @@ namespace detail
 		/// 値へのキャスト
 		constexpr operator value_type() const noexcept { return m_value; }
 		
-		constexpr angle_type   angle()  const noexcept { return *this; }
-		constexpr radian_type  radian() const noexcept { return *this; }
-		constexpr degree_type  degree() const noexcept { return *this; }
+		constexpr angle_type   toAngle()  const noexcept { return *this; }
+		constexpr radian_type  toRadian() const noexcept { return *this; }
+		constexpr degree_type  toDegree() const noexcept { return *this; }
 		
 		//------------------------------------------------------------------------------
 		

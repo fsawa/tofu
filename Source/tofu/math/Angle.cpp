@@ -43,7 +43,7 @@ namespace detail
 		}
 		else
 		{
-			return angle().normalize();
+			return toAngle().normalize();
 		}
 	}
 
@@ -63,7 +63,7 @@ namespace detail
 		}
 		else
 		{
-			return angle().signedNormalize();
+			return toAngle().signedNormalize();
 		}
 	}
 
@@ -92,21 +92,21 @@ namespace detail
 	template <typename T, template <typename> class Policy>
 	T  BasicAngles<T, Policy>::sin() const
 	{
-		return std::sin( radian().value() );
+		return std::sin( toRadian().value() );
 	}
 	
 	//------------------------------------------------------------------------------
 	template <typename T, template <typename> class Policy>
 	T  BasicAngles<T, Policy>::cos() const
 	{
-		return std::cos( radian().value() );
+		return std::cos( toRadian().value() );
 	}
 	
 	//------------------------------------------------------------------------------
 	template <typename T, template <typename> class Policy>
 	T  BasicAngles<T, Policy>::tan() const
 	{
-		return std::tan( radian().value() );
+		return std::tan( toRadian().value() );
 	}
 
 	//------------------------------------------------------------------------------

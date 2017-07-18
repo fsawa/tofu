@@ -11,6 +11,7 @@
 #include <tofu/math/Angle.hpp>
 
 #include <iostream>
+#include <cfloat>
 #include <iutest.hpp>
 
 tofu::math::Angle TestFunc_Angle( tofu::math::Angle a ) noexcept
@@ -64,6 +65,8 @@ IUTEST(math, Angle)
 	a = Angle(-2.6f);
 	IUTEST_ASSERT_GT( 0.001f, Abs((a % 0.5f).value() + 0.1f) );
 	
+	IUTEST_ASSERT_EQ( 1.0f, (Angle(0.5f) + Degree(180.f)).value() );
+	
 	// 正規化 [0.0～1.0)の範囲に変換 = [0度～360度)
 	a = Angle(2.25f).normalize();
 	IUTEST_ASSERT_EQ( 0.25f, a.value() );
@@ -72,7 +75,7 @@ IUTEST(math, Angle)
 	IUTEST_ASSERT_EQ( 0.0f, Angle(-1.0f).normalize() );
 	IUTEST_ASSERT_EQ( 350.f, Degree(-10.f).normalize() );
 	IUTEST_ASSERT_EQ( 10.f, Degree(10.f).normalize() );
-	IUTEST_ASSERT_GE( 0.001f, Abs(Degree(370.f).normalize().value() - 10.0f) );
+	IUTEST_ASSERT_GE( FLT_EPSILON*100, Abs(Degree(370.f).normalize().value() - 10.0f) );
 	
 	a = Angle(-2.25f).normalize();
 	IUTEST_ASSERT_EQ( 0.75f, a.value() );
@@ -118,22 +121,22 @@ IUTEST(math, Angle)
 	{
 		auto diff = MakeDegree(10.f).reflect( MakeDegree(20.f) ) - MakeDegree(30.f);
 		// 誤差が出るのである程度許容
-		IUTEST_ASSERT_GT( 0.1f, diff.value() );
+		IUTEST_ASSERT_GE( FLT_EPSILON, diff.value() );
 	}
 	{
 		auto diff = MakeDegree(0.f).reflect( MakeDegree(180.f) ) - MakeDegree(-360.f);
 		// 誤差が出るのである程度許容
-		IUTEST_ASSERT_GT( 0.1f, diff.value() );
+		IUTEST_ASSERT_GE( FLT_EPSILON, diff.value() );
 	}
 	{
 		auto diff = MakeDegree(0.f).reflect( MakeDegree(170.f) ) - MakeDegree(340.f);
 		// 誤差が出るのである程度許容
-		IUTEST_ASSERT_GT( 0.1f, diff.value() );
+		IUTEST_ASSERT_GE( FLT_EPSILON, diff.value() );
 	}
 	{
 		auto diff = MakeDegree(350.f).reflect( MakeDegree(10.f) ) - MakeDegree(390.f);
 		// 誤差が出るのである程度許容
-		IUTEST_ASSERT_GT( 0.1f, diff.value() );
+		IUTEST_ASSERT_GE( FLT_EPSILON, diff.value() );
 	}
 
 	// 
@@ -168,7 +171,7 @@ IUTEST(math, Angle)
 	// constexpr
 	{
 		constexpr Angle a2 = Angle(1.f) + Degree::One();
-		static_assert( a2.degree().radian().angle().value() == 2.0f, "constexpr Angle");
+		static_assert( a2.toDegree().toRadian().toAngle().value() == 2.0f, "constexpr Angle");
 		static_assert( a2 == Angle(2.0f), "constexpr Angle");
 	}
 	
@@ -206,21 +209,9 @@ IUTEST(math, Angle)
 		IUTEST_ASSERT_EQ( 0.5f, CalcAngle(0.f, -0.f).value() );
 		IUTEST_ASSERT_GT( 0.001f, CalcAngle(0.f, 10.f).value() - 0.25f );
 		IUTEST_ASSERT_GT( 0.001f, CalcAngle(0.f, -10.f).value() - 0.75f );
-		IUTEST_ASSERT_GT( 0.001f, CalcAngle(1.f, 1.f).degree().value() - 45.0f );
+		IUTEST_ASSERT_GT( 0.001f, CalcAngle(1.f, 1.f).toDegree().value() - 45.0f );
 		//IUTEST_ASSERT_GT( 0.001f, CalcAngle(0.f, 0.f) - 0.f );
 	}
-
-	#if 0
-	
-	// 定数
-	Angle::kHalf;
-	Angle::k180;
-	Angle::k90;
-	Angle::k60;
-	Angle::k45;
-	Angle::k30;
-	
-	#endif
 	
 	// ユーザー定義リテラル
 }
