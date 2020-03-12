@@ -77,5 +77,8 @@
     <ClInclude Include="..\..\..\Source\tofu\base\BaseTypes.hpp">
       <Filter>src\tofu\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\math\Nearly.hpp">
+      <Filter>src\tofu\math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -95,6 +95,7 @@
     <ClInclude Include="..\..\..\Source\tofu\config\Platform.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\math\Angle.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\math\MathCommon.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\math\Nearly.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\misc\TypeInfo.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
