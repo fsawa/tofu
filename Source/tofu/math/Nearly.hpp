@@ -1,7 +1,7 @@
 ﻿//------------------------------------------------------------------------------
 /**
  * @file    Nearly.hpp
- * @brief   許容誤差判定
+ * @brief   誤差許容判定
  * @author  y.fujisawa
  * @par     copyright
  * Copyright (C) 2017 Yasuhito Fujisawa\n
@@ -16,7 +16,7 @@ namespace tofu {
 namespace math {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief      
+/// @brief      誤差許容判定クラス
 /// 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
@@ -33,7 +33,7 @@ public:
 	
 	using value_type = T;
 	
-	static constexpr T kDefaultTorerance = static_cast<T>(0.0001); ///< デフォルト許容誤差
+	static constexpr T kDefaultTorerance = static_cast<T>(0.0001); ///< デフォルト許容誤差（基準が悩ましい）
 	
 // FUNCTION
 	

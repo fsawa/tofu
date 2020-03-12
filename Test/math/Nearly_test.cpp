@@ -57,7 +57,9 @@ IUTEST(math, Nearly)
 	{
 		auto nearly = tofu::math::NearlyChecker<float>(0.0001f);
 		
+		// nearlyに直接値を設定して比較する
 		IUTEST_ASSERT_EQ( nearly.set(1.f), a );
+		// nearlyを変更せず、別オブジェクトを作成して比較する
 		IUTEST_ASSERT_EQ( nearly.make(1.f), a );
 	}
 
