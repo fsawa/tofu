@@ -11,7 +11,7 @@
 //------------------------------------------------------------------------------
 
 #include <tofu.hpp>
-#include <tofu/misc/TypeInfo.hpp>
+#include <tofu/util/TypeInfo.hpp>
 
 // 文字列のプリントテスト
 //#define TEST_PRINT

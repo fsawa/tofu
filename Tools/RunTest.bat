@@ -2,7 +2,8 @@
 setlocal enabledelayedexpansion
 pushd %~dp0
 
-call ..\Build\vs2017\tofu_test\x64\Debug\tofu_test.exe
+::..\Build\vs2017\tofu_test\x64\Debug\tofu_test.exe --iutest_filter=math.*
+..\Build\vs2017\tofu_test\x64\Debug\tofu_test.exe --iutest_filter=util.*
 
 :END
 

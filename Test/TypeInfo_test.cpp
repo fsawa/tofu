@@ -8,7 +8,7 @@
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
-#include <tofu/misc/TypeInfo.hpp>
+#include <tofu/util/TypeInfo.hpp>
 
 #include <iostream>
 #include <iutest.hpp>
@@ -25,7 +25,7 @@ namespace
 	class C;
 }
 
-IUTEST(misc, TypeInfo)
+IUTEST(util, TypeInfo)
 {
 	IUTEST_ASSERT(!tofu::GetTypeInfo<int>().isConst());
 	IUTEST_ASSERT(!tofu::GetTypeInfo<int>().isVolatile());

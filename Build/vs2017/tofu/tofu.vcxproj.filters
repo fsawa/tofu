@@ -28,13 +28,13 @@
     <Filter Include="src\tofu\math">
       <UniqueIdentifier>{d1649927-1bae-49d8-86ba-aa5c4f591a75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\tofu\misc">
+    <Filter Include="src\tofu\util">
       <UniqueIdentifier>{22a221d1-a5e4-48e0-a502-eabf7c2750ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Source\tofu\misc\TypeInfo.cpp">
-      <Filter>src\tofu\misc</Filter>
+    <ClCompile Include="..\..\..\Source\tofu\util\TypeInfo.cpp">
+      <Filter>src\tofu\util</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Source\tofu\base\Assert.cpp">
       <Filter>src\tofu\base</Filter>
@@ -50,8 +50,8 @@
     <ClInclude Include="..\..\..\Source\tofu.hpp">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\misc\TypeInfo.hpp">
-      <Filter>src\tofu\misc</Filter>
+    <ClInclude Include="..\..\..\Source\tofu\util\TypeInfo.hpp">
+      <Filter>src\tofu\util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Source\tofu\base\Assert.hpp">
       <Filter>src\tofu\base</Filter>

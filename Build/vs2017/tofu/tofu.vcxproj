@@ -83,7 +83,7 @@
     <ClCompile Include="..\..\..\Source\tofu.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\base\Assert.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\math\Angle.cpp" />
-    <ClCompile Include="..\..\..\Source\tofu\misc\TypeInfo.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\util\TypeInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Source\tofu.hpp" />
@@ -96,7 +96,7 @@
     <ClInclude Include="..\..\..\Source\tofu\math\Angle.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\math\MathCommon.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\math\Nearly.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\misc\TypeInfo.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\util\TypeInfo.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
