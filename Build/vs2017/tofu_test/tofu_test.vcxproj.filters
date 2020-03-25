@@ -26,5 +26,8 @@
     <ClCompile Include="..\..\..\Test\math\Nearly_test.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Test\Singleton_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

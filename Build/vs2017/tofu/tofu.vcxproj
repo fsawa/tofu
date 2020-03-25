@@ -96,6 +96,11 @@
     <ClInclude Include="..\..\..\Source\tofu\math\Angle.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\math\MathCommon.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\math\Nearly.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\util\DisallowCopy.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\util\LooseSingleton.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\util\Singleton.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\util\SingletonUtil.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\util\SingletonPolicy.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\TypeInfo.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
