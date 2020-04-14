@@ -80,9 +80,6 @@
     <ClInclude Include="..\..\..\Source\tofu\math\Nearly.hpp">
       <Filter>src\tofu\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\LooseSingleton.hpp">
-      <Filter>src\tofu\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Source\tofu\util\Singleton.hpp">
       <Filter>src\tofu\util</Filter>
     </ClInclude>
@@ -93,6 +90,9 @@
       <Filter>src\tofu\util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Source\tofu\util\DisallowCopy.hpp">
+      <Filter>src\tofu\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\util\EasySingleton.hpp">
       <Filter>src\tofu\util</Filter>
     </ClInclude>
   </ItemGroup>

@@ -94,7 +94,7 @@ public:
 //**************************************************************
 protected:
 	
-	Singleton() : m_pSelfAsSingleton(nullptr)
+	Singleton()
 	{
 		m_pSelfAsSingleton = this; // デバッグ用途
 	}
@@ -123,7 +123,7 @@ private:
 	
 // VARIABLE
 	
-	self_type*  m_pSelfAsSingleton;
+	self_type*  m_pSelfAsSingleton = nullptr;
 };
 // << Singleton
 

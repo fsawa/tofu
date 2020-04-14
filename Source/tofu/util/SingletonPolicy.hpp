@@ -65,7 +65,7 @@ public:
 	
 // FUNCTION
 	
-	DynamicCreator() : m_instance(nullptr) {}
+	DynamicCreator() {}
 	/*virtual*/ ~DynamicCreator() {}
 	
 	/// インスタンス取得（自動でインスタンス生成はしません）
@@ -95,7 +95,7 @@ public:
 //**************************************************************
 private:
 	
-	T*  m_instance;
+	T*  m_instance = nullptr;
 };
 // << DynamicCreator
 

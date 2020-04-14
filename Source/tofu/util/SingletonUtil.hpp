@@ -36,7 +36,7 @@ public:
 	
 // FUNCTION
 	
-	SingletonAccessor() : m_lastPtr(nullptr) {}
+	SingletonAccessor() {}
 	//virtual ~SingletonAccessor();
 	
 	/// 参照
@@ -48,14 +48,14 @@ public:
 	/// 生のポインタへキャスト
 	operator instance_type*() const  { return _safeGetPtr(); }
 	
-	/// 生のポインタ取得
+	/// 生のポインタ取得（存在しないときはアサート）
 	instance_type*  get() const { return _safeGetPtr(); }
 	
 	/// インスタンス存在チェック
-	bool  exist()  { return nullptr != get(); }
+	bool  exist() const  { return nullptr != _getPtr(); }
 	
 	/// インスタンス存在チェック
-	operator bool()  { return exist(); }
+	operator bool() const  { return exist(); }
 	
 //**************************************************************
 //              : private
@@ -64,7 +64,7 @@ private:
 	
 // FUNCTION
 
-	instance_type* _getPtr()
+	instance_type* _getPtr() const
 	{
 		if( singleton_type::ExistInstance() ){
 			m_lastPtr = &singleton_type::Instance();
@@ -75,16 +75,16 @@ private:
 		return m_lastPtr;
 	}
 	
-	instance_type* _safeGetPtr()
+	instance_type* _safeGetPtr() const
 	{
-		m_lastPtr = _getPtr();
+		_getPtr();
 		TOFU_ASSERT(m_lastPtr);
 		return m_lastPtr;
 	}
 	
 // VARIABLE
 
-	instance_type*  m_lastPtr;
+	mutable instance_type*  m_lastPtr = nullptr;
 };
 // << SingletonAccessor
 

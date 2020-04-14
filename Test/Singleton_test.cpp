@@ -22,12 +22,35 @@ namespace test_easy
 	{
 	};
 }
-class B {};
+class Foo {};
 struct SubTag;
 
 // EasyシングルトンのHolderテスト
-using GlobalMainB = tofu::EasySingletonHolder<B>;
-using GlobalSubB = tofu::EasySingletonHolder<B, SubTag>;
+using GlobalMainFoo = tofu::EasySingletonHolder<Foo>;
+using GlobalSubFoo = tofu::EasySingletonHolder<Foo, SubTag>;
+
+// Static
+namespace test_static
+{
+	class A : public tofu::Singleton<A, tofu::singleton::StaticCreator>
+	{
+	public:
+		void foo() {}
+	};
+	
+	A::SingletonAccessor  g_A;
+}
+// Dynamic
+namespace test_dynamic
+{
+	class A : public tofu::Singleton<A, tofu::singleton::DynamicCreator>
+	{
+	public:
+		void foo() {}
+	};
+	
+	A::SingletonAccessor  g_A;
+}
 
 IUTEST(util, Singleton)
 {
@@ -53,28 +76,80 @@ IUTEST(util, Singleton)
 	{
 		using namespace test_easy;
 		
-		IUTEST_ASSERT_EQ( false, GlobalMainB::ExistInstance() );
-		IUTEST_ASSERT_EQ( false, GlobalSubB::ExistInstance() );
+		IUTEST_ASSERT_EQ( false, GlobalMainFoo::ExistInstance() );
+		IUTEST_ASSERT_EQ( false, GlobalSubFoo::ExistInstance() );
 		{
-			GlobalMainB main;
+			GlobalMainFoo main;
 
 			// 関数テスト
-			IUTEST_ASSERT_EQ( &main.content, &GlobalMainB::Instance() );
-			IUTEST_ASSERT_EQ( &main.content, GlobalMainB::GetInstance() );
-			GlobalMainB::CreateInstance(); // 意味なし
-			IUTEST_ASSERT_EQ( true, GlobalMainB::ExistInstance() );
-			GlobalMainB::DestroyInstance(); // 意味無し
+			IUTEST_ASSERT_EQ( &main.content, &GlobalMainFoo::Instance() );
+			IUTEST_ASSERT_EQ( &main.content, GlobalMainFoo::GetInstance() );
+			GlobalMainFoo::CreateInstance(); // 意味なし
+			IUTEST_ASSERT_EQ( true, GlobalMainFoo::ExistInstance() );
+			GlobalMainFoo::DestroyInstance(); // 意味無し
 			
-			GlobalSubB sub;
+			GlobalSubFoo sub;
 
 			// 関数テスト
-			IUTEST_ASSERT_EQ( &sub.content, &GlobalSubB::Instance() );
-			IUTEST_ASSERT_EQ( &sub.content, GlobalSubB::GetInstance() );
-			GlobalSubB::CreateInstance(); // 意味なし
-			IUTEST_ASSERT_EQ( true, GlobalSubB::ExistInstance() );
-			GlobalSubB::DestroyInstance(); // 意味無し
+			IUTEST_ASSERT_EQ( &sub.content, &GlobalSubFoo::Instance() );
+			IUTEST_ASSERT_EQ( &sub.content, GlobalSubFoo::GetInstance() );
+			GlobalSubFoo::CreateInstance(); // 意味なし
+			IUTEST_ASSERT_EQ( true, GlobalSubFoo::ExistInstance() );
+			GlobalSubFoo::DestroyInstance(); // 意味無し
 		}
-		IUTEST_ASSERT_EQ( false, GlobalSubB::ExistInstance() );
-		IUTEST_ASSERT_EQ( false, GlobalMainB::ExistInstance() );
+		IUTEST_ASSERT_EQ( false, GlobalSubFoo::ExistInstance() );
+		IUTEST_ASSERT_EQ( false, GlobalMainFoo::ExistInstance() );
+	}
+
+	// StaticCreator
+	{
+		using namespace test_static;
+
+		IUTEST_ASSERT_TRUE( A::ExistInstance() );
+
+		A* a = A::CreateInstance();
+		IUTEST_ASSERT_NE( nullptr, a );
+
+		IUTEST_ASSERT_TRUE( A::ExistInstance() );
+		
+		IUTEST_ASSERT_EQ( a, A::GetInstance() );
+		IUTEST_ASSERT_EQ( a, &A::Instance() );
+
+		A::DestroyInstance();
+		
+		// StaticCreatorは、Destroy呼んでも開放されず、インスタンスは生きている
+		IUTEST_ASSERT_TRUE( A::ExistInstance() );
+
+		// アクセスクラス
+		g_A->foo();
+		a = g_A; // 暗黙のポインタキャスト
+		IUTEST_ASSERT_NE( nullptr, a );
+		IUTEST_ASSERT_EQ( a, g_A.get() );
+		IUTEST_ASSERT_TRUE( g_A ); // boolキャスト
+	}
+
+	// DynamicCreator
+	{
+		using namespace test_dynamic;
+
+		IUTEST_ASSERT_FALSE( A::ExistInstance() );
+
+		A* a = A::CreateInstance();
+		IUTEST_ASSERT_NE( nullptr, a );
+
+		IUTEST_ASSERT_TRUE( A::ExistInstance() );
+		
+		IUTEST_ASSERT_EQ( a, A::GetInstance() );
+		IUTEST_ASSERT_EQ( a, &A::Instance() );
+
+		// アクセスクラス
+		g_A->foo();
+		a = g_A; // 暗黙のポインタキャスト
+		IUTEST_ASSERT_NE( nullptr, a );
+		IUTEST_ASSERT_EQ( a, g_A.get() );
+		IUTEST_ASSERT_TRUE( g_A ); // boolキャスト
+
+		A::DestroyInstance();
+		IUTEST_ASSERT_FALSE( A::ExistInstance() );
 	}
 }

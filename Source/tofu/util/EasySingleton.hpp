@@ -1,7 +1,7 @@
 ﻿//------------------------------------------------------------------------------
 /**
  * @file    EasySingleton.hpp
- * @brief   
+ * @brief   インスタンスの生成方法に関与しない、シングルトンMixin
  * @author  y.fujisawa
  * @par     copyright
  * Copyright (C) 2017 Yasuhito Fujisawa\n
