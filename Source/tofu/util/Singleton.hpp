@@ -37,10 +37,6 @@ namespace singleton {
 ///   DestroyInstance()<br>
 /// の関数を持つクラスを指定する。<br>
 /// <br>
-/// 派生クラス(=T)では、CreatePolicyがインスタンス生成できるように<br>
-///   friend class MyCreatePolicy;<br>
-/// を記述する必要がある。
-/// <br>
 /// シンプルなアクセス方法<br>
 ///   Random::Instance().Func();<br>
 /// グローバルなポインタ変数風にアクセスしたい場合<br>
