@@ -92,10 +92,10 @@
     <ClInclude Include="..\..\..\Source\tofu\util\DisallowCopy.hpp">
       <Filter>src\tofu\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\EasySingleton.hpp">
+    <ClInclude Include="..\..\..\Source\tofu\util\AnyPtr.hpp">
       <Filter>src\tofu\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\AnyPtr.hpp">
+    <ClInclude Include="..\..\..\Source\tofu\util\LooseSingleton.hpp">
       <Filter>src\tofu\util</Filter>
     </ClInclude>
   </ItemGroup>

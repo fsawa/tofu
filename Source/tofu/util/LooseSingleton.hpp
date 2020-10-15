@@ -1,6 +1,6 @@
 ﻿//------------------------------------------------------------------------------
 /**
- * @file    EasySingleton.hpp
+ * @file    LooseSingleton.hpp
  * @brief   インスタンスの生成方法に関与しない、シングルトンMixin
  * @author  y.fujisawa
  * @par     copyright
@@ -27,12 +27,12 @@ namespace singleton {
 /// 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-class EasySingleton
+class LooseSingleton
 {
-	typedef EasySingleton  self_type;
+	typedef LooseSingleton  self_type;
 	
 	// コピー禁止
-	TOFU_DISALLOW_COPY(EasySingleton);
+	TOFU_DISALLOW_COPY(LooseSingleton);
 	
 //**************************************************************
 //              : public
@@ -66,13 +66,13 @@ public:
 //**************************************************************
 protected:
 	
-	EasySingleton()
+	LooseSingleton()
 	{
 		TOFU_ASSERT( nullptr == s_pInstance );
 		s_pInstance = static_cast<T*>(this);
 	}
 	
-	/*virtual*/ ~EasySingleton()
+	/*virtual*/ ~LooseSingleton()
 	{
 		TOFU_ASSERT( nullptr != s_pInstance );
 		s_pInstance = nullptr;
@@ -87,15 +87,15 @@ private:
 	
 	static T*  s_pInstance;
 };
-// << EasySingleton
+// << LooseSingleton
 
 // ポインタ
 template <typename T>
-T*  EasySingleton<T>::s_pInstance = nullptr;
+T*  LooseSingleton<T>::s_pInstance = nullptr;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief      既存のクラスをシングルトンとして保持するタイプのEasySingleton
+/// @brief      既存のクラスをシングルトンとして保持するタイプのLooseSingleton
 /// @tparam  T   : シングルトンにしたいクラス
 /// @tparam  Tag : 同一のクラスで別シングルトンを作りたい場合のユニークタグ
 /// @details
@@ -103,24 +103,24 @@ T*  EasySingleton<T>::s_pInstance = nullptr;
 /// @code
 /// class Random {...};
 /// 
-/// using GlobalRandom = tofu::EasySingletonHolder<Random>;
+/// using GlobalRandom = tofu::LooseSingletonHolder<Random>;
 /// new GlobalRandom();
 /// GlobalRandom::Instance().getU32();
 /// 
 /// // 同じRandomに対して、別のSingletonLikeを定義／生成できる
 /// struct SubGlobalRandomTag{};
-/// using SubGlobalRandom = tofu::EasySingletonHolder<Random, SubGlobalRandomTag>;
+/// using SubGlobalRandom = tofu::LooseSingletonHolder<Random, SubGlobalRandomTag>;
 /// new SubGlobalRandom();
 /// SubGlobalRandom::Instance().getU32();
 /// @endcode
 ////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T, typename Tag = void>
-class EasySingletonHolder
+class LooseSingletonHolder
 {
-	typedef EasySingletonHolder  self_type;
+	typedef LooseSingletonHolder  self_type;
 	
 	// コピー禁止
-	TOFU_DISALLOW_COPY(EasySingletonHolder);
+	TOFU_DISALLOW_COPY(LooseSingletonHolder);
 	
 //**************************************************************
 //              : public
@@ -152,13 +152,13 @@ public:
 	/// インスタンス破壊（はしないが、Singletonとインターフェースを合わせたい場合用に定義）
 	static void  DestroyInstance()  {}
 	
-	EasySingletonHolder()
+	LooseSingletonHolder()
 	{
 		TOFU_ASSERT( nullptr == s_pInstance );
 		s_pInstance = this;
 	}
 	
-	/*virtual*/ ~EasySingletonHolder()
+	/*virtual*/ ~LooseSingletonHolder()
 	{
 		TOFU_ASSERT( nullptr != s_pInstance );
 		s_pInstance = nullptr;
@@ -177,15 +177,15 @@ private:
 	
 	static self_type*  s_pInstance; ///< 2重生成チェック用ポインタ
 };
-// << EasySingletonHolder
+// << LooseSingletonHolder
 
 // ポインタ
 template <typename T, typename Tag>
-EasySingletonHolder<T, Tag>*  EasySingletonHolder<T, Tag>::s_pInstance = nullptr;
+LooseSingletonHolder<T, Tag>*  LooseSingletonHolder<T, Tag>::s_pInstance = nullptr;
 
 } // singleton
 
-using singleton::EasySingleton;
-using singleton::EasySingletonHolder;
+using singleton::LooseSingleton;
+using singleton::LooseSingletonHolder;
 
 } // tofu

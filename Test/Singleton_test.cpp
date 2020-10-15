@@ -9,25 +9,25 @@
 */
 //------------------------------------------------------------------------------
 #include <tofu/util/Singleton.hpp>
-#include <tofu/util/EasySingleton.hpp>
+#include <tofu/util/LooseSingleton.hpp>
 
 #include <iostream>
 #include <iutest.hpp>
 
-// Easyシングルトン
-namespace test_easy
+// Looseシングルトン
+namespace test_loose
 {
 	// 継承するだけでOK
-	class A : public tofu::EasySingleton<A>
+	class A : public tofu::LooseSingleton<A>
 	{
 	};
 }
 class Foo {};
 struct SubTag;
 
-// EasyシングルトンのHolderテスト
-using GlobalMainFoo = tofu::EasySingletonHolder<Foo>;
-using GlobalSubFoo = tofu::EasySingletonHolder<Foo, SubTag>;
+// LooseシングルトンのHolderテスト
+using GlobalMainFoo = tofu::LooseSingletonHolder<Foo>;
+using GlobalSubFoo = tofu::LooseSingletonHolder<Foo, SubTag>;
 
 // Static
 namespace test_static
@@ -54,9 +54,9 @@ namespace test_dynamic
 
 IUTEST(util, Singleton)
 {
-	// Easy
+	// Loose
 	{
-		using namespace test_easy;
+		using namespace test_loose;
 
 		IUTEST_ASSERT( !A::ExistInstance() );
 		{
@@ -72,9 +72,9 @@ IUTEST(util, Singleton)
 		IUTEST_ASSERT( !A::ExistInstance() );
 	}
 	
-	// Easy Holder
+	// Loose Holder
 	{
-		using namespace test_easy;
+		using namespace test_loose;
 		
 		IUTEST_ASSERT_EQ( false, GlobalMainFoo::ExistInstance() );
 		IUTEST_ASSERT_EQ( false, GlobalSubFoo::ExistInstance() );
