@@ -11,6 +11,7 @@
 #pragma once
 
 #include <tofu.hpp>
+#include <tofu/util/TypeInfo.hpp>
 
 namespace tofu {
 
@@ -32,23 +33,23 @@ public:
 // FUNCTION
 	
 	/// constructor
-	AnyPtr() : m_ptr(nullptr), m_typeId() {}
+	AnyPtr() noexcept : m_ptr(nullptr), m_typeId() {}
 	
 	/// copy constructor
-	AnyPtr( const AnyPtr& rhs );
+	AnyPtr( const AnyPtr& rhs ) noexcept
 		: m_ptr(rhs.m_ptr)
 		, m_typeId(rhs.m_typeId)
 	{}
 	
 	/// ポインタ代入コンストラクタ
 	template <typename T>
-	/*explicit*/ AnyPtr( T* p ) : m_ptr(nullptr) { *this = p; }
+	/*explicit*/ AnyPtr( T* p ) noexcept : m_ptr(nullptr) { *this = p; }
 	
 	/// nullptr代入コンストラクタ
-	/*explicit*/ AnyPtr( nullptr_t ) : m_ptr(nullptr) {}
+	/*explicit*/ AnyPtr( nullptr_t ) noexcept : m_ptr(nullptr) {}
 	
 	/// 型を直接指定
-	AnyPtr( const void* p, TypeId typeId ) : m_ptr(nullptr) { assign( p, typeId ); }
+	AnyPtr( const void* p, TypeId typeId ) noexcept : m_ptr(nullptr) { assign( p, typeId ); }
 	
 	/// destructor
 	//~AnyPtr();
@@ -56,7 +57,7 @@ public:
 	//==============================
 	
 	/// copy
-	AnyPtr&  operator=( const AnyPtr& rhs )
+	AnyPtr&  operator=( const AnyPtr& rhs ) noexcept
 	{
 		m_ptr = rhs.m_ptr;
 		m_typeId = rhs.m_typeId;
@@ -65,7 +66,7 @@ public:
 	
 	/// 代入（生のポインタから）
 	template <typename T>
-	AnyPtr&  operator=( T* p )
+	AnyPtr&  operator=( T* p ) noexcept
 	{
 		m_ptr = p;
 		m_typeId = MakeTypeId<T>();
@@ -73,7 +74,7 @@ public:
 	}
 	
 	/// 代入（nullptr）
-	AnyPtr&  operator=( nullptr_t )
+	AnyPtr&  operator=( nullptr_t ) noexcept
 	{
 		m_ptr = nullptr;
 		m_typeId.clear();
@@ -83,24 +84,24 @@ public:
 	//==============================
 	
 	/// 設定
-	void  assign( const void* p, TypeId typeId )
+	void  assign( const void* p, TypeId typeId ) noexcept
 	{
 		m_ptr = p;
 		m_typeId = typeId;
 	}
 	
 	/// クリア
-	void  clear()
+	void  clear() noexcept
 	{
 		m_ptr = nullptr;
 		m_typeId.clear();
 	}
 	
 	/// TypeId取得
-	const TypeId&  type() const  { return m_typeId; }
+	const TypeId&  type() const noexcept  { return m_typeId; }
 	
 	/// 生のポインタ取得
-	const void*  get() const  { return m_ptr; }
+	const void*  get() const noexcept  { return m_ptr; }
 	
 	/// ポインタ変換（変換出来なかったらアサート）
 	template <typename T>
@@ -113,9 +114,9 @@ public:
 	
 	/// ポインタ変換（変換出来なかったらnullptr）
 	template <typename T>
-	T*  tryCast() const
+	T*  tryCast() const noexcept
 	{
-		if( _castTest< is_const<T>::value >( MakeTypeId<T>() ) ){
+		if( _castTest< std::is_const<T>::value >( MakeTypeId<T>() ) ){
 			return reinterpret_cast<T*>( _getVoidPtr() );
 		}
 		return 0;
@@ -123,7 +124,7 @@ public:
 	
 	/// 暗黙的キャスト（型が違ったらnullptr）
 	template <typename T>
-	operator T*() const  { return tryCast<T>(); }
+	operator T*() const noexcept  { return tryCast<T>(); }
 	
 	//------------------------------------------------------------------------------
 	
@@ -131,15 +132,15 @@ public:
 	void  null_assert() const  { TOFU_ASSERT(m_ptr); }
 	
 	/// boolキャスト
-	operator bool() const  { return nullptr != m_ptr; }
+	operator bool() const noexcept  { return nullptr != m_ptr; }
 	
 	/// ポインタ未設定か
-	bool  empty() const  { return nullptr == m_ptr; }
+	bool  empty() const noexcept  { return nullptr == m_ptr; }
 	
 	//------------------------------------------------------------------------------
 	
 	/// インスタンスの型にconst修飾を付加したAnyPtrを取得
-	AnyPtr  makeAddConst() const  { return AnyPtr( m_ptr, m_typeId.makeAddConst() ); }
+	AnyPtr  makeAddConst() const noexcept  { return AnyPtr( m_ptr, m_typeId.makeAddConst() ); }
 	
 //**************************************************************
 //              : private
@@ -150,11 +151,11 @@ private:
 	
 // FUNCTION
 	
-	void*  _getVoidPtr() const { return const_cast<void*>(m_ptr); }
-	const void*  _getConstVoidPtr() const { return m_ptr; }
+	void*  _getVoidPtr() const noexcept { return const_cast<void*>(m_ptr); }
+	const void*  _getConstVoidPtr() const noexcept { return m_ptr; }
 	
 	template <bool IsConst>
-	inline bool  _castTest( const TypeId& target ) const  { return target == m_typeId; }
+	inline bool  _castTest( const TypeId& target ) const noexcept  { return target == m_typeId; }
 	
 // VARIABLE
 	
@@ -165,7 +166,7 @@ private:
 
 // cast対象がconstの場合
 template <>
-inline bool  AnyPtr::_castTest<true>( const TypeId& target ) const
+inline bool  AnyPtr::_castTest<true>( const TypeId& target ) const noexcept
 {
 	return target == m_typeId.makeAddConst();
 }
@@ -175,50 +176,50 @@ inline bool  AnyPtr::_castTest<true>( const TypeId& target ) const
 //------------------------------------------------------------------------------
 
 /// AnyPtr比較 ==
-inline bool operator ==(const AnyPtr& a, const AnyPtr& b)
+inline bool operator ==(const AnyPtr& a, const AnyPtr& b) noexcept
 	{ return a.get() == b.get(); }
 
 /// AnyPtr比較 !=
-inline bool operator !=(const AnyPtr& a, const AnyPtr& b)
+inline bool operator !=(const AnyPtr& a, const AnyPtr& b) noexcept
 	{ return a.get() != b.get(); }
 
 /// AnyPtr比較 <
-inline bool operator <(const AnyPtr& a, const AnyPtr& b)
+inline bool operator <(const AnyPtr& a, const AnyPtr& b) noexcept
 	{ return a.get() < b.get(); }
 
 /// AnyPtr比較 <=
-inline bool operator <=(const AnyPtr& a, const AnyPtr& b)
+inline bool operator <=(const AnyPtr& a, const AnyPtr& b) noexcept
 	{ return a.get() <= b.get(); }
 
 /// AnyPtr比較 >
-inline bool operator >(const AnyPtr& a, const AnyPtr& b)
+inline bool operator >(const AnyPtr& a, const AnyPtr& b) noexcept
 	{ return a.get() > b.get(); }
 
 /// AnyPtr比較 >=
-inline bool operator >=(const AnyPtr& a, const AnyPtr& b)
+inline bool operator >=(const AnyPtr& a, const AnyPtr& b) noexcept
 	{ return a.get() >= b.get(); }
 
 //------------------------------------------------------------------------------
 
 /// AnyPtr比較 (nullptr) ==
 template <typename T>
-inline bool operator ==(const AnyPtr& a, nullptr_t)
-	{ return a.get() == 0; }
+inline bool operator ==(const AnyPtr& a, nullptr_t) noexcept
+	{ return a.get() == nullptr; }
 
 /// AnyPtr比較 (nullptr) ==
 template <typename T>
-inline bool operator ==(nullptr_t, const AnyPtr& a)
-	{ return 0 == a.get(); }
+inline bool operator ==(nullptr_t, const AnyPtr& a) noexcept
+	{ return nullptr == a.get(); }
 
 /// AnyPtr比較 (nullptr) !=
 template <typename T>
-inline bool operator !=(const AnyPtr& a, nullptr_t)
-	{ return a.get() != 0; }
+inline bool operator !=(const AnyPtr& a, nullptr_t) noexcept
+	{ return a.get() != nullptr; }
 
 /// AnyPtr比較 (nullptr) !=
 template <typename T>
-inline bool operator !=(nullptr_t, const AnyPtr& a)
-	{ return 0 != a.get(); }
+inline bool operator !=(nullptr_t, const AnyPtr& a) noexcept
+	{ return nullptr != a.get(); }
 
 //------------------------------------------------------------------------------
 
