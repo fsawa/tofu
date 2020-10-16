@@ -99,6 +99,7 @@
     <ClInclude Include="..\..\..\Source\tofu\util\AnyPtr.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\DisallowCopy.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\LooseSingleton.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\util\SafePtr.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\Singleton.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\SingletonUtil.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\SingletonPolicy.hpp" />
