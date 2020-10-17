@@ -98,6 +98,7 @@
     <ClInclude Include="..\..\..\Source\tofu\math\Nearly.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\AnyPtr.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\DisallowCopy.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu\util\Finalizer.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\LooseSingleton.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\SafePtr.hpp" />
     <ClInclude Include="..\..\..\Source\tofu\util\Singleton.hpp" />
