@@ -12,6 +12,9 @@
     <Filter Include="Source Files\math">
       <UniqueIdentifier>{b52a79bc-ab76-4051-a1e5-94649d323dbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\util">
+      <UniqueIdentifier>{c17723bd-a831-4b48-ad2a-101c3a045627}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tofu_test.cpp">

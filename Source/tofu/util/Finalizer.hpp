@@ -77,13 +77,13 @@ public:
 	
 	/// 終了処理を実行
 	void  finalize()
-	{
-		for (auto& func : m_funcList)
 		{
-			func();
+			for (auto& func : m_funcList)
+			{
+				func();
+			}
+			m_funcList.clear();
 		}
-		m_funcList.clear();
-	}
 	
 //**************************************************************
 //              : private
