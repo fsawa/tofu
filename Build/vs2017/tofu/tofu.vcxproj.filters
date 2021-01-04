@@ -104,5 +104,8 @@
     <ClInclude Include="..\..\..\Source\tofu\util\Finalizer.hpp">
       <Filter>src\tofu\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\util\AnyBasePtr.hpp">
+      <Filter>src\tofu\util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

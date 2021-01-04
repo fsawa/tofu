@@ -44,6 +44,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(ptr.makeAddConst().type().info().isConst(), true);
 	//ptr.clear();
 
+	ptr = nullptr;
 	ptr = &a;
 
 	test::A* ptr_a = ptr; // ok

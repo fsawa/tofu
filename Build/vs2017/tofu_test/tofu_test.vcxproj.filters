@@ -41,5 +41,8 @@
     <ClCompile Include="..\..\..\Test\Finalizer_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AnyBasePtr_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
