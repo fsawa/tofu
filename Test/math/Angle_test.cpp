@@ -38,8 +38,8 @@ IUTEST(math, Angle)
 	
 	// ctor
 	{
-		Angle(0.5f);
-		Angle( a );
+		Angle{0.5f};
+		Angle{ a };
 	}
 	
 	// 値を直接代入　あまり推奨しない

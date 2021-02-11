@@ -45,7 +45,6 @@ IUTEST(util, SafePtr)
 	
 	IUTEST_ASSERT_EQ(ptr.get(), nullptr);
 	IUTEST_ASSERT((nullptr==ptr));
-	IUTEST_ASSERT((false==ptr));
 	IUTEST_ASSERT(ptr.empty());
 	ptr.clear();
 
