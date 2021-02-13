@@ -116,10 +116,16 @@ public:
 	template <typename T>
 	T*  tryCast() const noexcept
 	{
+		if(m_typeId.empty()) return nullptr;
+		// constとvolatileは外せない
+		if(m_typeId.info().isConst() && !std::is_const<T>::value ) return nullptr;
+		if(m_typeId.info().isVolatile() && !std::is_volatile<T>::value ) return nullptr;
+
 		if( _castTest< std::is_const<T>::value >( MakeTypeId<T>() ) ){
 			return reinterpret_cast<T*>( _getVoidPtr() );
 		}
-		return 0;
+		// アップキャストを試みる
+		return m_typeId.info().upcast<T>(_getVoidPtr());
 	}
 	
 	/// 暗黙的キャスト（型が違ったらnullptr）

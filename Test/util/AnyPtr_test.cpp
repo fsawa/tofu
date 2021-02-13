@@ -17,6 +17,17 @@ namespace test
 {
 	struct A {};
 	class B {};
+
+	class B1 {};
+	class B2 : public B1 {};
+	class B3 : public B2 {};
+
+	//template class BaseTypeInfo<B3, B2>;
+	namespace hide
+	{
+		static tofu::BaseTypeSetter<B1, B2> x1;
+		static tofu::BaseTypeSetter<B2, B3> x2;
+	}
 }
 
 IUTEST(util, AnyPtr)
@@ -78,4 +89,30 @@ IUTEST(util, AnyPtr)
 	result = nullptr == ptr;
 	result = ptr != nullptr;
 	result = nullptr != ptr;
+
+	// アップキャスト
+	{
+		using namespace test;
+		B3 b3;
+
+		//tofu::GetTypeInfo<B3>().setBaseType<B2>();
+		//tofu::GetTypeInfo<B2>().setBaseType<B1>();
+
+		ptr = &b3;
+		IUTEST_ASSERT_EQ( static_cast<B3*>(&b3), ptr.tryCast<B3>() );
+		IUTEST_ASSERT_EQ( static_cast<B2*>(&b3), ptr.tryCast<B2>() );
+		IUTEST_ASSERT_EQ( static_cast<B1*>(&b3), ptr.tryCast<B1>() );
+		IUTEST_ASSERT_EQ( static_cast<B1*>(&b3), ptr.tryCast<const B1>() );
+		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<A>() );
+
+		const B3 const_b3;
+		ptr = &const_b3;
+		IUTEST_ASSERT_EQ( static_cast<const B3*>(&const_b3), ptr.tryCast<const B3>() );
+		IUTEST_ASSERT_EQ( static_cast<const B2*>(&const_b3), ptr.tryCast<const B2>() );
+		IUTEST_ASSERT_EQ( static_cast<const B1*>(&const_b3), ptr.tryCast<const B1>() );
+		// constは外せない
+		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B3>() );
+		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B2>() );
+		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B1>() );
+	}
 }

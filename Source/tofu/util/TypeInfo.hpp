@@ -26,6 +26,10 @@ class TypeInfo
 	typedef TypeInfo  self_type;
 	
 public:
+
+	using UpcastFunc = void* (*)(void*, const TypeInfo&);
+
+public:
 	
 	/// 型名取得
 	const char* getName() const noexcept { return m_name; }
@@ -47,6 +51,9 @@ public:
 	/// volatile修飾なしのTypeInfoを取得
 	const TypeInfo&  getRemoveVolatile() const noexcept  { return *m_removeVolatile; }
 	
+	/// CV修飾なしのTypeInfoを取得
+	const TypeInfo&  getRemoveCV() const noexcept  { return getRemoveConst().getRemoveVolatile(); }
+	
 	//------------------------------------------------------------------------------
 	
 	/// const修飾されているか
@@ -54,6 +61,62 @@ public:
 	
 	/// volatile修飾されているか
 	bool  isVolatile() const noexcept  { return m_isVolatile; }
+	
+	//------------------------------------------------------------------------------
+	
+	/// 同一判定
+	bool  operator==( const TypeInfo& rhs ) const noexcept  { return this == &rhs; }
+	
+	/// 非同一判定
+	bool  operator!=( const TypeInfo& rhs ) const noexcept  { return this != &rhs; }
+	
+	//------------------------------------------------------------------------------
+
+	// 指定したTypeInfoが基底クラスか
+	bool  isBaseType(const TypeInfo& info) const noexcept
+	{
+		// CVがついてたらNG
+		if(isConst() || isVolatile())
+		{
+			return getRemoveCV().isBaseType(info);
+		}
+
+		if(m_baseInfo)
+		{
+			// thisはCVなしなので、baseInfoにもCVがついていない想定
+			if(m_baseInfo == &info.getRemoveCV())
+			{
+				return true;
+			}
+			// 再帰チェック
+			return m_baseInfo->isBaseType(info);
+		}
+		return false;
+	}
+
+	// アップキャスト
+	template <typename BaseType>
+	BaseType*  upcast(const void* p) const noexcept
+	{
+		using base_type_no_cv = std::remove_cv<BaseType>::type;
+
+		// cvなしのTypeInfoで処理する
+		if(isConst() || isVolatile())
+		{
+			return getRemoveCV().upcast<BaseType>(p);
+		}
+		void* result = upcast(const_cast<void*>(p), TTypeInfo<base_type_no_cv>::Instance());
+		return static_cast<BaseType*>(result);
+	}
+	
+	// 指定のTypeInfoの型へアップキャスト
+	void*  upcast(void* p, const TypeInfo& target_type_info) const noexcept
+	{
+		if(m_upcastFunc){
+			return m_upcastFunc(p, target_type_info);
+		}
+		return nullptr;
+	}
 	
 protected:
 
@@ -70,6 +133,9 @@ protected:
 	TypeInfo*  m_removeConst = nullptr;
 	TypeInfo*  m_addVolatile = nullptr;
 	TypeInfo*  m_removeVolatile = nullptr;
+	
+	TypeInfo*  m_baseInfo = nullptr;
+	UpcastFunc m_upcastFunc = nullptr;
 	
 	bool m_isConst = false;
 	bool m_isVolatile = false;
@@ -104,6 +170,37 @@ public:
 	TTypeInfo() noexcept
 	{
 		_initTypeName(TOFU_FUNCTION_NAME);
+	}
+
+	// 基底クラス設定
+	template <typename BaseType>
+	void  setBaseType()
+	{
+		// BaseTypeはTの基底クラスでなければならない
+		static_assert(std::is_base_of<BaseType, T>::value == true);
+		// TもBaseTypeもCV修飾がついていたらNG
+		static_assert(std::is_const<T>::value == false);
+		static_assert(std::is_volatile<T>::value == false);
+		static_assert(std::is_const<BaseType>::value == false);
+		static_assert(std::is_volatile<BaseType>::value == false);
+
+		// 既に設定済みはNG
+		TOFU_ASSERT(m_baseInfo == nullptr);
+		m_baseInfo = &TTypeInfo<BaseType>::Instance();
+
+		// アップキャスト関数を設定
+		m_upcastFunc = [](void* p, const TypeInfo& target_type_info)
+		{
+			// pはTのポインタである前提で、BaseTypeにアップキャストする
+			BaseType* base = static_cast<BaseType*>( static_cast<T*>(p) );
+			// targetがBaseTypeだったらポインタを返す
+			if(target_type_info == TTypeInfo<BaseType>::Instance())
+			{
+				return static_cast<void*>(base);
+			}
+			// 違ったら、BaseTypeの基底クラスへのアップキャストを試みる
+			return TTypeInfo<BaseType>::Instance().upcast(base, target_type_info);
+		};
 	}
 
 private:
@@ -156,7 +253,7 @@ private:
 
 /// TypeInfo取得
 template <typename T>
-inline TypeInfo&  GetTypeInfo() noexcept
+inline TTypeInfo<T>&  GetTypeInfo() noexcept
 {
 	return TTypeInfo<T>::Instance();
 };
@@ -225,6 +322,18 @@ template <typename T>
 inline TypeId  MakeTypeId( T& ) noexcept
 {
 	return TypeId( &GetTypeInfo<T>() );
+};
+	
+//------------------------------------------------------------------------------
+
+template <typename Base, typename Derived>
+class BaseTypeSetter
+{
+public:
+	BaseTypeSetter()
+	{
+		GetTypeInfo<Derived>().setBaseType<Base>();
+	}
 };
 
 } // tofu

@@ -14,21 +14,21 @@
 // clang
 #if defined(__clang__)
 
-/// @ingroup compiler
-/// @brief	コンパイラを識別するマクロ
-#define TOFU_COMPILER_CLANG
+	/// @ingroup compiler
+	/// @brief	コンパイラを識別するマクロ
+	#define TOFU_COMPILER_CLANG
 
-/// @ingroup compiler
-/// @brief	ファイル名マクロ
-#define TOFU_FILE  __FILE__
+	/// @ingroup compiler
+	/// @brief	ファイル名マクロ
+	#define TOFU_FILE  __FILE__
 
-/// @ingroup compiler
-/// @brief	行番号を表すマクロ
-#define TOFU_LINE  __LINE__
+	/// @ingroup compiler
+	/// @brief	行番号を表すマクロ
+	#define TOFU_LINE  __LINE__
 
-/// @ingroup compiler
-/// @brief	関数のフルネームを表すマクロ
-#define TOFU_FUNCTION_NAME  __PRETTY_FUNCTION__
+	/// @ingroup compiler
+	/// @brief	関数のフルネームを表すマクロ
+	#define TOFU_FUNCTION_NAME  __PRETTY_FUNCTION__
 
 // Miscrosoft Visual C++
 #elif defined( _MSC_VER ) && defined(_WIN32)
