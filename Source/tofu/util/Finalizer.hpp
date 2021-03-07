@@ -45,45 +45,45 @@ public:
 	
 	/// destructor
 	/*virtual*/ ~Finalizer()
-		{
-			finalize();
-		}
+	{
+		finalize();
+	}
 	
 	//==============================
 	
 	/// deleteするインスタンスの登録
 	template <typename T>
 	T*  add( T* ptr )
-		{
-			addFunctor( Deleter<T>(ptr) );
-			return ptr;
-		}
+	{
+		addFunctor( Deleter<T>(ptr) );
+		return ptr;
+	}
 	
 	/// delete[]するインスタンスの登録
 	template <typename T>
 	T*  addArray( T* ptr )
-		{
-			addFunctor( ArrayDeleter<T>(ptr) );
-			return ptr;
-		}
+	{
+		addFunctor( ArrayDeleter<T>(ptr) );
+		return ptr;
+	}
 	
 	/// 実行する関数オブジェクトの登録
 	template <typename Functor>
 	void  addFunctor( const Functor& f )
-		{
-			// 登録と逆順で処理しやすいように前に追加
-			m_funcList.push_front(f);
-		}
+	{
+		// 登録と逆順で処理しやすいように前に追加
+		m_funcList.push_front(f);
+	}
 	
 	/// 終了処理を実行
 	void  finalize()
+	{
+		for (auto& func : m_funcList)
 		{
-			for (auto& func : m_funcList)
-			{
-				func();
-			}
-			m_funcList.clear();
+			func();
 		}
+		m_funcList.clear();
+	}
 	
 //**************************************************************
 //              : private
@@ -99,10 +99,10 @@ private:
 		explicit Deleter(T* ptr) : m_ptr(ptr) {}
 		
 		void operator()()
-			{
-				delete m_ptr;
-				m_ptr = nullptr;
-			}
+		{
+			delete m_ptr;
+			m_ptr = nullptr;
+		}
 	private:
 		T* m_ptr;
 	};
@@ -114,10 +114,10 @@ private:
 		explicit ArrayDeleter(T* ptr) : m_ptr(ptr) {}
 		
 		void operator()()
-			{
-				delete[] m_ptr;
-				m_ptr = nullptr;
-			}
+		{
+			delete[] m_ptr;
+			m_ptr = nullptr;
+		}
 	private:
 		T* m_ptr;
 	};

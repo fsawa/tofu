@@ -46,13 +46,14 @@ public:
 	const TypeInfo&  getRemoveConst() const noexcept  { return *m_removeConst; }
 	
 	/// volatile修飾ありのTypeInfoを取得
-	const TypeInfo&  getAddVolatile() const noexcept  { return *m_addVolatile; }
+	//const TypeInfo&  getAddVolatile() const noexcept  { return *m_addVolatile; }
 	
 	/// volatile修飾なしのTypeInfoを取得
-	const TypeInfo&  getRemoveVolatile() const noexcept  { return *m_removeVolatile; }
+	//const TypeInfo&  getRemoveVolatile() const noexcept  { return *m_removeVolatile; }
 	
 	/// CV修飾なしのTypeInfoを取得
-	const TypeInfo&  getRemoveCV() const noexcept  { return getRemoveConst().getRemoveVolatile(); }
+	//const TypeInfo&  getRemoveCV() const noexcept  { return getRemoveConst().getRemoveVolatile(); }
+	const TypeInfo&  getRemoveCV() const noexcept  { return getRemoveConst(); }
 	
 	//------------------------------------------------------------------------------
 	
@@ -60,7 +61,8 @@ public:
 	bool  isConst() const noexcept  { return m_isConst; }
 	
 	/// volatile修飾されているか
-	bool  isVolatile() const noexcept  { return m_isVolatile; }
+	//bool  isVolatile() const noexcept  { return m_isVolatile; }
+	bool  isVolatile() const noexcept  { return false; }
 	
 	//------------------------------------------------------------------------------
 	
@@ -131,14 +133,14 @@ protected:
 	
 	TypeInfo*  m_addConst = nullptr;
 	TypeInfo*  m_removeConst = nullptr;
-	TypeInfo*  m_addVolatile = nullptr;
-	TypeInfo*  m_removeVolatile = nullptr;
+	//TypeInfo*  m_addVolatile = nullptr;
+	//TypeInfo*  m_removeVolatile = nullptr;
 	
 	TypeInfo*  m_baseInfo = nullptr;
 	UpcastFunc m_upcastFunc = nullptr;
 	
 	bool m_isConst = false;
-	bool m_isVolatile = false;
+	//bool m_isVolatile = false;
 };
 // << TypeInfo
 
@@ -150,6 +152,9 @@ template <typename T>
 class TTypeInfo : public TypeInfo
 {
 	typedef TTypeInfo  self_type;
+	
+	// volatileは対応しない
+	static_assert(std::is_volatile<T>::value == false);
 	
 public:
 	
@@ -213,7 +218,7 @@ private:
 		m_isInitialized = true;
 
 		m_isConst = std::is_const<T>::value;
-		m_isVolatile = std::is_volatile<T>::value;
+		//m_isVolatile = std::is_volatile<T>::value;
 
 		m_addConst = this;
 		if (!std::is_const<T>::value) {
@@ -225,6 +230,7 @@ private:
 			m_removeConst = &TTypeInfo< typename std::remove_const<T>::type >::Instance();
 		}
 
+#if 0
 		m_addVolatile = this;
 		if (!std::is_volatile<T>::value) {
 			m_addVolatile = &TTypeInfo< typename std::add_volatile<T>::type >::Instance();
@@ -234,6 +240,7 @@ private:
 		if (std::is_volatile<T>::value) {
 			m_removeVolatile = &TTypeInfo< typename std::remove_volatile<T>::type >::Instance();
 		}
+#endif
 	}
 
 	template <int N>
@@ -293,10 +300,10 @@ public:
 	TypeId  makeRemoveConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getRemoveConst() ) : TypeId(); }
 	
 	/// volatile修飾ありのTypeId取得
-	TypeId  makeAddVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getAddVolatile() ) : TypeId(); }
+	//TypeId  makeAddVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getAddVolatile() ) : TypeId(); }
 	
 	/// volatile修飾なしのTypeId取得
-	TypeId  makeRemoveVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getRemoveVolatile() ) : TypeId(); }
+	//TypeId  makeRemoveVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getRemoveVolatile() ) : TypeId(); }
 	
 	/// 同一判定
 	bool  operator==( const TypeId& rhs ) const noexcept  { return m_pTypeInfo == rhs.m_pTypeInfo; }
