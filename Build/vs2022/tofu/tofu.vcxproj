@@ -59,11 +59,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IncludePath>C:\Project\tofu\Source;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDIr)..\..\Source;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IncludePath>C:\Project\tofu\Source;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDIr)..\..\Source;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
