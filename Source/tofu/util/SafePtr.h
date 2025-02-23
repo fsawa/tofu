@@ -99,7 +99,7 @@ public:
 	
 	using value_type = T; ///< 扱う型
 	using pointer_type = T*; ///< 扱うポインタの型
-	using reference_type = typename detail_safe_ptr::ptr_traits<T>::reference; /// <扱う型の参照型
+	using reference_type = typename detail_safe_ptr::ptr_traits<T>::reference; ///< 扱う型の参照型
 	
 	using     add_const_type = SafePtr<typename std::add_const<T>::type    >; ///< TがconstのPtrクラスへキャスト
 	using  remove_const_type = SafePtr<typename std::remove_const<T>::type >; ///< TがconstじゃないPtrクラスへキャスト
