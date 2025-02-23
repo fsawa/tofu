@@ -182,6 +182,9 @@ public:
 	
 	/// 減算
 	self_type& operator-=( int n ) { null_assert(); m_p -= n; return *this; }
+	
+	/// 三方比較演算子
+	auto operator<=>(const self_type& rhs) const noexcept { return m_p <=> rhs.m_p; }
 
 	//------------------------------------------------------------------------------
 	// 特種な拡張
