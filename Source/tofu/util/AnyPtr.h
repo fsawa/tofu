@@ -91,7 +91,7 @@ public:
 	}
 	
 	/// クリア
-	void  clear() noexcept
+	void  Clear() noexcept
 	{
 		m_ptr = nullptr;
 		m_typeId.clear();

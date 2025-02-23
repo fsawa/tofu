@@ -130,7 +130,7 @@ public:
 	}
 	
 	/// クリア
-	void  clear() noexcept
+	void  Clear() noexcept
 	{
 		m_ptr = nullptr;
 		m_typeId.clear();
@@ -201,10 +201,10 @@ public:
 	//------------------------------------------------------------------------------
 	
 	/// delete
-	void  del()
+	void  Delete()
 	{
 		delete m_ptr;
-		clear();
+		Clear();
 	}
 	
 //**************************************************************

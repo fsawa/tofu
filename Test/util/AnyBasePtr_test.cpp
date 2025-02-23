@@ -68,8 +68,8 @@ IUTEST(util, AnyBasePtr)
 		IUTEST_ASSERT_EQ( p6.get(), &ab );
 		IUTEST_ASSERT_TRUE( p6.type() == tofu::MakeTypeId<AB>() );
 		
-		// clear
-		p6.clear();
+		// Clear
+		p6.Clear();
 		IUTEST_ASSERT_TRUE( p6.get() == nullptr );
 		IUTEST_ASSERT_TRUE( p6.type() == tofu::TypeId() );
 		
@@ -121,9 +121,9 @@ IUTEST(util, AnyBasePtr)
 		p5->a = 1;
 		IUTEST_ASSERT_EQ( p5->a, (*p10).a );
 		
-		// del
+		// Delete
 		tofu::AnyBasePtr<A>  p20( new AB() );
-		p20.del();
+		p20.Delete();
 		
 		//------------------------------------------------------------------------------
 		

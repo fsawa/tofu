@@ -191,20 +191,20 @@ public:
 	//------------------------------------------------------------------------------
 	
 	/// クリア
-	void  clear() noexcept { m_p = nullptr; }
+	void  Clear() noexcept { m_p = nullptr; }
 	
 	/// deleteを実行
-	void  del()
+	void  Delete()
 	{
 		delete m_p;
-		clear();
+		Clear();
 	}
 	
 	/// delete[]を実行（本当に配列かどうかは、使う側の責任）
-	void  delArray()
+	void  DeleteArray()
 	{
 		delete[] m_p;
-		clear();
+		Clear();
 	}
 	
 // VARIABLE
@@ -266,6 +266,11 @@ inline bool operator >(const SafePtr<T>& a, const SafePtr<U>& b)
 template <typename T, typename U>
 inline bool operator >=(const SafePtr<T>& a, const SafePtr<U>& b)
 	{ return a.m_p >= b.m_p; }
+
+/// 比較 <=>
+template <typename T, typename U>
+inline auto operator <=>(const SafePtr<T>&a, const SafePtr<U>&b)
+	{ return a.m_p <=> b.m_p; }
 
 //------------------------------------------------------------------------------
 // nullptrとの比較

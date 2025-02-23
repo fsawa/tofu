@@ -43,7 +43,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT(ptr.empty());
 	ptr.type();
 	ptr.makeAddConst();
-	ptr.clear();
+	ptr.Clear();
 
 	ptr = &a;
 	IUTEST_ASSERT_EQ(ptr.get(), &a);
@@ -53,7 +53,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT(!ptr.empty());
 	ptr.type();
 	IUTEST_ASSERT_EQ(ptr.makeAddConst().type().info().isConst(), true);
-	//ptr.clear();
+	//ptr.Clear();
 
 	ptr = nullptr;
 	ptr = &a;

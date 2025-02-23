@@ -46,13 +46,13 @@ IUTEST(util, SafePtr)
 	IUTEST_ASSERT_EQ(ptr.get(), nullptr);
 	IUTEST_ASSERT((nullptr==ptr));
 	IUTEST_ASSERT(ptr.empty());
-	ptr.clear();
+	ptr.Clear();
 
 	ptr = a;
 	IUTEST_ASSERT_EQ(ptr.get(), a);
 	IUTEST_ASSERT((ptr==a));
 	IUTEST_ASSERT(!ptr.empty());
-	//ptr.clear();
+	//ptr.Clear();
 	
 	ptr->func();
 	(*ptr).func();
@@ -81,7 +81,7 @@ IUTEST(util, SafePtr)
 	IUTEST_ASSERT(( ptr != nullptr ));
 	IUTEST_ASSERT(( nullptr != ptr ));
 	
-	ptr.clear();
+	ptr.Clear();
 	IUTEST_ASSERT(( ptr == nullptr ));
 	IUTEST_ASSERT(( nullptr == ptr ));
 
