@@ -9,7 +9,7 @@
 */
 //------------------------------------------------------------------------------
 
-#include <tofu/math/Angle.hpp>
+#include <tofu/math/Angle.h>
 
 #include <type_traits>
 

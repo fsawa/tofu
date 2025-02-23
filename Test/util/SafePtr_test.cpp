@@ -8,7 +8,7 @@
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
-#include <tofu/util/SafePtr.hpp>
+#include <tofu/util/SafePtr.h>
 
 #include <iostream>
 #include <iutest.hpp>

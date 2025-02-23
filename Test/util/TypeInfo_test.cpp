@@ -8,7 +8,7 @@
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
-#include <tofu/util/TypeInfo.hpp>
+#include <tofu/util/TypeInfo.h>
 
 #include <iostream>
 #include <iutest.hpp>

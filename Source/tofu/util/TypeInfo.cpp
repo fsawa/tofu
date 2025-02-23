@@ -10,8 +10,8 @@
 */
 //------------------------------------------------------------------------------
 
-#include <tofu.hpp>
-#include <tofu/util/TypeInfo.hpp>
+#include <tofu.h>
+#include <tofu/util/TypeInfo.h>
 
 // 文字列のプリントテスト
 //#define TEST_PRINT

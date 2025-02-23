@@ -88,26 +88,26 @@
     <ClCompile Include="..\..\..\Source\tofu\util\TypeInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Source\tofu.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\base\Assert.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\base\BaseTypes.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\base\countof.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\config\Compiler.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\config\Config.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\config\Platform.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\math\Angle.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\math\MathCommon.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\math\Nearly.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\AnyBasePtr.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\AnyPtr.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\DisallowCopy.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\Finalizer.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\LooseSingleton.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\SafePtr.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\Singleton.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\SingletonUtil.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\SingletonPolicy.hpp" />
-    <ClInclude Include="..\..\..\Source\tofu\util\TypeInfo.hpp" />
+    <ClInclude Include="..\..\..\Source\tofu.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\Assert.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\BaseTypes.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\countof.h" />
+    <ClInclude Include="..\..\..\Source\tofu\config\Compiler.h" />
+    <ClInclude Include="..\..\..\Source\tofu\config\Config.h" />
+    <ClInclude Include="..\..\..\Source\tofu\config\Platform.h" />
+    <ClInclude Include="..\..\..\Source\tofu\math\Angle.h" />
+    <ClInclude Include="..\..\..\Source\tofu\math\MathCommon.h" />
+    <ClInclude Include="..\..\..\Source\tofu\math\Nearly.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\AnyBasePtr.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\AnyPtr.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\DisallowCopy.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\Finalizer.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\LooseSingleton.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\SafePtr.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\Singleton.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\SingletonUtil.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\SingletonPolicy.h" />
+    <ClInclude Include="..\..\..\Source\tofu\util\TypeInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

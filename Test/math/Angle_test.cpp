@@ -8,7 +8,7 @@
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
-#include <tofu/math/Angle.hpp>
+#include <tofu/math/Angle.h>
 
 #include <iostream>
 #include <cfloat>

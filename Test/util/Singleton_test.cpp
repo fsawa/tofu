@@ -8,8 +8,8 @@
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
-#include <tofu/util/Singleton.hpp>
-#include <tofu/util/LooseSingleton.hpp>
+#include <tofu/util/Singleton.h>
+#include <tofu/util/LooseSingleton.h>
 
 #include <iostream>
 #include <iutest.hpp>

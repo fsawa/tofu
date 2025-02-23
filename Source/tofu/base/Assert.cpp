@@ -14,7 +14,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include <tofu.hpp>
+#include <tofu.h>
 
 #include <cstdarg>
 #include <cstdio>

@@ -8,7 +8,7 @@
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
-#include <tofu/util/AnyPtr.hpp>
+#include <tofu/util/AnyPtr.h>
 
 #include <iostream>
 #include <iutest.hpp>
