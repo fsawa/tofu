@@ -19,7 +19,7 @@
 /// @ingroup assert
 /// @brief 配列サイズが意図したものかチェックする静的アサート
 #define TOFU_ARRAY_SIZE_ASSERT( array, len ) \
-	static_assert( tofu::countof(array) == len, "bad array size" )
+	static_assert( std::size(array) == len, "bad array size" )
 
 //------------------------------------------------------------------------------
 // 動的アサート

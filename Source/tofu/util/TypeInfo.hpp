@@ -16,6 +16,9 @@
 #include <type_traits>
 
 namespace tofu {
+	
+// 前方宣言
+template <typename T> class TTypeInfo;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief      型情報クラス
