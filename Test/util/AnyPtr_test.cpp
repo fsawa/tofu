@@ -75,7 +75,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(ptr, ptr.makeAddConst());
 	
 	// ポインタ比較
-	bool result = false;
+	[[maybe_unused]] bool result = false;
 	tofu::AnyPtr ptr2 = &b;
 
 	result = ptr == ptr2;
