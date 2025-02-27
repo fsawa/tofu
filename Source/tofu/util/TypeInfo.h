@@ -18,7 +18,7 @@
 namespace tofu {
 	
 // 前方宣言
-template <typename T> class TTypeInfo;
+template <typename T> class TypeInfoOf;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief      型情報クラス
@@ -26,7 +26,7 @@ template <typename T> class TTypeInfo;
 ////////////////////////////////////////////////////////////////////////////////
 class TypeInfo
 {
-	typedef TypeInfo  self_type;
+	using self_t = TypeInfo;
 	
 public:
 
@@ -43,10 +43,10 @@ public:
 	//------------------------------------------------------------------------------
 	
 	/// const修飾ありのTypeInfoを取得
-	const TypeInfo&  getAddConst() const noexcept  { return *m_addConst; }
+	virtual const TypeInfo&  getAddConst() const noexcept = 0;
 	
 	/// const修飾なしのTypeInfoを取得
-	const TypeInfo&  getRemoveConst() const noexcept  { return *m_removeConst; }
+	virtual const TypeInfo&  getRemoveConst() const noexcept = 0;
 	
 	/// volatile修飾ありのTypeInfoを取得
 	//const TypeInfo&  getAddVolatile() const noexcept  { return *m_addVolatile; }
@@ -55,17 +55,15 @@ public:
 	//const TypeInfo&  getRemoveVolatile() const noexcept  { return *m_removeVolatile; }
 	
 	/// CV修飾なしのTypeInfoを取得
-	//const TypeInfo&  getRemoveCV() const noexcept  { return getRemoveConst().getRemoveVolatile(); }
-	const TypeInfo&  getRemoveCV() const noexcept  { return getRemoveConst(); }
+	virtual const TypeInfo& getRemoveCV() const noexcept = 0;
 	
 	//------------------------------------------------------------------------------
 	
 	/// const修飾されているか
-	bool  isConst() const noexcept  { return m_isConst; }
+	virtual bool  isConst() const noexcept = 0;
 	
 	/// volatile修飾されているか
-	//bool  isVolatile() const noexcept  { return m_isVolatile; }
-	bool  isVolatile() const noexcept  { return false; }
+	virtual bool  isVolatile() const noexcept = 0;
 	
 	//------------------------------------------------------------------------------
 	
@@ -110,7 +108,7 @@ public:
 		{
 			return getRemoveCV().upcast<BaseType>(p);
 		}
-		void* result = upcast(const_cast<void*>(p), TTypeInfo<base_type_no_cv>::Instance());
+		void* result = upcast(const_cast<void*>(p), TypeInfoOf<base_type_no_cv>::Instance());
 		return static_cast<BaseType*>(result);
 	}
 	
@@ -126,7 +124,7 @@ public:
 protected:
 
 	TypeInfo() noexcept;
-	//virtual ~TypeInfo();
+	virtual ~TypeInfo() = default;
 	
 	static const char* ParseTypeName( char* str, const char* src, int len ) noexcept;
 	
@@ -134,16 +132,8 @@ protected:
 	
 	const char*  m_name = "";
 	
-	TypeInfo*  m_addConst = nullptr;
-	TypeInfo*  m_removeConst = nullptr;
-	//TypeInfo*  m_addVolatile = nullptr;
-	//TypeInfo*  m_removeVolatile = nullptr;
-	
-	TypeInfo*  m_baseInfo = nullptr;
+	const TypeInfo*  m_baseInfo = nullptr;
 	UpcastFunc m_upcastFunc = nullptr;
-	
-	bool m_isConst = false;
-	//bool m_isVolatile = false;
 };
 // << TypeInfo
 
@@ -152,34 +142,48 @@ protected:
 /// 
 ////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-class TTypeInfo : public TypeInfo
+class TypeInfoOf : public TypeInfo
 {
-	typedef TTypeInfo  self_type;
-	
-	// volatileは対応しない
-	static_assert(std::is_volatile<T>::value == false);
+	using self_t = TypeInfoOf;
 	
 public:
 	
-	typedef T  type;
+	using type = T;
 	
 	//------------------------------------------------------------------------------
 	
 	/// インスタンス取得
-	static self_type&  Instance() noexcept
+	static self_t&  Instance() noexcept
 	{
-		static self_type  sInstance;
-		sInstance._initialize();
+		static self_t  sInstance;
 		return sInstance;
 	}
 	
 	//------------------------------------------------------------------------------
 	
-	TTypeInfo() noexcept
+	TypeInfoOf() noexcept
 	{
 		_initTypeName(TOFU_FUNCTION_NAME);
 	}
+	virtual ~TypeInfoOf() = default;
+	
+	/// const修飾ありのTypeInfoを取得
+	const TypeInfo&  getAddConst() const noexcept override { return TypeInfoOf<std::add_const_t<T>>::Instance(); }
+	
+	/// const修飾なしのTypeInfoを取得
+	const TypeInfo&  getRemoveConst() const noexcept override { return TypeInfoOf<std::remove_const_t<T>>::Instance(); }
+	
+	/// CV修飾なしのTypeInfoを取得
+	const TypeInfo& getRemoveCV() const noexcept override { return TypeInfoOf<std::remove_cv_t<T>>::Instance(); }
 
+	/// const修飾されているか
+	bool  isConst() const noexcept override { return std::is_const_v<T>; }
+	
+	/// volatile修飾されているか
+	bool  isVolatile() const noexcept override { return std::is_volatile_v<T>; }
+	
+	//------------------------------------------------------------------------------
+	// 
 	// 基底クラス設定
 	template <typename BaseType>
 	void  setBaseType()
@@ -194,7 +198,7 @@ public:
 
 		// 既に設定済みはNG
 		TOFU_ASSERT(m_baseInfo == nullptr);
-		m_baseInfo = &TTypeInfo<BaseType>::Instance();
+		m_baseInfo = &TypeInfoOf<BaseType>::Instance();
 
 		// アップキャスト関数を設定
 		m_upcastFunc = [](void* p, const TypeInfo& target_type_info)
@@ -202,50 +206,17 @@ public:
 			// pはTのポインタである前提で、BaseTypeにアップキャストする
 			BaseType* base = static_cast<BaseType*>( static_cast<T*>(p) );
 			// targetがBaseTypeだったらポインタを返す
-			if(target_type_info == TTypeInfo<BaseType>::Instance())
+			if(target_type_info == TypeInfoOf<BaseType>::Instance())
 			{
 				return static_cast<void*>(base);
 			}
 			// 違ったら、BaseTypeの基底クラスへのアップキャストを試みる
-			return TTypeInfo<BaseType>::Instance().upcast(base, target_type_info);
+			return TypeInfoOf<BaseType>::Instance().upcast(base, target_type_info);
 		};
 	}
 
 private:
 	
-	void  _initialize() noexcept
-	{
-		if (m_isInitialized) {
-			return;
-		}
-		m_isInitialized = true;
-
-		m_isConst = std::is_const<T>::value;
-		//m_isVolatile = std::is_volatile<T>::value;
-
-		m_addConst = this;
-		if (!std::is_const<T>::value) {
-			m_addConst = &TTypeInfo< typename std::add_const<T>::type >::Instance();
-		}
-
-		m_removeConst = this;
-		if (std::is_const<T>::value) {
-			m_removeConst = &TTypeInfo< typename std::remove_const<T>::type >::Instance();
-		}
-
-#if 0
-		m_addVolatile = this;
-		if (!std::is_volatile<T>::value) {
-			m_addVolatile = &TTypeInfo< typename std::add_volatile<T>::type >::Instance();
-		}
-
-		m_removeVolatile = this;
-		if (std::is_volatile<T>::value) {
-			m_removeVolatile = &TTypeInfo< typename std::remove_volatile<T>::type >::Instance();
-		}
-#endif
-	}
-
 	template <int N>
 	void  _initTypeName(const char (&src)[N] ) noexcept
 	{
@@ -254,18 +225,16 @@ private:
 	}
 
 private:
-	
-	bool  m_isInitialized = false;
 };
-// << TTypeInfo
+// << TypeInfoOf
 
 //------------------------------------------------------------------------------
 
 /// TypeInfo取得
 template <typename T>
-inline TTypeInfo<T>&  GetTypeInfo() noexcept
+inline TypeInfoOf<T>&  GetTypeInfo() noexcept
 {
-	return TTypeInfo<T>::Instance();
+	return TypeInfoOf<T>::Instance();
 };
 
 ////////////////////////////////////////////////////////////////////////////////
