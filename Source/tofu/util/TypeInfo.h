@@ -49,11 +49,14 @@ public:
 	virtual const TypeInfo&  getRemoveConst() const noexcept = 0;
 	
 	/// volatile修飾ありのTypeInfoを取得
-	//const TypeInfo&  getAddVolatile() const noexcept  { return *m_addVolatile; }
+	virtual const TypeInfo&  getAddVolatile() const noexcept = 0;
 	
 	/// volatile修飾なしのTypeInfoを取得
-	//const TypeInfo&  getRemoveVolatile() const noexcept  { return *m_removeVolatile; }
+	virtual const TypeInfo&  getRemoveVolatile() const noexcept = 0;
 	
+	/// CV修飾ありのTypeInfoを取得
+	virtual const TypeInfo& getAddCV() const noexcept = 0;
+
 	/// CV修飾なしのTypeInfoを取得
 	virtual const TypeInfo& getRemoveCV() const noexcept = 0;
 	
@@ -173,6 +176,15 @@ public:
 	/// const修飾なしのTypeInfoを取得
 	const TypeInfo&  getRemoveConst() const noexcept override { return TypeInfoOf<std::remove_const_t<T>>::Instance(); }
 	
+	/// volatile修飾ありのTypeInfoを取得
+	const TypeInfo& getAddVolatile() const noexcept { return TypeInfoOf<std::add_volatile_t<T>>::Instance(); }
+	
+	/// volatile修飾なしのTypeInfoを取得
+	const TypeInfo& getRemoveVolatile() const noexcept { return TypeInfoOf<std::remove_volatile_t<T>>::Instance(); }
+	
+	/// CV修飾ありのTypeInfoを取得
+	const TypeInfo& getAddCV() const noexcept override { return TypeInfoOf<std::add_cv_t<T>>::Instance(); }
+
 	/// CV修飾なしのTypeInfoを取得
 	const TypeInfo& getRemoveCV() const noexcept override { return TypeInfoOf<std::remove_cv_t<T>>::Instance(); }
 
