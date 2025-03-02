@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tofu", "tofu\tofu.vcxproj", "{45ABE17F-63BB-423B-865B-E30A23ABD4DB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tofu_test", "tofu_test\tofu_test.vcxproj", "{598575B2-E436-4E3A-83AA-85DFE5BB252E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{45ABE17F-63BB-423B-865B-E30A23ABD4DB} = {45ABE17F-63BB-423B-865B-E30A23ABD4DB}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
