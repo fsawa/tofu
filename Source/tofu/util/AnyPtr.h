@@ -118,8 +118,8 @@ public:
 	{
 		if(m_typeId.empty()) return nullptr;
 		// constとvolatileは外せない
-		if(m_typeId.info().isConst() && !std::is_const<T>::value ) return nullptr;
-		if(m_typeId.info().isVolatile() && !std::is_volatile<T>::value ) return nullptr;
+		if(m_typeId.info().isConst() && !std::is_const_v<T> ) return nullptr;
+		if(m_typeId.info().isVolatile() && !std::is_volatile_v<T> ) return nullptr;
 
 		if( _castTest< std::is_const<T>::value >( MakeTypeId<T>() ) ){
 			return reinterpret_cast<T*>( _getVoidPtr() );
