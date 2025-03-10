@@ -26,7 +26,7 @@ namespace mpl {
 template <size_t N>
 struct String
 {
-	static constexpr size_t Length = N;
+	static constexpr size_t Length() { return N;}
 	static constexpr size_t BufferSize = std::max<size_t>(N,1);
 	
 	char data[BufferSize] = {};
@@ -62,16 +62,32 @@ struct String
 	template <size_t N1, size_t N2>
 	consteval explicit String(const String<N1> src1, const String<N2> src2)
 	{
-		static_assert(N == src1.Length + src2.Length, "Length is not match.");
+		static_assert(N == src1.Length() + src2.Length(), "Length is not match.");
 		size_t dst = 0;
-		for (size_t i = 0; i < src1.Length; ++i)
+		for (size_t i = 0; i < src1.Length(); ++i)
 		{
-			data[dst++] = src1.data[i];
+			data[dst++] = src1[i];
 		}
-		for (size_t i = 0; i < src2.Length; ++i)
+		for (size_t i = 0; i < src2.Length(); ++i)
 		{
-			data[dst++] = src1.data[i];
+			data[dst++] = src1[i];
 		}
+	}
+
+	// 部分文字列取得
+	template <size_t Pos, size_t Count = std::string_view::npos>
+	consteval auto substr() const
+	{
+		String<std::min(Count, Length() - Pos)> dst;
+		for(size_t i=0; i<dst.Length(); ++i)
+		{
+			dst[i] = data[Pos + i];
+		}
+		return dst;
+	}
+	
+	constexpr std::string_view view() const {
+		return std::string_view(data, N);
 	}
 
 	constexpr explicit operator std::string() const {
@@ -105,8 +121,9 @@ String(const String<N1>, const String<N2>) -> String<N1 + N2>;
 template <size_t N>
 struct NullTerminatedString
 {
-	static constexpr size_t Length = N;
+	static constexpr size_t Length() { return N; }
 	static constexpr size_t BufferSize = N+1;
+
 	char data[BufferSize] = {};
 
 	NullTerminatedString() = default;
@@ -125,9 +142,9 @@ struct NullTerminatedString
 	template <size_t N1>
 	consteval explicit NullTerminatedString(const String<N1> src1)
 	{
-		static_assert(Length == src1.Length, "Length is not match.");
+		static_assert(Length() == src1.Length(), "Length is not match.");
 		size_t dst = 0;
-		for (size_t i = 0; i < src1.Length; ++i)
+		for (size_t i = 0; i < src1.Length(); ++i)
 		{
 			data[dst++] = src1.data[i];
 		}
