@@ -1,7 +1,7 @@
-//------------------------------------------------------------------------------
+ï»¿//------------------------------------------------------------------------------
 /**
  * @file    AnyBasePtr_test.cpp
- * @brief   AnyBasePtrƒeƒXƒg
+ * @brief   AnyBasePtrãƒ†ã‚¹ãƒˆ
  * @author  y.fujisawa
  * @par     copyright
  * Copyright (C) 2020 Yasuhito Fujisawa\n
@@ -45,7 +45,7 @@ IUTEST(util, AnyBasePtr)
 	AB ab;
 	
 	{
-		// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+		// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 		tofu::AnyBasePtr<A>  p1;
 		tofu::AnyBasePtr<A>  p2( p1 );
 		tofu::AnyBasePtr<A>  p3( nullptr );
@@ -53,7 +53,7 @@ IUTEST(util, AnyBasePtr)
 		tofu::AnyBasePtr<A>  p5( &ab );
 		tofu::AnyBasePtr<A>  p6( p5.get(), p5.type() );
 		
-		// ƒRƒs[
+		// ã‚³ãƒ”ãƒ¼
 		p2 = p1;
 		p3 = nullptr;
 		p4 = &a;
@@ -79,7 +79,7 @@ IUTEST(util, AnyBasePtr)
 		//p1.null_assert(); // ng
 		p4.null_assert(); // ok
 		
-		// ƒLƒƒƒXƒg
+		// ã‚­ãƒ£ã‚¹ãƒˆ
 		{
 			A* p = p5;
 			IUTEST_ASSERT_EQ( p, &ab );
@@ -97,7 +97,7 @@ IUTEST(util, AnyBasePtr)
 			IUTEST_ASSERT_EQ( p, &ab );
 		}
 		
-		// boolƒLƒƒƒXƒg
+		// boolã‚­ãƒ£ã‚¹ãƒˆ
 		IUTEST_ASSERT_FALSE( p1 );
 		IUTEST_ASSERT_TRUE( p5 );
 		
@@ -115,9 +115,9 @@ IUTEST(util, AnyBasePtr)
 		
 		// to const
 		tofu::AnyBasePtr<const A>  p11( p5 );
-		//p11 = p5; // ãŽè‚­‚¢‚Á‚Ä‚È‚¢
+		//p11 = p5; // ä¸Šæ‰‹ãã„ã£ã¦ãªã„
 		
-		// ‰‰ŽZŽq
+		// æ¼”ç®—å­
 		p5->a = 1;
 		IUTEST_ASSERT_EQ( p5->a, (*p10).a );
 		
@@ -127,7 +127,7 @@ IUTEST(util, AnyBasePtr)
 		
 		//------------------------------------------------------------------------------
 		
-		// ”äŠr AnyBasePtr<T>“¯Žm
+		// æ¯”è¼ƒ AnyBasePtr<T>åŒå£«
 		{
 			AB ab_array[2];
 			tofu::AnyBasePtr<A>  p100( ab_array + 0 );
@@ -165,7 +165,7 @@ IUTEST(util, AnyBasePtr)
 			IUTEST_ASSERT_TRUE ( p100 >= p300 );
 			IUTEST_ASSERT_TRUE ( p100 >= p400 );
 		}
-		// ”äŠr nullptr ‚Æ
+		// æ¯”è¼ƒ nullptr ã¨
 		{
 			// ==
 			IUTEST_ASSERT_FALSE( p5 == nullptr ); // 0 == null
@@ -186,72 +186,72 @@ IUTEST(util, AnyBasePtr)
 	
 	IUTEST_ASSERT_TRUE( tofu::MakeTypeId<AB>() == p1.type() );
 	
-	// cast Šî’ê
+	// cast åŸºåº•
 	p1 = &a;
-	IUTEST_ASSERT_TRUE( &a == p1.cast<A>() ); // “¯ˆê‚ÌŒ^‚ÍOK
-	IUTEST_ASSERT_TRUE( &a == p1.cast<const A>() ); // const¸Ši‚ÍOK
-//	IUTEST_ASSERT_TRUE( nullptr == p1.cast<B>() ); // •Ê‚ÌŒ^‚ÍNG, “à•”‚Ìassert‚Éˆø‚Á‚©‚©‚é
+	IUTEST_ASSERT_TRUE( &a == p1.cast<A>() ); // åŒä¸€ã®åž‹ã¯OK
+	IUTEST_ASSERT_TRUE( &a == p1.cast<const A>() ); // constæ˜‡æ ¼ã¯OK
+//	IUTEST_ASSERT_TRUE( nullptr == p1.cast<B>() ); // åˆ¥ã®åž‹ã¯NG, å†…éƒ¨ã®assertã«å¼•ã£ã‹ã‹ã‚‹
 	
-	IUTEST_ASSERT_TRUE( &a == p1.tryCast<A>() ); // “¯ˆê‚ÌŒ^‚ÍOK
-	IUTEST_ASSERT_TRUE( &a == p1.tryCast<const A>() ); // const¸Ši‚ÍOK
-//	IUTEST_ASSERT_TRUE( nullptr == p1.tryCast<B>() ); // •Ê‚ÌŒ^‚ÍNG
+	IUTEST_ASSERT_TRUE( &a == p1.tryCast<A>() ); // åŒä¸€ã®åž‹ã¯OK
+	IUTEST_ASSERT_TRUE( &a == p1.tryCast<const A>() ); // constæ˜‡æ ¼ã¯OK
+//	IUTEST_ASSERT_TRUE( nullptr == p1.tryCast<B>() ); // åˆ¥ã®åž‹ã¯NG
 	
-	// cast ”h¶
+	// cast æ´¾ç”Ÿ
 	p1 = &ab;
-	IUTEST_ASSERT_TRUE( &ab == p1.cast<A>() ); // Šî’êƒNƒ‰ƒX‚Ö‚ÌƒLƒƒƒXƒg
-	IUTEST_ASSERT_TRUE( &ab == p1.cast<const A>() ); // constŠî’êƒNƒ‰ƒX‚Ö‚ÌƒLƒƒƒXƒg
-	IUTEST_ASSERT_TRUE( &ab == p1.cast<AB>() ); // “¯ˆê‚ÌŒ^‚ÍOK
-	IUTEST_ASSERT_TRUE( &ab == p1.cast<const AB>() ); // const¸Ši‚ÍOK
-//	IUTEST_ASSERT_TRUE( nullptr == p1.cast<B>() ); // •Ê‚ÌŒ^‚ÍNG, ƒRƒ“ƒpƒCƒ‹ƒGƒ‰[
+	IUTEST_ASSERT_TRUE( &ab == p1.cast<A>() ); // åŸºåº•ã‚¯ãƒ©ã‚¹ã¸ã®ã‚­ãƒ£ã‚¹ãƒˆ
+	IUTEST_ASSERT_TRUE( &ab == p1.cast<const A>() ); // conståŸºåº•ã‚¯ãƒ©ã‚¹ã¸ã®ã‚­ãƒ£ã‚¹ãƒˆ
+	IUTEST_ASSERT_TRUE( &ab == p1.cast<AB>() ); // åŒä¸€ã®åž‹ã¯OK
+	IUTEST_ASSERT_TRUE( &ab == p1.cast<const AB>() ); // constæ˜‡æ ¼ã¯OK
+//	IUTEST_ASSERT_TRUE( nullptr == p1.cast<B>() ); // åˆ¥ã®åž‹ã¯NG, ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚¨ãƒ©ãƒ¼
 	
 	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<A>() ); // 
 	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<const A>() ); // 
-	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<AB>() ); // “¯ˆê‚ÌŒ^‚ÍOK
-	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<const AB>() ); // const¸Ši‚ÍOK
-//	IUTEST_ASSERT_TRUE( nullptr == p1.tryCast<B>() ); // •Ê‚ÌŒ^‚ÍNG, ƒRƒ“ƒpƒCƒ‹ƒGƒ‰[
+	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<AB>() ); // åŒä¸€ã®åž‹ã¯OK
+	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<const AB>() ); // constæ˜‡æ ¼ã¯OK
+//	IUTEST_ASSERT_TRUE( nullptr == p1.tryCast<B>() ); // åˆ¥ã®åž‹ã¯NG, ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚¨ãƒ©ãƒ¼
 	
-	IUTEST_ASSERT_TRUE( &ab == (A*)(p1) ); // Šî’êƒNƒ‰ƒX‚Ö‚ÌƒLƒƒƒXƒg‰‰ŽZ‚ÍOK
-	IUTEST_ASSERT_TRUE( &ab == (const A*)(p1) ); // Šî’êƒNƒ‰ƒX‚Ö‚ÌƒLƒƒƒXƒg‰‰ŽZ‚ÍOK
+	IUTEST_ASSERT_TRUE( &ab == (A*)(p1) ); // åŸºåº•ã‚¯ãƒ©ã‚¹ã¸ã®ã‚­ãƒ£ã‚¹ãƒˆæ¼”ç®—ã¯OK
+	IUTEST_ASSERT_TRUE( &ab == (const A*)(p1) ); // åŸºåº•ã‚¯ãƒ©ã‚¹ã¸ã®ã‚­ãƒ£ã‚¹ãƒˆæ¼”ç®—ã¯OK
 	A* pa = p1;
-	IUTEST_ASSERT_TRUE( &ab == pa ); // Šî’êƒNƒ‰ƒX‚Ö‚ÌƒLƒƒƒXƒg‰‰ŽZ‚ÍOK
+	IUTEST_ASSERT_TRUE( &ab == pa ); // åŸºåº•ã‚¯ãƒ©ã‚¹ã¸ã®ã‚­ãƒ£ã‚¹ãƒˆæ¼”ç®—ã¯OK
 
-	// constŠÖŒW
+	// consté–¢ä¿‚
 	{
 		tofu::AnyBasePtr<const A>  p2;
 		p2 = &c_a; // const
-		p2 = &a; // const¸Ši
+		p2 = &a; // constæ˜‡æ ¼
 
-		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<A>() ); // ”ñconst‚Ö‚ÍƒLƒƒƒXƒg•s‰Â
+		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<A>() ); // éžconstã¸ã¯ã‚­ãƒ£ã‚¹ãƒˆä¸å¯
 		IUTEST_ASSERT_TRUE( &a == p2.tryCast<const A>() ); //
 		
 		p2 = &ab;
-		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<A>() ); // ”ñconst‚Ö‚ÍƒLƒƒƒXƒg•s‰Â
+		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<A>() ); // éžconstã¸ã¯ã‚­ãƒ£ã‚¹ãƒˆä¸å¯
 		IUTEST_ASSERT_TRUE( &ab == p2.tryCast<const A>() ); //
-		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<AB>() ); // ”ñconst‚Ö‚ÍƒLƒƒƒXƒg•s‰Â
+		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<AB>() ); // éžconstã¸ã¯ã‚­ãƒ£ã‚¹ãƒˆä¸å¯
 		IUTEST_ASSERT_TRUE( &ab == p2.tryCast<const AB>() ); //
 	}
 
-	// •Êƒeƒ“ƒvƒŒ[ƒg“¯Žm‚Ì”äŠr
+	// åˆ¥ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆåŒå£«ã®æ¯”è¼ƒ
 	{
 		tofu::AnyBasePtr<A>  p100;
 		tofu::AnyBasePtr<const A>  p200;
 		
-		IUTEST_ASSERT_TRUE( p100 == p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_FALSE( p100 != p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_FALSE( p100 < p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_FALSE( p100 > p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_TRUE( p100 <= p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_TRUE( p100 >= p200 ); // nullptr“¯Žm
+		IUTEST_ASSERT_TRUE( p100 == p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_FALSE( p100 != p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_FALSE( p100 < p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_FALSE( p100 > p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_TRUE( p100 <= p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_TRUE( p100 >= p200 ); // nullptråŒå£«
 	}
 	{
 		tofu::AnyBasePtr<A>  p100;
 		tofu::AnyBasePtr<const AB>  p200;
 		
-		IUTEST_ASSERT_TRUE( p100 == p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_FALSE( p100 != p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_FALSE( p100 < p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_FALSE( p100 > p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_TRUE( p100 <= p200 ); // nullptr“¯Žm
-		IUTEST_ASSERT_TRUE( p100 >= p200 ); // nullptr“¯Žm
+		IUTEST_ASSERT_TRUE( p100 == p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_FALSE( p100 != p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_FALSE( p100 < p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_FALSE( p100 > p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_TRUE( p100 <= p200 ); // nullptråŒå£«
+		IUTEST_ASSERT_TRUE( p100 >= p200 ); // nullptråŒå£«
 	}
 }
