@@ -31,6 +31,9 @@
     <Filter Include="src\tofu\util">
       <UniqueIdentifier>{22a221d1-a5e4-48e0-a502-eabf7c2750ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\tofu\mpl">
+      <UniqueIdentifier>{0b7d5dda-db3c-422f-bee1-016d1810f5b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Source\tofu\util\TypeInfo.cpp">
@@ -106,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Source\tofu\util\AnyBasePtr.h">
       <Filter>src\tofu\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\mpl\mpl_String.h">
+      <Filter>src\tofu\mpl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
