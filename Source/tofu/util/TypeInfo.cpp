@@ -22,11 +22,6 @@
 
 namespace tofu {
 
-TypeInfo::TypeInfo() noexcept
-{
-	// nop
-}
-
 const char* TypeInfo::ParseTypeName(char* dst, const char* src, int len) noexcept
 {
 #ifdef TEST_PRINT
