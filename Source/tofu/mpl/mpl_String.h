@@ -19,37 +19,49 @@
 
 namespace tofu {
 namespace mpl {
+	
+/// 
+template <typename T, T value>
+struct StaticConst
+{
+	static constexpr decltype(value) Value = value;
+};
+
+//
+template <size_t N>
+struct StringData;
+
+// 条件によってStringDataを選択する
+template <bool B, StringData str1, StringData str2>
+static consteval auto ConditionalString()
+{
+	if constexpr (B) return str1;
+	else return str2;
+}
 
 //------------------------------------------------------------------------------
 
-// コンパイル時文字列クラス（NULL終端を含まない）
+// コンパイル時文字列データクラス
 template <size_t N>
-struct String
+struct StringData
 {
-	static constexpr size_t Length() { return N;}
-	static constexpr size_t BufferSize = std::max<size_t>(N,1);
+	static constexpr size_t Length = N;
+	static constexpr size_t BufferSize = std::max<size_t>(N+1,1);
 	
+public:
 	char data[BufferSize] = {};
 
-	String() = default;
+public:
+	StringData() = default;
 
-	consteval String(const char (&str)[N + 1])
+	consteval StringData(const char (&str)[BufferSize])
 	{
-		for (size_t i = 0; i < N; i++) {
+		for (size_t i = 0; i < BufferSize; i++) {
 			data[i] = str[i];
 		}
 	};
 
-	template <size_t M>
-	consteval String(const char(&src)[M], size_t s)
-	{
-		for (size_t i = 0; i < N; ++i)
-		{
-			data[i] = src[s + i];
-		}
-	}
-	
-	consteval explicit String(const std::string_view src)
+	consteval explicit StringData(const std::string_view src)
 	{
 		//static_assert(N == src.size(), "Length is not match.");
 		for (size_t i = 0; i < N; ++i)
@@ -58,34 +70,39 @@ struct String
 		}
 	}
 	
-	// 結合
-	template <size_t N1, size_t N2>
-	consteval explicit String(const String<N1> src1, const String<N2> src2)
-	{
-		static_assert(N == src1.Length() + src2.Length(), "Length is not match.");
-		size_t dst = 0;
-		for (size_t i = 0; i < src1.Length(); ++i)
-		{
-			data[dst++] = src1[i];
-		}
-		for (size_t i = 0; i < src2.Length(); ++i)
-		{
-			data[dst++] = src1[i];
-		}
+	constexpr size_t length() const {
+		return N;
+	}
+
+	constexpr size_t size() const {
+		return N;
 	}
 
 	// 部分文字列取得
 	template <size_t Pos, size_t Count = std::string_view::npos>
 	consteval auto substr() const
 	{
-		String<std::min(Count, Length() - Pos)> dst;
-		for(size_t i=0; i<dst.Length(); ++i)
+		StringData<std::min(Count, Length - Pos)> ret;
+		for(size_t i=0; i<ret.Length; ++i)
 		{
-			dst[i] = data[Pos + i];
+			ret[i] = data[Pos + i];
 		}
-		return dst;
+		return ret;
 	}
 	
+	// 文字列位置検索
+	template <auto str1>
+	consteval auto find() const
+	{
+		return view().find(str1.view());
+	}
+	
+	template <size_t N1>
+	consteval auto find(const char (&str1)[N1]) const
+	{
+		return view().find(str1);
+	}
+
 	constexpr std::string_view view() const {
 		return std::string_view(data, N);
 	}
@@ -107,96 +124,96 @@ struct String
 	}
 };
 
-// String: 文字配列からのtemplate推論
+// StringData: 文字配列からのtemplate推論
 template <size_t N>
-String(const char (&)[N]) -> String<N - 1>;
+StringData(const char (&)[N]) -> StringData<N - 1>;
 
-// String: String結合の推論
+// StringData: 結合
 template <size_t N1, size_t N2>
-String(const String<N1>, const String<N2>) -> String<N1 + N2>;
+inline consteval auto operator+(const StringData<N1>& str1, const StringData<N2>& str2)
+{
+	StringData<N1 + N2> ret;
+	for(size_t i=0; i<N1; ++i)
+	{
+		ret[i] = str1[i];
+	}
+	for(size_t i=0; i<N2; ++i)
+	{
+		ret[N1 + i] = str2[i];
+	}
+	return ret;
+}
+// StringData: 結合
+template <size_t N1, size_t N2>
+inline consteval auto operator+(const StringData<N1>& src1, const char (&src2)[N2])
+{
+	return src1 + StringData(src2);
+}
+// StringData: 結合
+template <size_t N1, size_t N2>
+inline consteval auto operator+(const char (&src1)[N1], const StringData<N2>& src2)
+{
+	return StringData(src1) + src2;
+}
+
+/// コンパイル時文字列クラス
+template <StringData str>
+struct String
+{
+	using data_t = decltype(str);
+
+	// 文字列データ
+	static constexpr auto Data = str;
+	
+	// 文字列の長さ
+	static constexpr size_t Length = data_t::Length;
+	
+public:
+	// string_view形式で文字列取得
+	static constexpr std::string_view GetView() { return Data.view(); }
+
+    // C言語styleのNULL終端文字列ポインタ取得
+    static inline const char* GetPtr()        { return Data.data; }
+	
+	// 文字列位置検索
+	template <StringData str1>
+	static consteval auto Find()
+	{
+		return str.template find<str1>();
+	}
+	
+public:
+	consteval String() = default;
+};
+
+// 文字列置換
+template <StringData str1, StringData str2>
+struct ReplaceString{};
+
+template <StringData str, StringData str1, StringData str2>
+inline consteval auto operator|(const String<str>&, const ReplaceString<str1, str2>&)
+{
+	constexpr size_t pos = str.template find<str1>();
+	if constexpr (pos == std::string_view::npos)
+	{
+		return String<str>();
+	}
+	else
+	{
+		return String<str.template substr<0, pos>() + str2 + str.template substr<std::min(pos + str1.Length, str.Length)>()>();
+	}
+}
+
+// 文字列データ取り出し
+struct ToStringData {};
+
+template <StringData str>
+inline consteval auto operator|(const String<str>&, const ToStringData&)
+{
+	return str;
+}
 
 //------------------------------------------------------------------------------
-
-// コンパイル時NULL終端文字列クラス
-template <size_t N>
-struct NullTerminatedString
-{
-	static constexpr size_t Length() { return N; }
-	static constexpr size_t BufferSize = N+1;
-
-	char data[BufferSize] = {};
-
-	NullTerminatedString() = default;
-
-	// 文字列リテラルから
-	consteval NullTerminatedString(const char (&str)[BufferSize])
-	{
-		//static_assert(str[N] == '\0', "Not null terminated.");
-		for (size_t i = 0; i < BufferSize; i++) {
-			data[i] = str[i];
-		}
-		data[N] = '\0'; // 安全対策
-	};
-	
-	// Stringから
-	template <size_t N1>
-	consteval explicit NullTerminatedString(const String<N1> src1)
-	{
-		static_assert(Length() == src1.Length(), "Length is not match.");
-		size_t dst = 0;
-		for (size_t i = 0; i < src1.Length(); ++i)
-		{
-			data[dst++] = src1.data[i];
-		}
-		data[dst] = '\0';
-	}
-
-	constexpr explicit operator std::string() const {
-		return std::string(data, N);
-	}
-
-	constexpr explicit operator std::string_view() const {
-		return std::string_view(data, N);
-	}
-
-	[[nodiscard]] consteval auto operator[](size_t n) const {
-		return data[n];
-	}
-
-	consteval auto operator[](size_t n) -> char& {
-		return data[n];
-	}
-};
-
-template <size_t N>
-NullTerminatedString(const char (&)[N]) -> NullTerminatedString<N-1>;
-
-template <size_t N>
-NullTerminatedString(const String<N>) -> NullTerminatedString<N>;
-
-
-/// 文字列リテラルクラス
-template <NullTerminatedString str>
-struct StringLiteralFromNullTerminated
-{
-	static constexpr decltype(str) String = str;
-
-	// 文字列の長さ
-	static consteval size_t Length()         { return decltype(String)::Length; }
-
-	// 文字列の長さ
-	static consteval size_t Size()           { return decltype(String)::Length; }
-	
-	// string_view形式で文字列取得
-    static constexpr std::string_view View() { return std::string_view(String); }
-    
-    // C言語styleのNULL終端文字列ポインタ取得
-    static inline const char* c_str()        { return String.data; }
-};
-
-/// 文字列リテラルクラス
-template <String str>
-struct StringLiteral : public StringLiteralFromNullTerminated<NullTerminatedString(str)> {};
 
 } // mpl
 } // tofu
