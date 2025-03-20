@@ -17,6 +17,8 @@
 #include <string>
 #include <string_view>
 
+#include <tofu/mpl/mpl_Common.h>
+
 namespace tofu {
 namespace mpl {
 	
@@ -37,6 +39,16 @@ static consteval auto ConditionalString()
 {
 	if constexpr (B) return str1;
 	else return str2;
+}
+
+//------------------------------------------------------------------------------
+
+inline namespace string_literals
+{
+	template <StringData data>
+	constexpr auto operator""_sd() {
+		return data;
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -122,6 +134,8 @@ public:
 	consteval auto operator[](size_t n) -> char& {
 		return data[n];
 	}
+
+	friend auto operator<=>(const StringData&, const StringData&) = default;
 };
 
 // StringData: 文字配列からのtemplate推論
@@ -156,6 +170,9 @@ inline consteval auto operator+(const char (&src1)[N1], const StringData<N2>& sr
 	return StringData(src1) + src2;
 }
 
+
+//------------------------------------------------------------------------------
+
 /// コンパイル時文字列クラス
 template <StringData str>
 struct String
@@ -179,39 +196,79 @@ public:
 	template <StringData str1>
 	static consteval auto Find()
 	{
-		return str.template find<str1>();
+		return Data.template find<str1>();
+	}
+	
+	template <size_t Pos, size_t Count = std::string_view::npos>
+	static consteval auto Substr()
+	{
+		return String<Data.template substr<Pos, Count>()>();
 	}
 	
 public:
 	consteval String() = default;
+	
+	constexpr std::string_view view() const { return Data.view(); }
 };
+
+// String: 結合
+template <StringData data1, StringData data2>
+inline consteval auto operator+(const String<data1>& str1, const String<data2>& str2)
+{
+	return String<data1 + data2>();
+}
+
+namespace detail
+{
+	// 文字列データ取り出し
+	template <StringData str>
+	inline consteval auto operator|(const String<str>&, const ToData&)
+	{
+		return str;
+	}
+}
+
+namespace detail
+{
+	// 文字列置換
+	template <StringData str1, StringData str2>
+	struct ReplaceString{};
+
+	template <StringData str, StringData str1, StringData str2>
+	inline consteval auto operator|(const String<str>&, const ReplaceString<str1, str2>&)
+	{
+		constexpr size_t pos = str.template find<str1>();
+		if constexpr (pos == std::string_view::npos)
+		{
+			return String<str>();
+		}
+		else
+		{
+			return String<str.template substr<0, pos>() + str2 + str.template substr<std::min(pos + str1.Length, str.Length)>()>();
+		}
+	}
+}
 
 // 文字列置換
 template <StringData str1, StringData str2>
-struct ReplaceString{};
+inline constexpr auto ReplaceString = detail::ReplaceString<str1, str2>();
 
-template <StringData str, StringData str1, StringData str2>
-inline consteval auto operator|(const String<str>&, const ReplaceString<str1, str2>&)
+namespace detail
 {
-	constexpr size_t pos = str.template find<str1>();
-	if constexpr (pos == std::string_view::npos)
+	// 部分文字列
+	template <size_t Pos, size_t Count = std::string_view::npos>
+	struct SubString{};
+
+	template <StringData str, size_t Pos, size_t Count>
+	inline consteval auto operator|(const String<str>&, const SubString<Pos, Count>&)
 	{
-		return String<str>();
-	}
-	else
-	{
-		return String<str.template substr<0, pos>() + str2 + str.template substr<std::min(pos + str1.Length, str.Length)>()>();
+		return String<str.template substr<Pos, Count>()>();
 	}
 }
 
-// 文字列データ取り出し
-struct ToStringData {};
-
-template <StringData str>
-inline consteval auto operator|(const String<str>&, const ToStringData&)
-{
-	return str;
-}
+// 部分文字列
+template <size_t Pos, size_t Count = std::string_view::npos>
+inline constexpr auto SubString = detail::SubString<Pos, Count>();
 
 //------------------------------------------------------------------------------
 

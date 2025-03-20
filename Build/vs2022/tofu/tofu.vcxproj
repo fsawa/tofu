@@ -130,6 +130,7 @@
     <ClInclude Include="..\..\..\Source\tofu\math\Angle.h" />
     <ClInclude Include="..\..\..\Source\tofu\math\MathCommon.h" />
     <ClInclude Include="..\..\..\Source\tofu\math\Nearly.h" />
+    <ClInclude Include="..\..\..\Source\tofu\mpl\mpl_Common.h" />
     <ClInclude Include="..\..\..\Source\tofu\mpl\mpl_String.h" />
     <ClInclude Include="..\..\..\Source\tofu\util\AnyBasePtr.h" />
     <ClInclude Include="..\..\..\Source\tofu\util\AnyPtr.h" />

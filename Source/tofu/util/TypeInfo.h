@@ -26,82 +26,88 @@ template <typename T> class TypeInfoOf;
 
 // 名前空間を含むクラス名の作成
 template <typename T>
-struct TypeName
+class TypeName
 {
+	static consteval auto Make();
+	
+	// 環境依存確認用のテスト関数
 	static consteval auto Test()
 	{
 		constexpr mpl::StringData name{TOFU_FUNCTION_NAME};
 		return name;
 	}
 
-	static consteval auto Make()
-	{
-		// 参照ならまず参照だけ外す
-		if constexpr (std::is_reference_v<T>)
-		{
-			constexpr auto name_ = TypeName<std::remove_reference_t<T>>::Make();
-			return name_ + " &";
-		}
-		// cv外す
-		else if constexpr (std::is_const_v<T>)
-		{
-			constexpr auto name_ = TypeName<std::remove_const_t<T>>::Make();
-			return name_ + " const";
-		}
-		else if constexpr (std::is_volatile_v<T>)
-		{
-			constexpr auto name_ = TypeName<std::remove_volatile_t<T>>::Make();
-			return name_ + " volatile";
-		}
-		// pointer外す
-		else if constexpr (std::is_pointer_v<T>)
-		{
-			constexpr auto name_ = TypeName<std::remove_pointer_t<T>>::Make();
-			return name_ + " *";
-		}
-		else
-		{
-			constexpr mpl::StringData func_name{TOFU_FUNCTION_NAME};
-// clang
-#if defined(TOFU_COMPILER_CLANG)
-			// static auto tofu::TypeName<int>::Debug() [T = int]
-			// static auto tofu::TypeName<test::A>::Debug() [T = test::A]
-			// static auto tofu::TypeName<const test::A *const>::Debug() [T = const test::A *const]
-			// static auto tofu::TypeName<(anonymous namespace)::C>::Debug() [T = (anonymous namespace)::C]
-			
-			constexpr mpl::StringData name = mpl::String<func_name>()
-				| mpl::ReplaceString<"(anonymous namespace)", "">()
-				| mpl::ToStringData();
-
-			constexpr size_t pos_s = name.view().find_first_of('<') + 1;
-			constexpr size_t pos_e = name.view().find_last_of('>');
-// Microsoft Visual C++
-#elif defined(_MSC_VER)
-			// tofu::TypeName<int>::Debug
-			// tofu::TypeName<struct test::A>::Debug
-			// tofu::TypeName<struct test::A const * const>::Debug
-			// tofu::TypeName<class `anonymous namespace'::C>::Debug
-			
-			// structやclassを除外
-			constexpr mpl::StringData name = mpl::String<func_name>()
-				| mpl::ReplaceString<"class ", "">()
-				| mpl::ReplaceString<"struct ", "">()
-				| mpl::ReplaceString<"enum ", "">()
-				| mpl::ReplaceString<"`anonymous namespace'", "">()
-				| mpl::ToStringData();
-
-			constexpr size_t pos_s = name.view().find_first_of('<') + 1;
-			constexpr size_t pos_e = name.view().find_last_of('>');
-#else
-			/// @todo 
-			return name;
-#endif
-			return name.template substr<pos_s, pos_e - pos_s>();
-		}
-	}
-	
+public:
 	static constexpr auto Value = Make();
 	static constexpr auto TestValue = Test();
+};
+
+// 型名文字列の生成
+template <typename T>
+consteval auto TypeName<T>::Make()
+{
+	// 参照ならまず参照だけ外す
+	if constexpr (std::is_reference_v<T>)
+	{
+		constexpr auto name_ = TypeName<std::remove_reference_t<T>>::Value;
+		return name_ + " &";
+	}
+	// const外す
+	else if constexpr (std::is_const_v<T>)
+	{
+		constexpr auto name_ = TypeName<std::remove_const_t<T>>::Value;
+		return name_ + " const";
+	}
+	// volatile外す
+	else if constexpr (std::is_volatile_v<T>)
+	{
+		constexpr auto name_ = TypeName<std::remove_volatile_t<T>>::Value;
+		return name_ + " volatile";
+	}
+	// pointer外す
+	else if constexpr (std::is_pointer_v<T>)
+	{
+		constexpr auto name_ = TypeName<std::remove_pointer_t<T>>::Value;
+		return name_ + " *";
+	}
+	else
+	{
+// clang
+#if defined(TOFU_COMPILER_CLANG)
+		// static auto tofu::TypeName<int>::Debug() [T = int]
+		// static auto tofu::TypeName<test::A>::Debug() [T = test::A]
+		// static auto tofu::TypeName<const test::A *const>::Debug() [T = const test::A *const]
+		// static auto tofu::TypeName<(anonymous namespace)::C>::Debug() [T = (anonymous namespace)::C]
+		// tofu::TypeName<void (int)>::Test
+			
+		constexpr auto name = mpl::String<TOFU_FUNCTION_NAME>();
+
+		constexpr size_t pos_s = name.view().find_first_of('<') + 1;
+		constexpr size_t pos_e = name.view().find_last_of('>');
+// Microsoft Visual C++
+#elif defined(_MSC_VER)
+		// tofu::TypeName<int>::Debug
+		// tofu::TypeName<struct test::A>::Debug
+		// tofu::TypeName<struct test::A const * const>::Debug
+		// tofu::TypeName<class `anonymous namespace'::C>::Debug
+		// tofu::TypeName<void __cdecl(int)>::Test
+			
+		// structやclassを除外
+		constexpr auto name = mpl::String<TOFU_FUNCTION_NAME>()
+			| mpl::ReplaceString<"class ", "">
+			| mpl::ReplaceString<"struct ", "">
+			| mpl::ReplaceString<"enum ", "">
+			| mpl::ReplaceString<"__cdecl", "">
+			| mpl::ReplaceString<"`anonymous namespace'", "(anonymous namespace)">;
+
+		constexpr size_t pos_s = name.view().find_first_of('<') + 1;
+		constexpr size_t pos_e = name.view().find_last_of('>');
+#else
+		/// @todo 
+		return name;
+#endif
+		return name | mpl::SubString<pos_s, pos_e - pos_s> | mpl::ToData;
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -240,7 +246,7 @@ public:
 	
 public:
 
-	static constexpr auto Name = TypeName<T>::Make();
+	static constexpr auto Name = TypeName<T>::Value;
 	
 	/// インスタンス取得
 	static self_t&  Instance() noexcept

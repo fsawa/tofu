@@ -113,5 +113,8 @@
     <ClInclude Include="..\..\..\Source\tofu\mpl\mpl_String.h">
       <Filter>src\tofu\mpl</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\mpl\mpl_Common.h">
+      <Filter>src\tofu\mpl</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
