@@ -36,8 +36,8 @@ namespace
 	template <typename T>
 	void PrintDebugTypeName()
 	{
-		std::cout << tofu::TypeName<T>::TestValue.view() << std::endl;
-		std::cout << "    " << tofu::TypeName<T>::Value.view() << std::endl;
+		std::cout << tofu::GetTypeName<T>() << std::endl;
+		std::cout << "        " << tofu::TypeName<T>::TestValue.view() << std::endl;
 	}
 }
 
@@ -107,38 +107,32 @@ IUTEST(util, TypeInfo)
 	{
 		auto& info = tofu::GetTypeInfo<int>();
 		std::cout << "-- int -- " << std::endl;
-		std::cout << info.DBG_GetTypeNameSample() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
 	}
 	{
 		auto& info = tofu::GetTypeInfo<const int>();
 		std::cout << "-- const int -- " << std::endl;
-		std::cout << info.DBG_GetTypeNameSample() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
 	}
 	{
 		auto& info = tofu::GetTypeInfo<void>();
 		std::cout << "-- void -- " << std::endl;
-		std::cout << info.DBG_GetTypeNameSample() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
 	}
 	{
 		auto& info = tofu::GetTypeInfo<test::A>();
 		std::cout << "-- test::A -- " << std::endl;
-		std::cout << info.DBG_GetTypeNameSample() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
 		IUTEST_ASSERT_EQ( info.GetNamePtr(), std::string("test::A") );
 	}
 	{
 		auto& info = tofu::GetTypeInfo<test::B>();
 		std::cout << "-- test::B -- " << std::endl;
-		std::cout << info.DBG_GetTypeNameSample() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
 	}
 	{
 		auto& info = tofu::GetTypeInfo<const C&>();
 		std::cout << "-- const C& -- " << std::endl;
-		std::cout << info.DBG_GetTypeNameSample() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
 		std::cout << info.GetName() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
@@ -146,13 +140,11 @@ IUTEST(util, TypeInfo)
 	{
 		auto& info = tofu::GetTypeInfo<int&>();
 		std::cout << "-- int& -- " << std::endl;
-		std::cout << info.DBG_GetTypeNameSample() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
 	}
 	{
 		auto& info = tofu::GetTypeInfo<int*>();
 		std::cout << "-- int* -- " << std::endl;
-		std::cout << info.DBG_GetTypeNameSample() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
 	}
 }

@@ -110,6 +110,14 @@ consteval auto TypeName<T>::Make()
 	}
 };
 
+// 名前空間を含むクラス名の取得
+template <typename T>
+static constexpr std::string_view GetTypeName()
+{
+	return TypeName<T>::Value.view();
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief      型情報クラス
 /// 
@@ -319,15 +327,6 @@ public:
 			return TypeInfoOf<BaseType>::Instance().upcast(base, target_type_info);
 		};
 	}
-	
-	// テスト用
-	static consteval std::string_view DBG_GetTypeNameSample()
-	{
-		return TOFU_FUNCTION_NAME;
-	}
-
-private:
-
 };
 // << TypeInfoOf
 
