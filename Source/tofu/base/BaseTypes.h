@@ -13,6 +13,6 @@
 namespace tofu {
 
 /// ゼロを表すオブジェクト
-const struct Zero {} zero = {};
+constexpr struct Zero {} zero = {};
 
 } // tofu

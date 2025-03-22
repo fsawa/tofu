@@ -21,35 +21,6 @@
 
 namespace tofu {
 namespace mpl {
-	
-/// 
-template <typename T, T value>
-struct StaticConst
-{
-	static constexpr decltype(value) Value = value;
-};
-
-//
-template <size_t N>
-struct StringData;
-
-// 条件によってStringDataを選択する
-template <bool B, StringData str1, StringData str2>
-static consteval auto ConditionalString()
-{
-	if constexpr (B) return str1;
-	else return str2;
-}
-
-//------------------------------------------------------------------------------
-
-inline namespace string_literals
-{
-	template <StringData data>
-	constexpr auto operator""_sd() {
-		return data;
-	}
-}
 
 //------------------------------------------------------------------------------
 
@@ -58,35 +29,24 @@ template <size_t N>
 struct StringData
 {
 	static constexpr size_t Length = N;
-	static constexpr size_t BufferSize = std::max<size_t>(N+1,1);
+	static constexpr size_t BufferSize = N+1;
 	
 public:
 	char data[BufferSize] = {};
 
 public:
-	StringData() = default;
+	consteval StringData() = default;
 
 	consteval StringData(const char (&str)[BufferSize])
 	{
-		for (size_t i = 0; i < BufferSize; i++) {
-			data[i] = str[i];
-		}
+		std::copy_n(str, BufferSize, data);
 	};
 
-	consteval explicit StringData(const std::string_view src)
-	{
-		//static_assert(N == src.size(), "Length is not match.");
-		for (size_t i = 0; i < N; ++i)
-		{
-			data[i] = src[i];
-		}
-	}
-	
-	constexpr size_t length() const {
+	consteval size_t length() const {
 		return N;
 	}
 
-	constexpr size_t size() const {
+	consteval size_t size() const {
 		return N;
 	}
 
@@ -115,16 +75,18 @@ public:
 		return view().find(str1);
 	}
 
+	// string_viewで参照
 	constexpr std::string_view view() const {
 		return std::string_view(data, N);
 	}
 
-	constexpr explicit operator std::string() const {
-		return std::string(data, N);
-	}
-
 	constexpr explicit operator std::string_view() const {
 		return std::string_view(data, N);
+	}
+
+	// string化
+	constexpr explicit operator std::string() const {
+		return std::string(data, N);
 	}
 
 	[[nodiscard]] consteval auto operator[](size_t n) const {
@@ -170,6 +132,14 @@ inline consteval auto operator+(const char (&src1)[N1], const StringData<N2>& sr
 	return StringData(src1) + src2;
 }
 
+inline namespace string_literals
+{
+	// StringDataのユーザー定義リテラル
+	template <StringData data>
+	constexpr auto operator""_sd() {
+		return data;
+	}
+}
 
 //------------------------------------------------------------------------------
 

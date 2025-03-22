@@ -24,7 +24,7 @@ namespace tofu {
 // 前方宣言
 template <typename T> class TypeInfoOf;
 
-// 名前空間を含むクラス名の作成
+/// 名前空間を含む形名文字列を表すクラス
 template <typename T>
 class TypeName
 {
@@ -38,7 +38,11 @@ class TypeName
 	}
 
 public:
+
+	/// 型名文字列を表すStringData
 	static constexpr auto Value = Make();
+	
+	/// 環境依存確認用のテスト値
 	static constexpr auto TestValue = Test();
 };
 
@@ -413,7 +417,7 @@ class BaseTypeSetter
 public:
 	BaseTypeSetter()
 	{
-		GetTypeInfo<Derived>().setBaseType<Base>();
+		GetTypeInfo<Derived>().template setBaseType<Base>();
 	}
 };
 
