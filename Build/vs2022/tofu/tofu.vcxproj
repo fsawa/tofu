@@ -142,6 +142,7 @@
     <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonUtil.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_StringData.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_TypeInfo.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeName.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
