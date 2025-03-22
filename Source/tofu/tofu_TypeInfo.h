@@ -33,7 +33,7 @@ class TypeName
 	// 環境依存確認用のテスト関数
 	static consteval auto Test()
 	{
-		constexpr mpl::StringData name{TOFU_FUNCTION_NAME};
+		constexpr StringData name{TOFU_FUNCTION_NAME};
 		return name;
 	}
 

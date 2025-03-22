@@ -140,6 +140,7 @@
     <ClInclude Include="..\..\..\Source\tofu\tofu_Singleton.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonPolicy.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonUtil.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_StringData.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_TypeInfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

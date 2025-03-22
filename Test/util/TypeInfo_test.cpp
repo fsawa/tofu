@@ -61,16 +61,16 @@ IUTEST(util, TypeInfo)
 	PrintDebugTypeName<void(int)>();
 	std::cout << "----" << std::endl;
 
-	// mpl::StringData
-	using namespace tofu::mpl::string_literals;
+	// StringData
+	using namespace tofu::string_literals;
 	static_assert(tofu::mpl::String<"hoge">::Length == 4);
-	static_assert(tofu::mpl::StringData("hoge").Length == 4);
+	static_assert(tofu::StringData("hoge").Length == 4);
 	static_assert(("hoge"_sd + "test").Length == 8);
-	static_assert((tofu::mpl::StringData("123") + tofu::mpl::StringData("4567")).Length == 7);
-	static_assert((tofu::mpl::StringData("123") + "4567").Length == 7);
-	static_assert(("123" + tofu::mpl::StringData("4567")).Length == 7);
+	static_assert((tofu::StringData("123") + tofu::StringData("4567")).Length == 7);
+	static_assert((tofu::StringData("123") + "4567").Length == 7);
+	static_assert(("123" + tofu::StringData("4567")).Length == 7);
 
-	IUTEST_ASSERT(tofu::mpl::StringData("123") == tofu::mpl::StringData("12") + "3");
+	IUTEST_ASSERT(tofu::StringData("123") == tofu::StringData("12") + "3");
 
 	//static_assert(tofu::TypeInfoOf<test::A>::TypeName.size() == 7);
 	//IUTEST_ASSERT_EQ( tofu::TypeInfoOf<test::A>::TypeName(), std::string_view("test::A") );
