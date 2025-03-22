@@ -135,8 +135,6 @@ protected:
 	explicit TypeInfo(std::string_view name) noexcept : m_name{name} {}
 	virtual ~TypeInfo() = default;
 	
-	static const char* ParseTypeName( char* str, const char* src, int len ) noexcept;
-	
 protected:
 	
 	const std::string_view  m_name;
