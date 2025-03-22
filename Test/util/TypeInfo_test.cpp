@@ -20,6 +20,9 @@ namespace test
 
 	enum E1{};
 	enum class E2{};
+
+	template<typename T, size_t N>
+	class F;
 	
 	// 無名名前空間
 	namespace
@@ -58,6 +61,7 @@ IUTEST(util, TypeInfo)
 	PrintDebugTypeName<test::D>();
 	PrintDebugTypeName<test::E1>();
 	PrintDebugTypeName<test::E2>();
+	PrintDebugTypeName<test::F<const int, 1>>();
 	PrintDebugTypeName<void(int)>();
 	std::cout << "----" << std::endl;
 

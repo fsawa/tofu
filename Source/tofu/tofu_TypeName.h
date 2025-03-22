@@ -79,15 +79,18 @@ consteval auto TypeName<T>::Make()
 // clang
 #if defined(TOFU_COMPILER_CLANG)
 		// static auto tofu::TypeName<int>::Debug() [T = int]
+		// static auto tofu::TypeName<const int[3][4]>::Test() [T = const int[3][4]]
 		// static auto tofu::TypeName<test::A>::Debug() [T = test::A]
 		// static auto tofu::TypeName<const test::A *const>::Debug() [T = const test::A *const]
 		// static auto tofu::TypeName<(anonymous namespace)::C>::Debug() [T = (anonymous namespace)::C]
+		// static auto tofu::TypeName<test::F<const int, 1>>::Test() [T = test::F<const int, 1>]
 		// tofu::TypeName<void (int)>::Test
 			
 		constexpr auto name = mpl::String<TOFU_FUNCTION_NAME>();
 
 		constexpr size_t pos_s = name.view().find_first_of('<') + 1;
-		constexpr size_t pos_e = name.view().find_last_of('>');
+		constexpr size_t pos_eq = name.view().find_last_of('=');
+		constexpr size_t pos_e = name.view().find_last_of('>', pos_eq);
 // Microsoft Visual C++
 #elif defined(_MSC_VER)
 		// tofu::TypeName<int>::Debug
