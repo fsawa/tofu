@@ -8,8 +8,8 @@
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
-#include <tofu/util/Finalizer.h>
-#include <tofu/util/LooseSingleton.h>
+#include <tofu_Finalizer.h>
+#include <tofu_LooseSingleton.h>
 
 #include <iostream>
 #include <iutest.hpp>

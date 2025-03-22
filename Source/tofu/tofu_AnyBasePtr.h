@@ -11,8 +11,8 @@
 #pragma once
 
 #include <tofu.h>
-#include <tofu/util/TypeInfo.h>
-#include <tofu/util/SafePtr.h>
+#include <tofu_TypeInfo.h>
+#include <tofu_SafePtr.h>
 
 namespace tofu {
 

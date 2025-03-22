@@ -8,7 +8,7 @@
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
-#include <tofu/math/Nearly.h>
+#include <tofu_math_Nearly.h>
 
 //#include <cfloat>
 #include <iostream>

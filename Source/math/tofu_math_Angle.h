@@ -10,7 +10,7 @@
 //------------------------------------------------------------------------------
 #pragma once
 
-#include <tofu/math/MathCommon.h>
+#include <tofu_math_MathCommon.h>
 
 namespace tofu {
 namespace math {

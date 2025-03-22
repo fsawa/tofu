@@ -87,7 +87,7 @@ public:
 	void  DestroyInstance()
 	{
 		delete m_instance;
-		m_instance = NULL;
+		m_instance = nullptr;
 	}
 	
 //**************************************************************

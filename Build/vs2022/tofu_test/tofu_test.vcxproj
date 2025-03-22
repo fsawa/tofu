@@ -96,19 +96,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetExt>.exe</TargetExt>
-    <IncludePath>$(SolutionDIr)..\..\Source;$(SolutionDIr)..\..\Submodule\iutest\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDIr)..\..\Source\tofu;$(SolutionDIr)..\..\Source\math;$(SolutionDIr)..\..\Source\mpl;$(SolutionDIr)..\..\Submodule\iutest\include;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
     <LibraryPath>$(SolutionDIr)tofu\$(PlatformTarget)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">
     <TargetExt>.exe</TargetExt>
-    <IncludePath>$(SolutionDIr)..\..\Source;$(SolutionDIr)..\..\Submodule\iutest\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDIr)..\..\Source\tofu;$(SolutionDIr)..\..\Source\math;$(SolutionDIr)..\..\Source\mpl;$(SolutionDIr)..\..\Submodule\iutest\include;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
     <LibraryPath>$(SolutionDIr)tofu\$(PlatformTarget)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetExt>.exe</TargetExt>
-    <IncludePath>$(SolutionDIr)..\..\Source;$(SolutionDIr)..\..\Submodule\iutest\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDIr)..\..\Source\tofu;$(SolutionDIr)..\..\Source\math;$(SolutionDIr)..\..\Source\mpl;$(SolutionDIr)..\..\Submodule\iutest\include;$(IncludePath)</IncludePath>
     <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
     <LibraryPath>$(SolutionDIr)tofu\$(PlatformTarget)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>

@@ -11,7 +11,7 @@
 #pragma once
 
 #include <tofu.h>
-#include <tofu/util/TypeInfo.h>
+#include <tofu_TypeInfo.h>
 
 namespace tofu {
 

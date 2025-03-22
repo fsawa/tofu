@@ -25,96 +25,90 @@
     <Filter Include="src\tofu\config">
       <UniqueIdentifier>{9353be78-8135-434c-abd0-55f6e3e9a0e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\tofu\math">
+    <Filter Include="src\math">
       <UniqueIdentifier>{d1649927-1bae-49d8-86ba-aa5c4f591a75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\tofu\util">
-      <UniqueIdentifier>{22a221d1-a5e4-48e0-a502-eabf7c2750ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\tofu\mpl">
+    <Filter Include="src\mpl">
       <UniqueIdentifier>{0b7d5dda-db3c-422f-bee1-016d1810f5b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Source\tofu\util\TypeInfo.cpp">
-      <Filter>src\tofu\util</Filter>
+    <ClCompile Include="..\..\..\Source\tofu\tofu.cpp">
+      <Filter>src\tofu</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Source\tofu\base\Assert.cpp">
+    <ClCompile Include="..\..\..\Source\tofu\tofu_TypeInfo.cpp">
+      <Filter>src\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu\base\tofu_Assert.cpp">
       <Filter>src\tofu\base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Source\tofu.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Source\tofu\math\Angle.cpp">
-      <Filter>src\tofu\math</Filter>
+    <ClCompile Include="..\..\..\Source\math\tofu_math_Angle.cpp">
+      <Filter>src\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Source\tofu.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\..\..\Source\tofu\tofu.h">
+      <Filter>src\tofu</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\TypeInfo.h">
-      <Filter>src\tofu\util</Filter>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_AnyBasePtr.h">
+      <Filter>src\tofu</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\base\Assert.h">
-      <Filter>src\tofu\base</Filter>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_AnyPtr.h">
+      <Filter>src\tofu</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\config\Compiler.h">
+    <ClInclude Include="..\..\..\Source\tofu\tofu_DisallowCopy.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Finalizer.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_LooseSingleton.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SafePtr.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Singleton.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonPolicy.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonUtil.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeInfo.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\config\tofu_Compiler.h">
       <Filter>src\tofu\config</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\config\Config.h">
+    <ClInclude Include="..\..\..\Source\tofu\config\tofu_Config.h">
       <Filter>src\tofu\config</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\config\Platform.h">
+    <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h">
       <Filter>src\tofu\config</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\base\countof.h">
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Assert.h">
       <Filter>src\tofu\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\math\Angle.h">
-      <Filter>src\tofu\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\math\MathCommon.h">
-      <Filter>src\tofu\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\base\BaseTypes.h">
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseTypes.h">
       <Filter>src\tofu\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\math\Nearly.h">
-      <Filter>src\tofu\math</Filter>
+    <ClInclude Include="..\..\..\Source\math\tofu_math_Angle.h">
+      <Filter>src\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\Singleton.h">
-      <Filter>src\tofu\util</Filter>
+    <ClInclude Include="..\..\..\Source\math\tofu_math_MathCommon.h">
+      <Filter>src\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\SingletonPolicy.h">
-      <Filter>src\tofu\util</Filter>
+    <ClInclude Include="..\..\..\Source\math\tofu_math_Nearly.h">
+      <Filter>src\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\SingletonUtil.h">
-      <Filter>src\tofu\util</Filter>
+    <ClInclude Include="..\..\..\Source\mpl\tofu_mpl_Common.h">
+      <Filter>src\mpl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\DisallowCopy.h">
-      <Filter>src\tofu\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\AnyPtr.h">
-      <Filter>src\tofu\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\LooseSingleton.h">
-      <Filter>src\tofu\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\SafePtr.h">
-      <Filter>src\tofu\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\Finalizer.h">
-      <Filter>src\tofu\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\util\AnyBasePtr.h">
-      <Filter>src\tofu\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\mpl\mpl_String.h">
-      <Filter>src\tofu\mpl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\mpl\mpl_Common.h">
-      <Filter>src\tofu\mpl</Filter>
+    <ClInclude Include="..\..\..\Source\mpl\tofu_mpl_String.h">
+      <Filter>src\mpl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

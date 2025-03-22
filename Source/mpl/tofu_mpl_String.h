@@ -17,7 +17,7 @@
 #include <string>
 #include <string_view>
 
-#include <tofu/mpl/mpl_Common.h>
+#include <tofu_mpl_Common.h>
 
 namespace tofu {
 namespace mpl {

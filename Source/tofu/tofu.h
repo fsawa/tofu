@@ -11,12 +11,11 @@
 */
 //------------------------------------------------------------------------------
 
-#include <tofu/config/Config.h>
-#include <tofu/config/Platform.h>
-#include <tofu/config/Compiler.h>
-#include <tofu/base/countof.h>
-#include <tofu/base/Assert.h>
-#include <tofu/base/BaseTypes.h>
+#include <config/tofu_Config.h>
+#include <config/tofu_Platform.h>
+#include <config/tofu_Compiler.h>
+#include <base/tofu_Assert.h>
+#include <base/tofu_BaseTypes.h>
 
 /// tofu Library
 namespace tofu {}

@@ -11,7 +11,7 @@
 #pragma once
 
 #include <tofu.h>
-#include <tofu/util/DisallowCopy.h>
+#include <tofu_DisallowCopy.h>
 
 #include <list>
 #include <functional>
