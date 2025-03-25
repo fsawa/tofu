@@ -30,7 +30,7 @@ namespace detail
 			Manager() = default;
 
 			// クラス登録
-			void RegisterClass(const detail::ClassCreator& creator)
+			void EntryClass(const detail::ClassCreator& creator)
 			{
 				TypeId typeId = creator.GetTypeId();
 				std::string_view name = typeId.info().GetName();
@@ -39,7 +39,7 @@ namespace detail
 					return;
 				}
 				
-				std::cout << "RegisterClass: " << name << std::endl;
+				std::cout << "EntryClass: " << name << std::endl;
 				m_Classes.try_emplace(name, &creator);
 			}
 			
@@ -61,9 +61,9 @@ namespace detail
 	}
 
 	//------------------------------------------------------------------------------
-	void RegisterClass(const ClassCreator& creator)
+	void EntryClass(const ClassCreator& creator)
 	{
-		Manager::Instance().RegisterClass(creator);
+		Manager::Instance().EntryClass(creator);
 	}
 }
 

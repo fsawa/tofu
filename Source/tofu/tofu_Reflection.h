@@ -33,7 +33,7 @@ namespace detail
 	public:
 		ClassCreatorOf()
 		{
-			RegisterClass(*this);
+			EntryClass(*this);
 		}
 		
 		TypeId GetTypeId() const override
@@ -48,7 +48,7 @@ namespace detail
 	};
 
 	// 型名から生成できるクラスを登録する
-	void RegisterClass(const ClassCreator& creator);
+	void EntryClass(const ClassCreator& creator);
 }
 
 /// @brief 型名から生成できるクラスを登録する
