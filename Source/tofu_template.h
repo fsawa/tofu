@@ -1,16 +1,16 @@
 ﻿//------------------------------------------------------------------------------
 /**
- * @file    .hpp
+ * @file    tofu_.h
  * @brief   
  * @author  y.fujisawa
  * @par     copyright
- * Copyright (C) 2020 Yasuhito Fujisawa\n
+ * Copyright (C) 2025 Yasuhito Fujisawa\n
  * This software is released under the MIT License, see LICENSE
 */
 //------------------------------------------------------------------------------
 #pragma once
 
-#include <tofu.hpp>
+#include <tofu.h>
 
 namespace tofu {
 
