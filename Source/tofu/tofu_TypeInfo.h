@@ -312,14 +312,14 @@ inline TypeId  MakeTypeId( T& ) noexcept
 	
 //------------------------------------------------------------------------------
 
+/// 基底クラス情報の設定マクロ
+#define TOFU_SET_BASE_TYPE(Base, Derived)  TOFU_STATIC_CALL(::tofu::SetBaseType<Base,Derived>)
+
+/// 基底クラス情報の設定
 template <typename Base, typename Derived>
-class BaseTypeSetter
+inline void SetBaseType()
 {
-public:
-	BaseTypeSetter()
-	{
-		GetTypeInfo<Derived>().template setBaseType<Base>();
-	}
-};
+	GetTypeInfo<Derived>().template setBaseType<Base>();
+}
 
 } // tofu

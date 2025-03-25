@@ -16,7 +16,7 @@ namespace tofu {
 #define TOFU_JOIN(a, b) TOFU_JOIN2(a, b)
 
 /// Static Initializer で指定した関数を呼び出すマクロ
-#define TOFU_STATIC_CALL(func)  TOFU_STATIC_CALL_1(__LINE__, func)
+#define TOFU_STATIC_CALL(...)  TOFU_STATIC_CALL_1(__LINE__, (__VA_ARGS__))
 
 //------------------------------------------------------------------------------
 	

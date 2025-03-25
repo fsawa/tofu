@@ -23,11 +23,9 @@ namespace test
 	class B3 : public B2 {};
 
 	//template class BaseTypeInfo<B3, B2>;
-	namespace hide
-	{
-		static tofu::BaseTypeSetter<B1, B2> x1;
-		static tofu::BaseTypeSetter<B2, B3> x2;
-	}
+	
+	TOFU_SET_BASE_TYPE(B1, B2);
+	TOFU_SET_BASE_TYPE(B2, B3);
 }
 
 IUTEST(util, AnyPtr)

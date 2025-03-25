@@ -13,6 +13,7 @@
 #include <iostream>
 #include <iutest.hpp>
 
+namespace{
 namespace test
 {
 	class A
@@ -35,6 +36,7 @@ namespace test
 		int ab;
 		AB() : ab(0) {}
 	};
+}
 }
 
 IUTEST(util, AnyBasePtr)

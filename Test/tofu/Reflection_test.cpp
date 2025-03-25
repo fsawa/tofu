@@ -44,11 +44,8 @@ namespace test
 	};
 
 	// クラス継承関係登録
-	namespace detail
-	{
-		static const tofu::BaseTypeSetter<Base, A> a;
-		static const tofu::BaseTypeSetter<Base, B> b;
-	}
+	TOFU_SET_BASE_TYPE(Base, A);
+	TOFU_SET_BASE_TYPE(Base, B);
 
 	enum E1{};
 	enum class E2{};
