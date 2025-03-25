@@ -45,6 +45,9 @@
     <ClCompile Include="..\..\..\Source\math\tofu_math_Angle.cpp">
       <Filter>src\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu\tofu_Reflection.cpp">
+      <Filter>src\tofu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Source\tofu\tofu.h">
@@ -115,6 +118,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Source\tofu\tofu_TypeName.h">
       <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Reflection.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseUtil.h">
+      <Filter>src\tofu\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

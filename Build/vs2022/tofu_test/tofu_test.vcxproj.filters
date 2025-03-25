@@ -15,6 +15,9 @@
     <Filter Include="Source Files\util">
       <UniqueIdentifier>{c17723bd-a831-4b48-ad2a-101c3a045627}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\tofu">
+      <UniqueIdentifier>{6cc7ee1c-e2ab-420b-9800-d6b39d681088}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tofu_test.cpp">
@@ -43,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Test\util\TypeInfo_test.cpp">
       <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Test\tofu\Reflection_test.cpp">
+      <Filter>Source Files\tofu</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

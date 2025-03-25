@@ -117,6 +117,7 @@
     <ClCompile Include="..\..\..\Source\math\tofu_math_Angle.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\base\tofu_Assert.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\tofu_Reflection.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu_TypeInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +128,7 @@
     <ClInclude Include="..\..\..\Source\mpl\tofu_mpl_String.h" />
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_Assert.h" />
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseTypes.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseUtil.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Compiler.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Config.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h" />
@@ -136,6 +138,7 @@
     <ClInclude Include="..\..\..\Source\tofu\tofu_DisallowCopy.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_Finalizer.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_LooseSingleton.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Reflection.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_SafePtr.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_Singleton.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonPolicy.h" />
