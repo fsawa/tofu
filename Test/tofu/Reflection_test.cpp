@@ -73,8 +73,8 @@ namespace
 	}
 }
 
-REFLECTION_REGISTER_CLASS(test::A);
-REFLECTION_REGISTER_CLASS(test::B);
+TOFU_REFLECTION_CLASS(test::A);
+TOFU_REFLECTION_CLASS(test::B);
 
 IUTEST(tofu, Reflection)
 {

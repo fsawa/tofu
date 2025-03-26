@@ -43,6 +43,7 @@ namespace detail
 
 		void* Create() const override
 		{
+			// deleteする術を考える
 			return new T;
 		}
 	};
@@ -59,7 +60,7 @@ inline void EntryClass()
 }
 
 // 型名から生成できるクラスを登録するマクロ
-#define REFLECTION_REGISTER_CLASS(type)  TOFU_STATIC_CALL(::tofu::reflection::detail::ClassCreatorOf<type>::CreateInstance)
+#define TOFU_REFLECTION_CLASS(type)  TOFU_STATIC_CALL(::tofu::reflection::detail::ClassCreatorOf<type>::CreateInstance)
 
 /// @brief 型名からクラスインスタンスを生成する
 AnyPtr Create(std::string_view typeName);

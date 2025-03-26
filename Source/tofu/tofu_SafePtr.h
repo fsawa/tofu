@@ -105,7 +105,7 @@ public:
 	using  remove_const_type = SafePtr<typename std::remove_const<T>::type >; ///< TがconstじゃないPtrクラスへキャスト
 	using reverse_const_type = SafePtr<typename detail_safe_ptr::reverse_const<T>::type>; ///< Tのconst修飾を反転した型
 	
-	static const bool  kIsConst = std::is_const<T>::value; ///< Tがconstかどうか
+	static constexpr bool  IsConst = std::is_const<T>::value; ///< Tがconstかどうか
 	
 // FUNCTION
 	

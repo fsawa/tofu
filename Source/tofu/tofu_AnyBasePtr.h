@@ -23,10 +23,10 @@ namespace tofu {
 template <typename T>
 class AnyBasePtr
 {
-	typedef AnyBasePtr  self_type;
+	using self_type = AnyBasePtr;
 	
-	typedef detail_safe_ptr::const_cast_helper<T>  const_cast_helper;
-	typedef typename const_cast_helper::type  const_cast_type;
+	using const_cast_helper = detail_safe_ptr::const_cast_helper<T>;
+	using const_cast_type = typename const_cast_helper::type;
 	
 //**************************************************************
 //              : public
@@ -40,11 +40,11 @@ public:
 	
 	using reference_type = typename detail_safe_ptr::ptr_traits<T>::reference;
 	
-	typedef AnyBasePtr<typename std::add_const<T>::type    >      AddConstType; ///< TがconstのPtrクラスへキャスト
-	typedef AnyBasePtr<typename std::remove_const<T>::type >   RemoveConstType; ///< TがconstじゃないPtrクラスへキャスト
-	typedef AnyBasePtr<typename detail_safe_ptr::reverse_const<T>::type>  ReverseConstType; ///< Tのconst修飾を反転した型
+	using AddConstType     = AnyBasePtr<typename std::add_const<T>::type    >; ///< TがconstのPtrクラスへキャスト
+	using RemoveConstType  = AnyBasePtr<typename std::remove_const<T>::type >; ///< TがconstじゃないPtrクラスへキャスト
+	using ReverseConstType = AnyBasePtr<typename detail_safe_ptr::reverse_const<T>::type>; ///< Tのconst修飾を反転した型
 	
-	static const bool  kIsConst = std::is_const<T>::value; ///< Tがconstかどうか
+	static constexpr bool  IsConst = std::is_const<T>::value; ///< Tがconstかどうか
 	
 	//------------------------------------------------------------------------------
 	using value_type = base_type;
@@ -111,7 +111,7 @@ public:
 		m_ptr = p;
 		// 基底がconst、かつ、Derivedが非constの場合、
 		// TypeIdがconstになるようにする。
-		if( kIsConst && !std::is_const<Derived>::value ){
+		if( IsConst && !std::is_const<Derived>::value ){
 			m_typeId = MakeTypeId<const Derived>();
 		}
 		else{
@@ -228,16 +228,16 @@ private:
 	//------------------------------------------------------------------------------
 	
 	// キャスト可能か判定
-	inline bool  _castTest( typename std::add_const<T>::type* ) const noexcept
+	constexpr bool  _castTest( std::add_const_t<T>* ) const noexcept
 	{
 		return true;
 	}
 	
 	// キャスト可能か判定
-	inline bool  _castTest( typename std::remove_const<T>::type* ) const noexcept
+	constexpr bool  _castTest( std::remove_const_t<T>* ) const noexcept
 	{
 		// constから非constへのキャストはダメ
-		if( kIsConst ){
+		if constexpr ( IsConst ){
 			return false;
 		}
 		return true;
@@ -249,7 +249,7 @@ private:
 	{
 		// constへのキャスト時は自分のconstと、
 		// 非constへのキャスト時はそのまま比較。
-		TypeId  my_type_id = std::is_const<Derived>::value
+		TypeId  my_type_id = std::is_const_v<Derived>
 			? m_typeId.makeAddConst()
 			: m_typeId
 		;
