@@ -33,8 +33,6 @@ class AnyBasePtr
 //**************************************************************
 public:
 	
-// DEFINE
-	
 	using base_type = T; ///< 扱う基底クラス
 	using pointer_type = T*; ///< 扱うポインタの型
 	using holder_type = Holder<T>; ///< ポインタを保持する型
@@ -52,99 +50,71 @@ public:
 	using pointer    = pointer_type;
 	using reference  = reference_type;
 	
-// FUNCTION
+public:
 	
-	/// constructor
-	AnyBasePtr() noexcept : m_ptr(nullptr), m_typeId() {}
-	
-	/// destructor
+	AnyBasePtr() noexcept = default;
 	~AnyBasePtr() = default;
 	
-	/// copy constructor
-	AnyBasePtr( const AnyBasePtr& rhs ) noexcept
-		: m_ptr(rhs.m_ptr)
-		, m_typeId(rhs.m_typeId)
-	{}
+	// -- move
 	
+	AnyBasePtr( AnyBasePtr&& rhs ) noexcept = default;
+	AnyBasePtr& operator=( AnyBasePtr&& rhs ) noexcept = default;
+
+	// -- copy
+
+	AnyBasePtr( const AnyBasePtr& rhs ) noexcept = default;
+	AnyBasePtr&  operator=( const AnyBasePtr& rhs ) noexcept = default;
+	
+	// --
+
 	/// nullptr代入コンストラクタ
-	/*explicit*/ //AnyBasePtr( nullptr_t ) noexcept : m_ptr(nullptr) {}
+	/*explicit*/ //AnyBasePtr( nullptr_t ) noexcept {}
 	
 	/// 基底ポインタ代入コンストラクタ
-	/*explicit*/ AnyBasePtr( pointer p ) noexcept : m_ptr(nullptr) { *this = p; }
+	/*explicit*/ AnyBasePtr( pointer p ) noexcept { *this = p; }
 
 	/// 派生ポインタ代入コンストラクタ
 	template <typename Derived>
-	/*explicit*/ AnyBasePtr( Derived* p ) noexcept : m_ptr(nullptr) { *this = p; }
+	/*explicit*/ AnyBasePtr( Derived* p ) noexcept { *this = p; }
 	
 	/// 基底ポインタ＋型を直接指定
-	//AnyBasePtr( holder_type p, TypeId typeId ) noexcept : m_ptr(nullptr) { assign( p, typeId ); }
-
-	/// 基底ポインタ＋型を直接指定
-	AnyBasePtr( pointer p, TypeId typeId ) noexcept : m_ptr(nullptr) { assign( p, typeId ); }
-	
-	// move
-	AnyBasePtr( AnyBasePtr&& rhs ) noexcept = default;
-	AnyBasePtr& operator=( AnyBasePtr&& rhs ) noexcept = default;
+	AnyBasePtr( pointer p, TypeId typeId ) noexcept { assign( p, typeId ); }
 	
 	//==============================
-
-	// -- holder
 	
-	/// 基底ポインタ代入コンストラクタ
-	AnyBasePtr( holder_type p ) noexcept { *this = std::move(p); }
-
-	template <typename Derived>
-	AnyBasePtr( Holder<Derived> p ) noexcept { *this = std::move(p); }
+	// -- holder copy
 	
-	template <typename Derived>
-	AnyBasePtr&  operator=( Holder<Derived>&& p ) noexcept
+	explicit AnyBasePtr( holder_type p ) noexcept { *this = std::move(p); }
+	
+	AnyBasePtr&  operator=( holder_type p ) noexcept
 	{
-		m_ptr = std::exchange(p, {});
-		// 基底がconst、かつ、Derivedが非constの場合、
+		m_ptr = std::move(p);
+		m_typeId = MakeTypeId<T>();
+		return *this;
+	}
+
+	// -- holder<U> copy
+	
+	template <typename U>
+	AnyBasePtr( Holder<U> p ) noexcept { *this = std::move(p); }
+	
+	template <typename U>
+	AnyBasePtr&  operator=( Holder<U> p ) noexcept
+	{
+		m_ptr = std::move(p);
+		// 基底がconst、かつ、Uが非constの場合、
 		// TypeIdがconstになるようにする。
-		if constexpr ( IsConst && !std::is_const<Derived>::value ){
-			m_typeId = MakeTypeId<const Derived>();
+		if constexpr ( IsConst && !std::is_const_v<U> ){
+			m_typeId = MakeTypeId<const U>();
 		}
 		else{
-			m_typeId = MakeTypeId<Derived>();
+			m_typeId = MakeTypeId<U>();
 		}
 		return *this;
 	}
 	
-#if 0
-	explicit AnyBasePtr( holder_type&& p ) noexcept
-	{
-		m_ptr = std::exchange(p, {});
-		m_typeId = MakeTypeId<T>();
-	}
-#endif
-	
-	AnyBasePtr&  operator=( const holder_type& p ) noexcept
-	{
-		m_ptr = p;
-		m_typeId = MakeTypeId<T>();
-		return *this;
-	}
-
-#if 1
-	AnyBasePtr&  operator=( holder_type&& p ) noexcept
-	{
-		m_ptr = std::exchange(p, {});
-		m_typeId = MakeTypeId<T>();
-		return *this;
-	}
-#endif
-	
 	//==============================
 
-	/// copy
-	AnyBasePtr&  operator=( const AnyBasePtr& rhs ) noexcept
-	{
-		m_ptr = rhs.m_ptr;
-		m_typeId = rhs.m_typeId;
-		return *this;
-	}
-	
 	/// 代入（nullptr）
 	AnyBasePtr&  operator=( nullptr_t ) noexcept
 	{
@@ -156,36 +126,18 @@ public:
 	/// 代入（基底ポインタから）
 	AnyBasePtr&  operator=( pointer p ) noexcept
 	{
-		m_ptr.reset(p);
-		m_typeId = MakeTypeId<T>();
-		return *this;
+		return *this = holder_type(p);
 	}
 	
 	/// 代入（派生ポインタから）
-	template <typename Derived>
-	AnyBasePtr&  operator=( Derived* p ) noexcept
+	template <typename U>
+	AnyBasePtr&  operator=( U* p ) noexcept
 	{
-		m_ptr.reset(p);
-		// 基底がconst、かつ、Derivedが非constの場合、
-		// TypeIdがconstになるようにする。
-		if constexpr ( IsConst && !std::is_const<Derived>::value ){
-			m_typeId = MakeTypeId<const Derived>();
-		}
-		else{
-			m_typeId = MakeTypeId<Derived>();
-		}
-		return *this;
+		return *this = Holder<U>(p);
 	}
 	
 	//==============================
 	
-	/// 設定
-	void  assign( holder_type p, TypeId typeId ) noexcept
-	{
-		m_ptr = p;
-		m_typeId = typeId;
-	}
-
 	/// 設定
 	void  assign( pointer p, TypeId typeId ) noexcept
 	{
@@ -193,21 +145,21 @@ public:
 		m_typeId = typeId;
 	}
 	
-	/// クリア
-	void  Clear() noexcept
+	/// リセット
+	void  reset() noexcept
 	{
-		m_ptr = nullptr;
+		m_ptr.reset();
 		m_typeId.clear();
 	}
 	
 	/// TypeId取得
-	const TypeId&  type() const noexcept  { return m_typeId; }
+	TypeId  type() const noexcept  { return m_typeId; }
 	
 	/// 基底の生ポインタ取得
-	pointer  get() const noexcept  { return m_ptr; }
+	pointer  get() const noexcept  { return m_ptr.get(); }
 	
 	/// 基底の生ポインタ取得（nullチェック済み取得）
-	pointer  safe_get() const  { null_assert(); return m_ptr; }
+	pointer  safe_get() const  { null_assert(); return m_ptr.get(); }
 	
 	/// ポインタ変換（変換出来なかったらアサート）
 	template <typename Derived>
@@ -268,15 +220,6 @@ public:
 	/// 参照 *
 	reference operator*() const { null_assert(); return *m_ptr; }
 	
-	//------------------------------------------------------------------------------
-	
-	/// delete
-	void  Delete()
-	{
-		delete m_ptr.get();
-		Clear();
-	}
-	
 //**************************************************************
 //              : private
 //**************************************************************
@@ -297,8 +240,8 @@ private:
 	
 	//------------------------------------------------------------------------------
 	
-	void*  _getVoidPtr() const noexcept { return const_cast<void*>(_getConstVoidPtr()); }
 	const void*  _getConstVoidPtr() const noexcept { return m_ptr.get(); }
+	void*  _getVoidPtr() const noexcept { return const_cast<void*>(_getConstVoidPtr()); }
 
 	// キャスト可能か判定
 	constexpr bool  _castTest( std::add_const_t<T>* ) const noexcept
@@ -332,8 +275,8 @@ private:
 
 // VARIABLE
 	
-	holder_type  m_ptr;
-	TypeId  m_typeId;
+	holder_type  m_ptr{};
+	TypeId  m_typeId{};
 };
 // << AnyBasePtr
 
@@ -346,52 +289,22 @@ template <typename T, typename U>
 inline bool operator ==(const AnyBasePtr<T>& x, const AnyBasePtr<U>& y)
 	{ return x.get() == y.get(); }
 
-/// 比較 !=
+/// 三方比較 <=>
 template <typename T, typename U>
-inline bool operator !=(const AnyBasePtr<T>& x, const AnyBasePtr<U>& y)
-	{ return x.get() != y.get(); }
-
-/// 比較 <
-template <typename T, typename U>
-inline bool operator <(const AnyBasePtr<T>& x, const AnyBasePtr<U>& y)
-	{ return x.get() < y.get(); }
-
-/// 比較 <=
-template <typename T, typename U>
-inline bool operator <=(const AnyBasePtr<T>& x, const AnyBasePtr<U>& y)
-	{ return x.get() <= y.get(); }
-
-/// 比較 >
-template <typename T, typename U>
-inline bool operator >(const AnyBasePtr<T>& x, const AnyBasePtr<U>& y)
-	{ return x.get() > y.get(); }
-
-/// 比較 >=
-template <typename T, typename U>
-inline bool operator >=(const AnyBasePtr<T>& x, const AnyBasePtr<U>& y)
-	{ return x.get() >= y.get(); }
+constexpr auto operator <=>(AnyBasePtr<T>a, AnyBasePtr<U>b)
+	{ return a.get() <=> b.get(); }
 
 //------------------------------------------------------------------------------
 
 /// 比較 (nullptr) ==
 template <typename T>
 inline bool operator ==(const AnyBasePtr<T>& x, nullptr_t)
-	{ return x.get() == 0; }
+	{ return x.get() == nullptr; }
 
 /// 比較 (nullptr) ==
 template <typename T>
 inline bool operator ==(nullptr_t, const AnyBasePtr<T>& x)
-	{ return 0 == x.get(); }
-
-/// 比較 (nullptr) !=
-template <typename T>
-inline bool operator !=(const AnyBasePtr<T>& x, nullptr_t)
-	{ return x.get() != 0; }
-
-/// 比較 (nullptr) !=
-template <typename T>
-inline bool operator !=(nullptr_t, const AnyBasePtr<T>& x)
-	{ return 0 != x.get(); }
+	{ return nullptr == x.get(); }
 
 //------------------------------------------------------------------------------
 

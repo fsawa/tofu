@@ -72,7 +72,7 @@ IUTEST(util, AnyBasePtr)
 		IUTEST_ASSERT_TRUE( p6.type() == tofu::MakeTypeId<AB>() );
 		
 		// Clear
-		p6.Clear();
+		p6.reset();
 		IUTEST_ASSERT_TRUE( p6.get() == nullptr );
 		IUTEST_ASSERT_TRUE( p6.type() == tofu::TypeId() );
 		
@@ -123,10 +123,6 @@ IUTEST(util, AnyBasePtr)
 		// 演算子
 		p5->a = 1;
 		IUTEST_ASSERT_EQ( p5->a, (*p10).a );
-		
-		// Delete
-		tofu::AnyBasePtr<A>  p20( new AB() );
-		p20.Delete();
 		
 		//------------------------------------------------------------------------------
 		
@@ -264,6 +260,7 @@ IUTEST(util, AnyBasePtr)
 		{
 			tofu::AnyBasePtr<A, std::shared_ptr> p1 = new A;
 			tofu::AnyBasePtr<A, std::shared_ptr> p2 = std::make_shared<A>();
+			p2 = std::move(p1);
 		}
 		// 派生クラスのインスタンス代入
 		{
