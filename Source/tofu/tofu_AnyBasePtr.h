@@ -20,7 +20,7 @@ namespace tofu {
 /// @brief      特定のクラスから派生したクラスのポインタと型情報を保持するポインタクラス
 /// @note 特定のクラス(T)から派生したクラスのポインタと型情報を保持し、参照時に指定した型でなければnullを返す
 ////////////////////////////////////////////////////////////////////////////////////////////////
-template <typename T>
+template <typename T, template <class> typename Holder = SafePtr >
 class AnyBasePtr
 {
 	using self_type = AnyBasePtr;
@@ -37,6 +37,7 @@ public:
 	
 	using base_type = T; ///< 扱う基底クラス
 	using pointer_type = T*; ///< 扱うポインタの型
+	using holder_type = Holder<T>; ///< ポインタを保持する型
 	
 	using reference_type = typename detail_safe_ptr::ptr_traits<T>::reference;
 	
@@ -56,6 +57,9 @@ public:
 	/// constructor
 	AnyBasePtr() noexcept : m_ptr(nullptr), m_typeId() {}
 	
+	/// destructor
+	~AnyBasePtr() = default;
+	
 	/// copy constructor
 	AnyBasePtr( const AnyBasePtr& rhs ) noexcept
 		: m_ptr(rhs.m_ptr)
@@ -63,23 +67,76 @@ public:
 	{}
 	
 	/// nullptr代入コンストラクタ
-	/*explicit*/ AnyBasePtr( nullptr_t ) noexcept : m_ptr(nullptr) {}
+	/*explicit*/ //AnyBasePtr( nullptr_t ) noexcept : m_ptr(nullptr) {}
 	
 	/// 基底ポインタ代入コンストラクタ
 	/*explicit*/ AnyBasePtr( pointer p ) noexcept : m_ptr(nullptr) { *this = p; }
-	
+
 	/// 派生ポインタ代入コンストラクタ
 	template <typename Derived>
 	/*explicit*/ AnyBasePtr( Derived* p ) noexcept : m_ptr(nullptr) { *this = p; }
 	
 	/// 基底ポインタ＋型を直接指定
+	//AnyBasePtr( holder_type p, TypeId typeId ) noexcept : m_ptr(nullptr) { assign( p, typeId ); }
+
+	/// 基底ポインタ＋型を直接指定
 	AnyBasePtr( pointer p, TypeId typeId ) noexcept : m_ptr(nullptr) { assign( p, typeId ); }
 	
-	/// destructor
-	~AnyBasePtr() = default;
+	// move
+	AnyBasePtr( AnyBasePtr&& rhs ) noexcept = default;
+	AnyBasePtr& operator=( AnyBasePtr&& rhs ) noexcept = default;
 	
 	//==============================
+
+	// -- holder
 	
+	/// 基底ポインタ代入コンストラクタ
+	AnyBasePtr( holder_type p ) noexcept { *this = std::move(p); }
+
+	template <typename Derived>
+	AnyBasePtr( Holder<Derived> p ) noexcept { *this = std::move(p); }
+	
+	template <typename Derived>
+	AnyBasePtr&  operator=( Holder<Derived>&& p ) noexcept
+	{
+		m_ptr = std::exchange(p, {});
+		// 基底がconst、かつ、Derivedが非constの場合、
+		// TypeIdがconstになるようにする。
+		if constexpr ( IsConst && !std::is_const<Derived>::value ){
+			m_typeId = MakeTypeId<const Derived>();
+		}
+		else{
+			m_typeId = MakeTypeId<Derived>();
+		}
+		return *this;
+	}
+	
+#if 0
+	explicit AnyBasePtr( holder_type&& p ) noexcept
+	{
+		m_ptr = std::exchange(p, {});
+		m_typeId = MakeTypeId<T>();
+	}
+#endif
+	
+	AnyBasePtr&  operator=( const holder_type& p ) noexcept
+	{
+		m_ptr = p;
+		m_typeId = MakeTypeId<T>();
+		return *this;
+	}
+
+#if 1
+	AnyBasePtr&  operator=( holder_type&& p ) noexcept
+	{
+		m_ptr = std::exchange(p, {});
+		m_typeId = MakeTypeId<T>();
+		return *this;
+	}
+#endif
+	
+	//==============================
+
 	/// copy
 	AnyBasePtr&  operator=( const AnyBasePtr& rhs ) noexcept
 	{
@@ -99,7 +156,7 @@ public:
 	/// 代入（基底ポインタから）
 	AnyBasePtr&  operator=( pointer p ) noexcept
 	{
-		m_ptr = p;
+		m_ptr.reset(p);
 		m_typeId = MakeTypeId<T>();
 		return *this;
 	}
@@ -108,10 +165,10 @@ public:
 	template <typename Derived>
 	AnyBasePtr&  operator=( Derived* p ) noexcept
 	{
-		m_ptr = p;
+		m_ptr.reset(p);
 		// 基底がconst、かつ、Derivedが非constの場合、
 		// TypeIdがconstになるようにする。
-		if( IsConst && !std::is_const<Derived>::value ){
+		if constexpr ( IsConst && !std::is_const<Derived>::value ){
 			m_typeId = MakeTypeId<const Derived>();
 		}
 		else{
@@ -122,6 +179,13 @@ public:
 	
 	//==============================
 	
+	/// 設定
+	void  assign( holder_type p, TypeId typeId ) noexcept
+	{
+		m_ptr = p;
+		m_typeId = typeId;
+	}
+
 	/// 設定
 	void  assign( pointer p, TypeId typeId ) noexcept
 	{
@@ -158,10 +222,16 @@ public:
 	template <typename Derived>
 	Derived*  tryCast() const noexcept
 	{
+		if(m_typeId.empty()) return nullptr;
+		// constとvolatileは外せない
+		if(m_typeId.info().isConst() && !std::is_const_v<Derived> ) return nullptr;
+		if(m_typeId.info().isVolatile() && !std::is_volatile_v<Derived> ) return nullptr;
+
 		if( _castTest( (Derived*)nullptr ) ){
 			return _doCast<Derived>();
 		}
-		return nullptr;
+		// アップキャストを試みる
+		return m_typeId.info().upcast<Derived>(_getVoidPtr());
 	}
 	
 	/// 暗黙的キャスト（型が違ったらnullptr）
@@ -203,7 +273,7 @@ public:
 	/// delete
 	void  Delete()
 	{
-		delete m_ptr;
+		delete m_ptr.get();
 		Clear();
 	}
 	
@@ -221,12 +291,15 @@ private:
 	{
 		// constをあわせる
 		using tmp_type = typename detail_safe_ptr::set_const<T, std::is_const<Derived>::value>::type;
-		tmp_type* ptr = const_cast<tmp_type*>(m_ptr);
+		tmp_type* ptr = const_cast<tmp_type*>(m_ptr.get());
 		return static_cast<Derived*>(ptr);
 	}
 	
 	//------------------------------------------------------------------------------
 	
+	void*  _getVoidPtr() const noexcept { return const_cast<void*>(_getConstVoidPtr()); }
+	const void*  _getConstVoidPtr() const noexcept { return m_ptr.get(); }
+
 	// キャスト可能か判定
 	constexpr bool  _castTest( std::add_const_t<T>* ) const noexcept
 	{
@@ -259,7 +332,7 @@ private:
 
 // VARIABLE
 	
-	pointer  m_ptr;
+	holder_type  m_ptr;
 	TypeId  m_typeId;
 };
 // << AnyBasePtr

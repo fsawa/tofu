@@ -13,14 +13,13 @@
 #include <iostream>
 #include <iutest.hpp>
 
-namespace{
-namespace test
+namespace
 {
 	class A
 	{
 	public:
 		int a;
-		A() : a(0) {}
+		A() : a(0){}
 	};
 
 	class B
@@ -34,15 +33,17 @@ namespace test
 	{
 	public:
 		int ab;
-		AB() : ab(0) {}
+		AB() : ab(0){}
 	};
-}
+	
+	// クラス継承関係登録
+	TOFU_SET_BASE_TYPE(A, AB);
+	//TOFU_SET_BASE_TYPE(B, AB);
+
 }
 
 IUTEST(util, AnyBasePtr)
 {
-	using namespace test;
-
 	A a;
 	AB ab;
 	
@@ -256,4 +257,37 @@ IUTEST(util, AnyBasePtr)
 		IUTEST_ASSERT_TRUE( p100 <= p200 ); // nullptr同士
 		IUTEST_ASSERT_TRUE( p100 >= p200 ); // nullptr同士
 	}
+
+	// shared_ptr
+	std::cout << "-- shared_ptr" << std::endl;
+	{
+		{
+			tofu::AnyBasePtr<A, std::shared_ptr> p1 = new A;
+			tofu::AnyBasePtr<A, std::shared_ptr> p2 = std::make_shared<A>();
+		}
+		// 派生クラスのインスタンス代入
+		{
+			tofu::AnyBasePtr<A, std::shared_ptr> p1 = new AB;
+			tofu::AnyBasePtr<A, std::shared_ptr> p2 = std::make_shared<AB>();
+		}
+		// void
+		{
+			tofu::AnyBasePtr<void, std::shared_ptr> p1 = new A;
+			IUTEST_ASSERT_EQ(p1.type(), tofu::MakeTypeId<A>());
+			A* a = p1; // A*として取り出せる
+			IUTEST_ASSERT_FALSE(a == nullptr);
+		}
+		{
+			AB* ab = new AB;
+			tofu::AnyBasePtr<void, std::shared_ptr> p1 = ab;
+			IUTEST_ASSERT_EQ(p1.type(), tofu::MakeTypeId<AB>());
+			A* a = p1; // A*として取り出せる
+			IUTEST_ASSERT_EQ(static_cast<A*>(ab), a);
+			IUTEST_ASSERT_EQ(static_cast<A*>(ab), p1.tryCast<A>());
+			B* b = p1; // Bは基底クラス登録していないので取り出せない
+			IUTEST_ASSERT_NE(static_cast<B*>(ab), b);
+			IUTEST_ASSERT_NE(static_cast<B*>(ab), p1.tryCast<B>());
+		}
+	}
+	std::cout << "-- done" << std::endl;
 }
