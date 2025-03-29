@@ -109,48 +109,51 @@ public:
 	
 // FUNCTION
 	
-	SafePtr() noexcept : m_p(nullptr) {}
+	constexpr SafePtr() noexcept = default;
+	constexpr ~SafePtr() noexcept = default;
 	
-	SafePtr( const SafePtr& rhs ) noexcept : m_p(rhs.m_p) {}
+	// -- copy
+
+	constexpr SafePtr( const SafePtr& rhs ) noexcept = default;
+	constexpr SafePtr&  operator=( const SafePtr& rhs ) noexcept = default;
+
+	// -- pointer 代入
 	
-	/*explicit*/ SafePtr( pointer_type p_ ) noexcept : m_p(p_) {}
+	constexpr SafePtr( pointer_type p_ ) noexcept : m_p(p_) {}
 	
-	//------------------------------------------------------------------------------
-	
-	SafePtr&  operator=( const SafePtr& rhs ) noexcept
-	{
-		this->m_p = rhs.m_p;
-		return *this;
-	}
-	
-	SafePtr&  operator=( pointer_type ptr ) noexcept
+	constexpr SafePtr&  operator=( pointer_type ptr ) noexcept
 	{
 		this->m_p = ptr;
 		return *this;
 	}
 	
 	//------------------------------------------------------------------------------
+
+	constexpr void reset(pointer_type p = nullptr) noexcept
+	{
+		m_p = p;
+	}
 	
 	/// ポインタがnullならアサートにする
 	void  null_assert() const  { TOFU_ASSERT(m_p != nullptr); }
 	
 	/// 生のポインタにキャスト
-	operator pointer_type() const noexcept  { return m_p; }
+	constexpr operator pointer_type() const noexcept  { return m_p; }
 	
 	/// const付与した生のポインタにキャスト
-	operator const_cast_type() const  { return const_cast_helper::cast(m_p); }
+	constexpr operator const_cast_type() const  { return const_cast_helper::cast(m_p); }
 	
 	/// bool値にキャスト
-	operator bool() const noexcept  { return nullptr != m_p; }
+	constexpr operator bool() const noexcept  { return nullptr != m_p; }
 	
 	/// 空（=null）かどうか
-	bool  empty() const noexcept  { return nullptr == m_p; }
+	constexpr bool  empty() const noexcept  { return nullptr == m_p; }
 	
 	/// ポインタ取得
-	pointer_type  get() const noexcept  { return m_p; }
+	constexpr pointer_type  get() const noexcept  { return m_p; }
 	
 	/// nullじゃないことを保証（nullならアサート）するポインタ取得
-	pointer_type  safe() const  { null_assert(); return m_p; }
+	constexpr pointer_type  safe() const  { null_assert(); return m_p; }
 	
 	//------------------------------------------------------------------------------
 	// ポインタ演算子
@@ -184,32 +187,29 @@ public:
 	self_type& operator-=( int n ) { null_assert(); m_p -= n; return *this; }
 	
 	/// 三方比較演算子
-	auto operator<=>(const self_type& rhs) const noexcept { return m_p <=> rhs.m_p; }
+	//constexpr auto operator<=>(const self_type& rhs) const noexcept { return m_p <=> rhs.m_p; }
 
 	//------------------------------------------------------------------------------
 	// 特種な拡張
 	//------------------------------------------------------------------------------
 	
-	/// クリア
-	void  Clear() noexcept { m_p = nullptr; }
-	
 	/// deleteを実行
 	void  Delete()
 	{
 		delete m_p;
-		Clear();
+		reset();
 	}
 	
 	/// delete[]を実行（本当に配列かどうかは、使う側の責任）
 	void  DeleteArray()
 	{
 		delete[] m_p;
-		Clear();
+		reset();
 	}
 	
 // VARIABLE
 	
-	pointer_type  m_p; ///< 生のポインタ（あえてpublicに）
+	pointer_type  m_p = nullptr; ///< 生のポインタ（あえてpublicに）
 
 private:
 	
@@ -224,53 +224,28 @@ private:
 
 /// 加算
 template <typename T>
-inline SafePtr<T> operator+( const SafePtr<T>& ptr, int n )
+constexpr SafePtr<T> operator+( SafePtr<T> ptr, int n )
 	{ return ptr.safe() + n; }
 
 /// 減算
 template <typename T>
-inline SafePtr<T> operator-( const SafePtr<T>& ptr, int n )
+constexpr SafePtr<T> operator-( SafePtr<T> ptr, int n )
 	{ return ptr.safe() - n; }
 
 /// 距離
 template <typename T, typename U>
-inline ptrdiff_t operator -(const SafePtr<T>& a, const SafePtr<U>& b)
+constexpr ptrdiff_t operator -(SafePtr<T> a, SafePtr<U> b)
 	{ return a.safe() - b.safe(); }
 
 /// 比較 ==
 template <typename T, typename U>
-inline bool operator ==(const SafePtr<T>& a, const SafePtr<U>& b)
-	{ return a.m_p == b.m_p; }
+constexpr bool operator ==(SafePtr<T> a, SafePtr<U> b)
+	{ return a.get() == b.get(); }
 
-/// 比較 !=
+/// 三方比較 <=>
 template <typename T, typename U>
-inline bool operator !=(const SafePtr<T>& a, const SafePtr<U>& b)
-	{ return a.m_p != b.m_p; }
-
-/// 比較 <
-template <typename T, typename U>
-inline bool operator <(const SafePtr<T>& a, const SafePtr<U>& b)
-	{ return a.m_p < b.m_p; }
-
-/// 比較 <=
-template <typename T, typename U>
-inline bool operator <=(const SafePtr<T>& a, const SafePtr<U>& b)
-	{ return a.m_p <= b.m_p; }
-
-/// 比較 >
-template <typename T, typename U>
-inline bool operator >(const SafePtr<T>& a, const SafePtr<U>& b)
-	{ return a.m_p > b.m_p; }
-
-/// 比較 >=
-template <typename T, typename U>
-inline bool operator >=(const SafePtr<T>& a, const SafePtr<U>& b)
-	{ return a.m_p >= b.m_p; }
-
-/// 比較 <=>
-template <typename T, typename U>
-inline auto operator <=>(const SafePtr<T>&a, const SafePtr<U>&b)
-	{ return a.m_p <=> b.m_p; }
+constexpr auto operator <=>(SafePtr<T>a, SafePtr<U>b)
+	{ return a.get() <=> b.get(); }
 
 //------------------------------------------------------------------------------
 // nullptrとの比較
@@ -278,23 +253,13 @@ inline auto operator <=>(const SafePtr<T>&a, const SafePtr<U>&b)
 
 /// 比較 (nullptr) ==
 template <typename T>
-inline bool operator ==(const SafePtr<T>& a, nullptr_t)
-	{ return a.m_p == nullptr; }
+constexpr bool operator ==(SafePtr<T> a, nullptr_t)
+	{ return a.get() == nullptr; }
 
 /// 比較 (nullptr) ==
 template <typename T>
-inline bool operator ==(nullptr_t, const SafePtr<T>& a)
-	{ return nullptr == a.m_p; }
-
-/// 比較 (nullptr) !=
-template <typename T>
-inline bool operator !=(const SafePtr<T>& a, nullptr_t)
-	{ return a.m_p != nullptr; }
-
-/// 比較 (nullptr) !=
-template <typename T>
-inline bool operator !=(nullptr_t, const SafePtr<T>& a)
-	{ return nullptr != a.m_p; }
+constexpr bool operator ==(nullptr_t, SafePtr<T> a)
+	{ return nullptr == a.get(); }
 
 //------------------------------------------------------------------------------
 

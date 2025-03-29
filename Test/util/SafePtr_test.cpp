@@ -38,21 +38,21 @@ IUTEST(util, SafePtr)
 	tofu::SafePtr<test::A> ptr;
 	tofu::SafePtr<const test::A> ptr2(a + 1);
 	
-	{ tofu::SafePtr<void> ptr; }
-	{ tofu::SafePtr<const void> ptr; }
-	{ tofu::SafePtr<int> ptr; }
-	{ tofu::SafePtr<const int> ptr; }
+	{ [[maybe_unused]] tofu::SafePtr<void> ptr; }
+	{ [[maybe_unused]] tofu::SafePtr<const void> ptr; }
+	{ [[maybe_unused]] tofu::SafePtr<int> ptr; }
+	{ [[maybe_unused]] tofu::SafePtr<const int> ptr; }
 	
 	IUTEST_ASSERT_EQ(ptr.get(), nullptr);
 	IUTEST_ASSERT((nullptr==ptr));
 	IUTEST_ASSERT(ptr.empty());
-	ptr.Clear();
+	ptr.reset();
 
 	ptr = a;
 	IUTEST_ASSERT_EQ(ptr.get(), a);
 	IUTEST_ASSERT((ptr==a));
 	IUTEST_ASSERT(!ptr.empty());
-	//ptr.Clear();
+	//ptr.reset();
 	
 	ptr->func();
 	(*ptr).func();
@@ -81,7 +81,7 @@ IUTEST(util, SafePtr)
 	IUTEST_ASSERT(( ptr != nullptr ));
 	IUTEST_ASSERT(( nullptr != ptr ));
 	
-	ptr.Clear();
+	ptr.reset();
 	IUTEST_ASSERT(( ptr == nullptr ));
 	IUTEST_ASSERT(( nullptr == ptr ));
 
