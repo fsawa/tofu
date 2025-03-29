@@ -44,13 +44,12 @@ namespace detail
 			}
 			
 			// クラス生成
-			AnyPtr Create(std::string_view typeName) const
+			AnyBasePtr<void, std::shared_ptr> Create(std::string_view typeName) const
 			{
 				auto it = m_Classes.find(typeName);
 				if(it != m_Classes.end())
 				{
-					void* p = it->second->Create();
-					return { p, it->second->GetTypeId() };
+					return it->second->Create();
 				}
 				return {};
 			}
@@ -68,7 +67,7 @@ namespace detail
 }
 
 //------------------------------------------------------------------------------
-AnyPtr Create(std::string_view typeName)
+AnyBasePtr<void, std::shared_ptr> Create(std::string_view typeName)
 {
 	return detail::Manager::Instance().Create(typeName);
 }

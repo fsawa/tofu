@@ -16,21 +16,26 @@
 
 namespace test
 {
+	static int s_CountBase = 0;
+	static int s_CountA = 0;
+
 	class Base
 	{
 	public:
-		Base() = default;
+		Base() { ++s_CountBase; }
 		virtual ~Base()
 		{
+			--s_CountBase;
 		}
 	};
 
 	class A : public Base
 	{
 	public:
-		A() = default;
+		A() { ++s_CountA; }
 		virtual ~A()
 		{
+			--s_CountA;
 		}
 	};
 
@@ -102,7 +107,11 @@ IUTEST(tofu, Reflection)
 		auto ptr = tofu::reflection::Create("test::A");
 		IUTEST_ASSERT_NE(ptr.get(), nullptr);
 		std::cout << ptr.type().info().GetName() << std::endl;
+		IUTEST_ASSERT_EQ(ptr.type().info().GetName(), "test::A");
 		//delete ptr.get();
 		//ptr.Clear();
+		IUTEST_ASSERT_EQ(test::s_CountA, 1);
 	}
+	IUTEST_ASSERT_EQ(test::s_CountBase, 0);
+	IUTEST_ASSERT_EQ(test::s_CountA, 0);
 }

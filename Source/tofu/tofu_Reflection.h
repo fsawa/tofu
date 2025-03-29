@@ -13,6 +13,7 @@
 #include <tofu.h>
 #include <tofu_TypeInfo.h>
 #include <tofu_AnyPtr.h>
+#include <tofu_AnyBasePtr.h>
 #include <tofu_Singleton.h>
 
 namespace tofu {
@@ -24,7 +25,7 @@ namespace detail
 	{
 	public:
 		virtual TypeId GetTypeId() const = 0;
-		virtual void* Create() const = 0;
+		virtual AnyBasePtr<void, std::shared_ptr> Create() const = 0;
 	};
 
 	template <typename T>
@@ -41,10 +42,9 @@ namespace detail
 			return MakeTypeId<T>();
 		}
 
-		void* Create() const override
+		AnyBasePtr<void, std::shared_ptr> Create() const override
 		{
-			// deleteする術を考える
-			return new T;
+			return AnyBasePtr<T, std::shared_ptr>(new T);
 		}
 	};
 
@@ -63,7 +63,7 @@ inline void EntryClass()
 #define TOFU_REFLECTION_CLASS(type)  TOFU_STATIC_CALL(::tofu::reflection::detail::ClassCreatorOf<type>::CreateInstance)
 
 /// @brief 型名からクラスインスタンスを生成する
-AnyPtr Create(std::string_view typeName);
+AnyBasePtr<void, std::shared_ptr> Create(std::string_view typeName);
 
 /// @brief 型名から派生クラスのshared_ptrを作る
 /// @tparam T 基底クラス
