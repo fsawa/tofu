@@ -65,6 +65,31 @@ public:
 	AnyBasePtr( const AnyBasePtr& rhs ) noexcept = default;
 	AnyBasePtr&  operator=( const AnyBasePtr& rhs ) noexcept = default;
 	
+	// -- move <U>
+	
+	template <typename U>
+	AnyBasePtr( AnyBasePtr<U, Holder>&& rhs ) noexcept { *this = std::move(rhs); }
+	template <typename U>
+	AnyBasePtr& operator=( AnyBasePtr<U, Holder>&& rhs ) noexcept
+	{
+		m_ptr = rhs.GetHolder();
+		m_typeId = rhs.type();
+		rhs.reset();
+		return *this;
+	}
+	
+	// -- copy <U>
+
+	template <typename U>
+	AnyBasePtr( const AnyBasePtr<U, Holder>& rhs ) noexcept { *this = rhs; }
+	template <typename U>
+	AnyBasePtr&  operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
+	{
+		m_ptr = rhs.GetHolder();
+		m_typeId = rhs.type();
+		return *this;
+	}
+	
 	// --
 
 	/// nullptr代入コンストラクタ
@@ -160,6 +185,9 @@ public:
 	
 	/// 基底の生ポインタ取得（nullチェック済み取得）
 	pointer  safe_get() const  { null_assert(); return m_ptr.get(); }
+
+	/// holder取得
+	const holder_type& GetHolder() const { return m_ptr; }
 	
 	/// ポインタ変換（変換出来なかったらアサート）
 	template <typename Derived>
