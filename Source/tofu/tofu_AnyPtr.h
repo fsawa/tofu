@@ -12,9 +12,11 @@
 
 #include <tofu.h>
 #include <tofu_TypeInfo.h>
+#include <tofu_AnyBasePtr.h>
 
 namespace tofu {
 
+#if 0
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief      何かのポインタとその型情報を保持し、意図した型のポインタとして安全に取り出すクラス
 /// 
@@ -228,5 +230,8 @@ inline bool operator !=(nullptr_t, const AnyPtr& a) noexcept
 	{ return nullptr != a.get(); }
 
 //------------------------------------------------------------------------------
+#endif
+
+using AnyPtr = AnyBasePtr<void>;
 
 } // tofu

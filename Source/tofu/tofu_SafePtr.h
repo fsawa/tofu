@@ -113,10 +113,13 @@ public:
 	constexpr ~SafePtr() noexcept = default;
 	
 	// -- copy
-
-	constexpr SafePtr( const SafePtr& rhs ) noexcept = default;
+	explicit constexpr SafePtr( const SafePtr& rhs ) noexcept = default;
 	constexpr SafePtr&  operator=( const SafePtr& rhs ) noexcept = default;
 
+	// -- move
+	explicit SafePtr( SafePtr&& rhs ) noexcept = default;
+	SafePtr&  operator=( SafePtr&& rhs ) noexcept = default;
+	
 	// -- pointer 代入
 	
 	constexpr SafePtr( pointer_type p_ ) noexcept : m_p(p_) {}
@@ -126,7 +129,7 @@ public:
 		this->m_p = ptr;
 		return *this;
 	}
-	
+
 	//------------------------------------------------------------------------------
 
 	constexpr void reset(pointer_type p = nullptr) noexcept
@@ -144,7 +147,7 @@ public:
 	constexpr operator const_cast_type() const  { return const_cast_helper::cast(m_p); }
 	
 	/// bool値にキャスト
-	constexpr operator bool() const noexcept  { return nullptr != m_p; }
+	explicit constexpr operator bool() const noexcept  { return nullptr != m_p; }
 	
 	/// 空（=null）かどうか
 	constexpr bool  empty() const noexcept  { return nullptr == m_p; }

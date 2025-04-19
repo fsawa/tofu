@@ -20,7 +20,7 @@ namespace tofu {
 /// @brief      特定のクラスから派生したクラスのポインタと型情報を保持するポインタクラス
 /// @note 特定のクラス(T)から派生したクラスのポインタと型情報を保持し、参照時に指定した型でなければnullを返す
 ////////////////////////////////////////////////////////////////////////////////////////////////
-template <typename T, template <class> typename Holder = SafePtr >
+template <typename T = void, template <class> typename Holder = SafePtr >
 class AnyBasePtr
 {
 	using self_type = AnyBasePtr;
@@ -39,11 +39,12 @@ public:
 	
 	using reference_type = typename detail_safe_ptr::ptr_traits<T>::reference;
 	
-	using AddConstType     = AnyBasePtr<typename std::add_const<T>::type    >; ///< TがconstのPtrクラスへキャスト
-	using RemoveConstType  = AnyBasePtr<typename std::remove_const<T>::type >; ///< TがconstじゃないPtrクラスへキャスト
+	using ConstType     = AnyBasePtr<typename std::add_const<T>::type    >; ///< TがconstのPtrクラスへキャスト
+	using NotConstType  = AnyBasePtr<typename std::remove_const<T>::type >; ///< TがconstじゃないPtrクラスへキャスト
 	using ReverseConstType = AnyBasePtr<typename detail_safe_ptr::reverse_const<T>::type>; ///< Tのconst修飾を反転した型
 	
-	static constexpr bool  IsConst = std::is_const<T>::value; ///< Tがconstかどうか
+	static constexpr bool IsVoid  = std::is_same_v<std::remove_cv_t<T>, void>; ///< Tがvoidかどうか
+	static constexpr bool IsConst = std::is_const_v<T>;      ///< Tがconstかどうか
 	
 	//------------------------------------------------------------------------------
 	using value_type = base_type;
@@ -57,118 +58,168 @@ public:
 	
 	// -- move
 	
-	AnyBasePtr( AnyBasePtr&& rhs ) noexcept = default;
-	AnyBasePtr& operator=( AnyBasePtr&& rhs ) noexcept = default;
+	AnyBasePtr( AnyBasePtr&& rhs ) noexcept { *this = rhs; }
+	AnyBasePtr& operator=( AnyBasePtr&& rhs ) noexcept
+	{
+		m_ptr = rhs.MoveHolder();
+		m_typeId = rhs.type();
+		rhs.reset();
+		return *this;
+	}
 
 	// -- copy
 
 	AnyBasePtr( const AnyBasePtr& rhs ) noexcept = default;
 	AnyBasePtr&  operator=( const AnyBasePtr& rhs ) noexcept = default;
 	
-	// -- move <U>
+	// -- move <U> / void
 	
 	template <typename U>
+		requires IsVoid
 	AnyBasePtr( AnyBasePtr<U, Holder>&& rhs ) noexcept { *this = std::move(rhs); }
+
 	template <typename U>
+		requires IsVoid
 	AnyBasePtr& operator=( AnyBasePtr<U, Holder>&& rhs ) noexcept
 	{
-		m_ptr = rhs.GetHolder();
-		m_typeId = rhs.type();
+		m_ptr = rhs.MoveHolder();
+		iSetTypeId(rhs.type());
 		rhs.reset();
 		return *this;
 	}
 	
-	// -- copy <U>
+	// -- move <U> / derived
 
 	template <typename U>
-	AnyBasePtr( const AnyBasePtr<U, Holder>& rhs ) noexcept { *this = rhs; }
+		requires (std::is_base_of_v<T, U>)
+	AnyBasePtr( AnyBasePtr<U, Holder>&& rhs ) noexcept { *this = std::move(rhs); }
+
 	template <typename U>
+		requires (std::is_base_of_v<T, U>)
+	AnyBasePtr& operator=( AnyBasePtr<U, Holder>&& rhs ) noexcept
+	{
+		m_ptr = rhs.MoveHolder();
+		iSetTypeId(rhs.type());
+		rhs.reset();
+		return *this;
+	}
+
+	// -- copy <U> / void
+
+	template <typename U>
+		requires IsVoid
+	AnyBasePtr( const AnyBasePtr<U, Holder>& rhs ) noexcept { *this = rhs; }
+	
+	template <typename U>
+		requires IsVoid
 	AnyBasePtr&  operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
 	{
 		m_ptr = rhs.GetHolder();
-		m_typeId = rhs.type();
+		iSetTypeId(rhs.type());
 		return *this;
 	}
-	
-	// --
 
-	/// nullptr代入コンストラクタ
-	/*explicit*/ //AnyBasePtr( nullptr_t ) noexcept {}
-	
-	/// 基底ポインタ代入コンストラクタ
-	/*explicit*/ AnyBasePtr( pointer p ) noexcept { *this = p; }
+	// -- copy <U> / derived
 
-	/// 派生ポインタ代入コンストラクタ
-	template <typename Derived>
-	/*explicit*/ AnyBasePtr( Derived* p ) noexcept { *this = p; }
-	
-	/// 基底ポインタ＋型を直接指定
-	AnyBasePtr( pointer p, TypeId typeId ) noexcept { assign( p, typeId ); }
-	
-	//==============================
-	
-	// -- holder copy
-	
-	explicit AnyBasePtr( holder_type p ) noexcept { *this = std::move(p); }
-	
-	AnyBasePtr&  operator=( holder_type p ) noexcept
+	template <typename U>
+		requires (std::is_base_of_v<T, U>)
+	AnyBasePtr( const AnyBasePtr<U, Holder>& rhs ) noexcept { *this = rhs; }
+
+	template <typename U>
+		requires (std::is_base_of_v<T, U>)
+	AnyBasePtr&  operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
 	{
-		m_ptr = std::move(p);
-		m_typeId = MakeTypeId<T>();
+		m_ptr = rhs.GetHolder();
+		iSetTypeId(rhs.type());
 		return *this;
 	}
+	
+	// -- from raw-pointer <U> / void
 
-	// -- holder<U> copy
+	template <typename U>
+		requires IsVoid
+	AnyBasePtr( U* p ) noexcept
+		// T=void の場合はconstのポインタも受け付ける
+		: m_ptr(const_cast<std::remove_const_t<U>*>(p))
+		, m_typeId(iMakeTypeId<U>())
+	{
+	}
 	
 	template <typename U>
-	AnyBasePtr( Holder<U> p ) noexcept { *this = std::move(p); }
+		requires IsVoid
+	AnyBasePtr&  operator=( U* p ) noexcept
+	{
+		// T=void の場合はconstのポインタも受け付ける
+		m_ptr.reset(const_cast<std::remove_const_t<U>*>(p));
+		iSetTypeId<U>();
+		return *this;
+	}
+	
+	// -- from raw-pointer <U> / derived
+
+	template <typename U>
+		requires (std::is_base_of_v<T, U>)
+	AnyBasePtr( U* p ) noexcept
+		: m_ptr(p)
+		, m_typeId(iMakeTypeId<U>())
+	{
+	}
+
+	template <typename U>
+		requires (std::is_base_of_v<T, U>)
+	AnyBasePtr&  operator=( U* p ) noexcept
+	{
+		m_ptr.reset(p);
+		iSetTypeId<U>();
+		return *this;
+	}
+	
+	// -- holder<U> copy / void
 	
 	template <typename U>
+		requires IsVoid
+	AnyBasePtr( Holder<U> p ) noexcept { *this = p; }
+	
+	template <typename U>
+		requires IsVoid
 	AnyBasePtr&  operator=( Holder<U> p ) noexcept
 	{
-		m_ptr = std::move(p);
-		// 基底がconst、かつ、Uが非constの場合、
-		// TypeIdがconstになるようにする。
-		if constexpr ( IsConst && !std::is_const_v<U> ){
-			m_typeId = MakeTypeId<const U>();
-		}
-		else{
-			m_typeId = MakeTypeId<U>();
-		}
+		//m_ptr = const_cast<std::remove_const_t<U>*>(p.get());
+		m_ptr = p;
+		iSetTypeId<U>();
+		return *this;
+	}
+	
+	// -- holder<U> copy / derived
+
+	template <typename U>
+		requires (std::is_base_of_v<T, U>)
+	AnyBasePtr( Holder<U> p ) noexcept { *this = p; }
+
+	template <typename U>
+		requires (std::is_base_of_v<T, U>)
+	AnyBasePtr&  operator=( Holder<U> p ) noexcept
+	{
+		m_ptr = p;
+		iSetTypeId<U>();
 		return *this;
 	}
 	
 	//==============================
+
+#if 0
+	/// nullptr代入コンストラクタ
+	/*explicit*/ AnyBasePtr( nullptr_t ) noexcept {}
 
 	/// 代入（nullptr）
 	AnyBasePtr&  operator=( nullptr_t ) noexcept
 	{
-		m_ptr = nullptr;
-		m_typeId.clear();
+		reset();
 		return *this;
 	}
-	
-	/// 代入（基底ポインタから）
-	AnyBasePtr&  operator=( pointer p ) noexcept
-	{
-		return *this = holder_type(p);
-	}
-	
-	/// 代入（派生ポインタから）
-	template <typename U>
-	AnyBasePtr&  operator=( U* p ) noexcept
-	{
-		return *this = Holder<U>(p);
-	}
+#endif
 	
 	//==============================
-	
-	/// 設定
-	void  assign( pointer p, TypeId typeId ) noexcept
-	{
-		m_ptr = p;
-		m_typeId = typeId;
-	}
 	
 	/// リセット
 	void  reset() noexcept
@@ -188,6 +239,11 @@ public:
 
 	/// holder取得
 	const holder_type& GetHolder() const { return m_ptr; }
+
+	holder_type MoveHolder()
+	{
+		return std::move(m_ptr);
+	}
 	
 	/// ポインタ変換（変換出来なかったらアサート）
 	template <typename Derived>
@@ -215,8 +271,8 @@ public:
 	}
 	
 	/// 暗黙的キャスト（型が違ったらnullptr）
-	template <typename Derived>
-	operator Derived*() const noexcept  { return tryCast<Derived>(); }
+	template <typename U>
+	operator U*() const noexcept  { return tryCast<U>(); }
 	
 	//------------------------------------------------------------------------------
 	
@@ -238,7 +294,10 @@ public:
 	//------------------------------------------------------------------------------
 	
 	/// インスタンスの型にconst修飾を付加したAnyBasePtrを取得
-	AnyBasePtr<const T>  makeAddConst() const noexcept  { return AnyBasePtr<const T>( m_ptr, m_typeId.makeAddConst() ); }
+	AnyBasePtr<const T>  makeAddConst() const noexcept
+	{
+		return AnyBasePtr<const T>( *this );
+	}
 	
 	//------------------------------------------------------------------------------
 	
@@ -256,7 +315,49 @@ private:
 // DEFINE
 	
 // FUNCTION
+
+	static inline TypeId iConvertType(TypeId id)
+	{
+		if constexpr ( IsConst ){
+			return id.makeAddConst();
+		}
+		else{
+			return id;
+		}
+	}
 	
+	void iSetTypeId(TypeId id)
+	{
+		m_typeId = iConvertType(id);
+	}
+	
+	template <typename U>
+		requires IsVoid
+	TypeId iMakeTypeId()
+	{
+		return MakeTypeId<U>();
+	}
+
+	template <typename U>
+		requires (std::is_base_of_v<T, U>)
+	TypeId iMakeTypeId()
+	{
+		// 基底がconst、かつ、Uが非constの場合、
+		// TypeIdがconstになるようにする。
+		if constexpr ( IsConst ){
+			return MakeTypeId<const U>();
+		}
+		else{
+			return MakeTypeId<U>();
+		}
+	}
+
+	template <typename U>
+	void iSetTypeId()
+	{
+		m_typeId = iMakeTypeId<U>();
+	}
+
 	template <typename Derived>
 	inline Derived*  _doCast() const
 	{
@@ -303,8 +404,8 @@ private:
 
 // VARIABLE
 	
-	holder_type  m_ptr{};
-	TypeId  m_typeId{};
+	holder_type m_ptr{};
+	TypeId m_typeId{};
 };
 // << AnyBasePtr
 
@@ -313,25 +414,25 @@ private:
 //------------------------------------------------------------------------------
 
 /// 比較 ==
-template <typename T, typename U>
-inline bool operator ==(const AnyBasePtr<T>& x, const AnyBasePtr<U>& y)
+template <typename T, typename U, template <class> typename Holder>
+inline bool operator ==(const AnyBasePtr<T, Holder>& x, const AnyBasePtr<U, Holder>& y)
 	{ return x.get() == y.get(); }
 
 /// 三方比較 <=>
-template <typename T, typename U>
-constexpr auto operator <=>(AnyBasePtr<T>a, AnyBasePtr<U>b)
+template <typename T, typename U, template <class> typename Holder>
+constexpr auto operator <=>(AnyBasePtr<T, Holder>a, AnyBasePtr<U, Holder>b)
 	{ return a.get() <=> b.get(); }
 
 //------------------------------------------------------------------------------
 
 /// 比較 (nullptr) ==
-template <typename T>
-inline bool operator ==(const AnyBasePtr<T>& x, nullptr_t)
+template <typename T, template <class> typename Holder>
+inline bool operator ==(const AnyBasePtr<T, Holder>& x, nullptr_t)
 	{ return x.get() == nullptr; }
 
 /// 比較 (nullptr) ==
-template <typename T>
-inline bool operator ==(nullptr_t, const AnyBasePtr<T>& x)
+template <typename T, template <class> typename Holder>
+inline bool operator ==(nullptr_t, const AnyBasePtr<T, Holder>& x)
 	{ return nullptr == x.get(); }
 
 //------------------------------------------------------------------------------
