@@ -41,7 +41,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT(ptr.empty());
 	ptr.type();
 	ptr.makeAddConst();
-	ptr.Clear();
+	ptr.reset();
 
 	ptr = &a;
 	IUTEST_ASSERT_EQ(ptr.get(), &a);
@@ -53,7 +53,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(ptr.makeAddConst().type().info().isConst(), true);
 	//ptr.Clear();
 
-	ptr = nullptr;
+	ptr = {};
 	ptr = &a;
 
 	test::A* ptr_a = ptr; // ok
@@ -112,5 +112,7 @@ IUTEST(util, AnyPtr)
 		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B3>() );
 		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B2>() );
 		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B1>() );
+		
+		tofu::AnyPtr ptr2 = &const_b3;
 	}
 }

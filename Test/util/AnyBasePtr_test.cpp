@@ -51,19 +51,28 @@ IUTEST(util, AnyBasePtr)
 		// コンストラクタ
 		tofu::AnyBasePtr<A>  p1;
 		tofu::AnyBasePtr<A>  p2( p1 );
-		tofu::AnyBasePtr<A>  p3( nullptr );
+		tofu::AnyBasePtr<A>  p3{};
 		tofu::AnyBasePtr<A>  p4( &a );
 		tofu::AnyBasePtr<A>  p5( &ab );
-		tofu::AnyBasePtr<A>  p6( p5.get(), p5.type() );
+		tofu::AnyBasePtr<A>  p6( p5 );
+		
+		// 非const to const
+		tofu::AnyBasePtr<const A>  cp1;
+		tofu::AnyBasePtr<const A>  cp2( p1 );
+		tofu::AnyBasePtr<const A>  cp3{};
+		tofu::AnyBasePtr<const A>  cp4( &a );
+		tofu::AnyBasePtr<const A>  cp5( &ab );
+		tofu::AnyBasePtr<const A>  cp6( p5 );
+		tofu::AnyBasePtr<const A>  cp7( cp6 );
 		
 		// コピー
 		p2 = p1;
-		p3 = nullptr;
+		p3 = {};
 		p4 = &a;
 		p5 = &ab;
 		
 		//
-		p6.assign( p5.get(), p5.type() );
+		//p6.assign( p5.get(), p5.type() );
 		
 		IUTEST_ASSERT_EQ( p5.get(), p6.get() );
 		IUTEST_ASSERT_TRUE( p5.type() == p6.type() );
@@ -260,7 +269,28 @@ IUTEST(util, AnyBasePtr)
 		{
 			tofu::AnyBasePtr<A, std::shared_ptr> p1 = new A;
 			tofu::AnyBasePtr<A, std::shared_ptr> p2 = std::make_shared<A>();
+
+			// move
 			p2 = std::move(p1);
+			IUTEST_ASSERT_TRUE(p1.get() == nullptr);
+
+			// copy
+			p1 = p2;
+			IUTEST_ASSERT_EQ(p1.get(), p2.get());
+			IUTEST_ASSERT_EQ(p1, p2);
+
+			// 生ポインタの代入
+			p1 = new A;
+			p1 = new AB;
+			
+			// holder代入
+			p1 = std::make_shared<A>();
+			p1 = std::make_shared<AB>();
+
+			// 派生
+			tofu::AnyBasePtr<AB, std::shared_ptr> p3 = new AB;
+			p1 = p3;
+			p1 = std::move(p3);
 		}
 		// 派生クラスのインスタンス代入
 		{
@@ -284,6 +314,8 @@ IUTEST(util, AnyBasePtr)
 			B* b = p1; // Bは基底クラス登録していないので取り出せない
 			IUTEST_ASSERT_NE(static_cast<B*>(ab), b);
 			IUTEST_ASSERT_NE(static_cast<B*>(ab), p1.tryCast<B>());
+			
+			p1 = new AB;
 		}
 	}
 	std::cout << "-- done" << std::endl;
