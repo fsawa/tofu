@@ -91,11 +91,11 @@ public:
 	// -- move <U> / derived
 
 	template <typename U>
-		requires (std::is_base_of_v<T, U>)
+		requires std::derived_from<U, T>
 	AnyBasePtr( AnyBasePtr<U, Holder>&& rhs ) noexcept { *this = std::move(rhs); }
 
 	template <typename U>
-		requires (std::is_base_of_v<T, U>)
+		requires std::derived_from<U, T>
 	AnyBasePtr& operator=( AnyBasePtr<U, Holder>&& rhs ) noexcept
 	{
 		m_ptr = rhs.MoveHolder();
@@ -122,11 +122,11 @@ public:
 	// -- copy <U> / derived
 
 	template <typename U>
-		requires (std::is_base_of_v<T, U>)
+		requires std::derived_from<U, T>
 	AnyBasePtr( const AnyBasePtr<U, Holder>& rhs ) noexcept { *this = rhs; }
 
 	template <typename U>
-		requires (std::is_base_of_v<T, U>)
+		requires std::derived_from<U, T>
 	AnyBasePtr&  operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
 	{
 		m_ptr = rhs.GetHolder();
@@ -158,7 +158,7 @@ public:
 	// -- from raw-pointer <U> / derived
 
 	template <typename U>
-		requires (std::is_base_of_v<T, U>)
+		requires std::derived_from<U, T>
 	AnyBasePtr( U* p ) noexcept
 		: m_ptr(p)
 		, m_typeId(iMakeTypeId<U>())
@@ -166,7 +166,7 @@ public:
 	}
 
 	template <typename U>
-		requires (std::is_base_of_v<T, U>)
+		requires std::derived_from<U, T>
 	AnyBasePtr&  operator=( U* p ) noexcept
 	{
 		m_ptr.reset(p);
@@ -193,11 +193,11 @@ public:
 	// -- holder<U> copy / derived
 
 	template <typename U>
-		requires (std::is_base_of_v<T, U>)
+		requires std::derived_from<U, T>
 	AnyBasePtr( Holder<U> p ) noexcept { *this = p; }
 
 	template <typename U>
-		requires (std::is_base_of_v<T, U>)
+		requires std::derived_from<U, T>
 	AnyBasePtr&  operator=( Holder<U> p ) noexcept
 	{
 		m_ptr = p;
@@ -260,8 +260,8 @@ public:
 	{
 		if(m_typeId.empty()) return nullptr;
 		// constとvolatileは外せない
-		if(m_typeId.info().isConst() && !std::is_const_v<Derived> ) return nullptr;
-		if(m_typeId.info().isVolatile() && !std::is_volatile_v<Derived> ) return nullptr;
+		if(!std::is_const_v<Derived> && m_typeId.info().isConst()) return nullptr;
+		if(!std::is_volatile_v<Derived> && m_typeId.info().isVolatile()) return nullptr;
 
 		if( _castTest( (Derived*)nullptr ) ){
 			return _doCast<Derived>();
@@ -339,7 +339,7 @@ private:
 	}
 
 	template <typename U>
-		requires (std::is_base_of_v<T, U>)
+		requires std::derived_from<U, T>
 	TypeId iMakeTypeId()
 	{
 		// 基底がconst、かつ、Uが非constの場合、
