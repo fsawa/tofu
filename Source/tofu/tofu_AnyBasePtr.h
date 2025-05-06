@@ -45,6 +45,7 @@ public:
 	
 	static constexpr bool IsVoid  = std::is_same_v<std::remove_cv_t<T>, void>; ///< Tがvoidかどうか
 	static constexpr bool IsConst = std::is_const_v<T>;      ///< Tがconstかどうか
+	static constexpr bool IsVolatile = std::is_volatile_v<T>;      ///< Tがvolatileかどうか
 	
 	//------------------------------------------------------------------------------
 	using value_type = base_type;
@@ -258,16 +259,22 @@ public:
 	template <typename Derived>
 	Derived*  tryCast() const noexcept
 	{
-		if(m_typeId.empty()) return nullptr;
 		// constとvolatileは外せない
-		if(!std::is_const_v<Derived> && m_typeId.info().isConst()) return nullptr;
-		if(!std::is_volatile_v<Derived> && m_typeId.info().isVolatile()) return nullptr;
-
-		if( _castTest( (Derived*)nullptr ) ){
-			return _doCast<Derived>();
+		if constexpr (IsConst && !std::is_const_v<Derived>){
+			return nullptr;
 		}
-		// アップキャストを試みる
-		return m_typeId.info().upcast<Derived>(_getVoidPtr());
+		else if constexpr (IsVolatile && !std::is_volatile_v<Derived>){
+			return nullptr;
+		}
+		else
+		{
+			if(m_typeId.empty()) return nullptr;
+			// constとvolatileは外せない
+			if(!std::is_const_v<Derived> && m_typeId.info().isConst()) return nullptr;
+			if(!std::is_volatile_v<Derived> && m_typeId.info().isVolatile()) return nullptr;
+
+			return _tryCast<Derived>();
+		}
 	}
 	
 	/// 暗黙的キャスト（型が違ったらnullptr）
@@ -356,6 +363,29 @@ private:
 	void iSetTypeId()
 	{
 		m_typeId = iMakeTypeId<U>();
+	}
+	
+	template <typename Derived>
+		requires IsVoid
+	Derived*  _tryCast() const noexcept
+	{
+		if( _castTest( (Derived*)nullptr ) ){
+			return _doCast<Derived>();
+		}
+		// アップキャストを試みる
+		return m_typeId.info().upcast<Derived>(_getVoidPtr());
+	}
+
+	template <typename Derived>
+		requires std::derived_from<Derived, T>
+	Derived*  _tryCast() const noexcept
+	{
+		// アップキャストを試みる
+		if(m_typeId.info().IsDerivedFrom<Derived>())
+		{
+			return static_cast<Derived*>(m_ptr.get());
+		}
+		return nullptr;
 	}
 
 	template <typename Derived>
