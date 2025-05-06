@@ -129,6 +129,30 @@ public:
 		return nullptr;
 	}
 
+	// 型がTと同じか
+	template <typename T>
+	bool IsSame() const noexcept
+	{
+		const TypeInfo* const target_info = &TypeInfoOf<T>::Instance();
+		if(target_info == this){
+			return true;
+		}
+		return false;
+	}
+
+	// cv修飾を除いた型がTと同じか
+	template <typename T>
+	bool IsSameRemoveCV() const noexcept
+	{
+		// cv外した型がTと同じならOK
+		using target_t = std::remove_cv_t<T>;
+		const TypeInfo* const target_info = &TypeInfoOf<target_t>::Instance();
+		if(target_info == &getRemoveCV()){
+			return true;
+		}
+		return false;
+	}
+
 	// BaseTypeから派生しているかどうか
 	template <typename BaseType>
 	bool IsDerivedFrom() const noexcept
