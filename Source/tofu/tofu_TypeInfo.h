@@ -128,6 +128,31 @@ public:
 		}
 		return nullptr;
 	}
+
+	// BaseTypeから派生しているかどうか
+	template <typename BaseType>
+	bool IsDerivedFrom() const noexcept
+	{
+		if(isConst() || isVolatile())
+		{
+			return getRemoveCV().IsDerivedFrom<BaseType>();
+		}
+		using base_t = std::remove_cv_t<BaseType>;
+		const TypeInfo* const base_info = &TypeInfoOf<base_t>::Instance();
+		// このクラス
+		if(base_info == this) {
+			return true;
+		}
+		// 登録済みの基底クラスに一致
+		else if(base_info == m_baseInfo) {
+			return true;
+		}
+		// 登録済みの基底クラスを辿って調べる
+		else if(m_baseInfo) {
+			return m_baseInfo->IsDerivedFrom<BaseType>();
+		}
+		return false;
+	}
 	
 protected:
 
@@ -204,10 +229,9 @@ public:
 	// 
 	// 基底クラス設定
 	template <typename BaseType>
+		requires std::derived_from<T, BaseType>
 	void  setBaseType()
 	{
-		// BaseTypeはTの基底クラスでなければならない
-		static_assert(std::is_base_of<BaseType, T>::value == true);
 		// TもBaseTypeもCV修飾がついていたらNG
 		static_assert(std::is_const<T>::value == false);
 		static_assert(std::is_volatile<T>::value == false);
