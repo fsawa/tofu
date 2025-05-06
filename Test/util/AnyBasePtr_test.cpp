@@ -40,6 +40,16 @@ namespace
 	TOFU_SET_BASE_TYPE(A, AB);
 	//TOFU_SET_BASE_TYPE(B, AB);
 
+	struct S1{};
+	struct S2 : public S1 { using base_type = S1; };
+	struct S3 : public S2 { using base_type = S2; };
+	
+	struct T2 : public S1 { using base_type = S1; };
+
+	TOFU_SET_BASE_TYPE(S1, S2);
+	TOFU_SET_BASE_TYPE(S2, S3);
+	
+	TOFU_SET_BASE_TYPE(S1, T2);
 }
 
 IUTEST(util, AnyBasePtr)
@@ -261,6 +271,48 @@ IUTEST(util, AnyBasePtr)
 		IUTEST_ASSERT_FALSE( p100 > p200 ); // nullptr同士
 		IUTEST_ASSERT_TRUE( p100 <= p200 ); // nullptr同士
 		IUTEST_ASSERT_TRUE( p100 >= p200 ); // nullptr同士
+	}
+
+	// upcast
+	{
+
+		S3 s3;
+		tofu::AnyBasePtr<S1> ap = &s3;
+		
+		S1* ap1 = ap;
+		S2* ap2 = ap; // ここがうまくいくかどうか
+		S3* ap3 = ap;
+		
+		S1* p1 = &s3;
+		S2* p2 = &s3;
+		S3* p3 = &s3;
+
+		IUTEST_ASSERT_EQ(ap1, p1);
+		IUTEST_ASSERT_EQ(ap2, p2);
+		IUTEST_ASSERT_EQ(ap3, p3);
+		
+		const S1* cs1 = ap;
+		const S2* cs2 = ap;
+		const S3* cs3 = ap;
+		IUTEST_ASSERT_EQ(cs1, p1);
+		IUTEST_ASSERT_EQ(cs2, p2);
+		IUTEST_ASSERT_EQ(cs3, p3);
+	}
+	{
+		S2 s2;
+		tofu::AnyBasePtr<S1> ap = &s2;
+		{
+			S3* ap3 = ap; // S3へのキャストは失敗
+			IUTEST_ASSERT_EQ(ap3, nullptr);
+		}
+		{
+			const S2* p = ap;
+			IUTEST_ASSERT_NE(p, nullptr);
+		}
+		{
+			T2* t2 = ap;
+			IUTEST_ASSERT_EQ(t2, nullptr);
+		}
 	}
 
 	// shared_ptr
