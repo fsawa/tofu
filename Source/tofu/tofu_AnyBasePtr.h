@@ -365,72 +365,37 @@ private:
 		m_typeId = iMakeTypeId<U>();
 	}
 	
-	template <typename Derived>
+	template <typename U>
 		requires IsVoid
-	Derived*  _tryCast() const noexcept
+	U* _tryCast() const noexcept
 	{
-		if( _castTest( (Derived*)nullptr ) ){
-			return _doCast<Derived>();
+		// cv修飾のチェックはtryCast側で済ましている
+		// Uがm_typeIdの型かそのcv修飾の場合、キャストOK
+		if( m_typeId.info().IsSameRemoveCV<U>() ){
+			return static_cast<U*>(m_ptr.get());
 		}
 		// アップキャストを試みる
-		return m_typeId.info().upcast<Derived>(_getVoidPtr());
+		return m_typeId.info().upcast<U>(m_ptr.get());
 	}
 
-	template <typename Derived>
-		requires std::derived_from<Derived, T>
-	Derived*  _tryCast() const noexcept
+	template <typename U>
+		requires std::derived_from<U, T>
+	U* _tryCast() const noexcept
 	{
-		// アップキャストを試みる
-		if(m_typeId.info().IsDerivedFrom<Derived>())
+		// cv修飾のチェックはtryCast側で済ましている
+		// UもしくはUから派生したクラスを保持している
+		if(m_typeId.info().IsDerivedFrom<U>())
 		{
-			return static_cast<Derived*>(m_ptr.get());
+			// T*をU*にキャストする
+			return static_cast<U*>(m_ptr.get());
 		}
 		return nullptr;
-	}
-
-	template <typename Derived>
-	inline Derived*  _doCast() const
-	{
-		// constをあわせる
-		using tmp_type = typename detail_safe_ptr::set_const<T, std::is_const<Derived>::value>::type;
-		tmp_type* ptr = const_cast<tmp_type*>(m_ptr.get());
-		return static_cast<Derived*>(ptr);
 	}
 	
 	//------------------------------------------------------------------------------
 	
-	const void*  _getConstVoidPtr() const noexcept { return m_ptr.get(); }
-	void*  _getVoidPtr() const noexcept { return const_cast<void*>(_getConstVoidPtr()); }
-
-	// キャスト可能か判定
-	constexpr bool  _castTest( std::add_const_t<T>* ) const noexcept
-	{
-		return true;
-	}
-	
-	// キャスト可能か判定
-	constexpr bool  _castTest( std::remove_const_t<T>* ) const noexcept
-	{
-		// constから非constへのキャストはダメ
-		if constexpr ( IsConst ){
-			return false;
-		}
-		return true;
-	}
-	
-	// キャスト可能か判定
-	template <typename Derived>
-	inline bool  _castTest( Derived* ) const
-	{
-		// constへのキャスト時は自分のconstと、
-		// 非constへのキャスト時はそのまま比較。
-		TypeId  my_type_id = std::is_const_v<Derived>
-			? m_typeId.makeAddConst()
-			: m_typeId
-		;
-		// 同一型？
-		return MakeTypeId<Derived>() == my_type_id;
-	}
+	//const void*  _getConstVoidPtr() const noexcept { return m_ptr.get(); }
+	//void*  _getVoidPtr() const noexcept { return const_cast<void*>(_getConstVoidPtr()); }
 
 // VARIABLE
 	
