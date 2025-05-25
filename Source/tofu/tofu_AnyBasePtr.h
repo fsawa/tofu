@@ -349,6 +349,9 @@ private:
 		requires std::derived_from<U, T>
 	TypeId iMakeTypeId()
 	{
+		// 基底クラス自動登録
+		//SetBaseType<T, U>();
+
 		// 基底がconst、かつ、Uが非constの場合、
 		// TypeIdがconstになるようにする。
 		if constexpr ( IsConst ){
@@ -375,7 +378,7 @@ private:
 			return static_cast<U*>(m_ptr.get());
 		}
 		// アップキャストを試みる
-		return m_typeId.info().upcast<U>(m_ptr.get());
+		return m_typeId.info().TryUpcast<U>(m_ptr.get());
 	}
 
 	template <typename U>

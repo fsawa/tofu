@@ -16,6 +16,7 @@
 #include <type_traits>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 
 #include <tofu_TypeName.h>
 #include <tofu_mpl_String.h>
@@ -40,10 +41,10 @@ public:
 public:
 	
 	/// 型名取得
-	const char* GetNamePtr() const noexcept { return m_name.data(); }
+	const char* GetNamePtr() const noexcept { return m_Name.data(); }
 	
 	/// 型名取得
-	std::string_view GetName() const noexcept { return m_name; }
+	std::string_view GetName() const noexcept { return m_Name; }
 	
 	//------------------------------------------------------------------------------
 	
@@ -76,58 +77,30 @@ public:
 	//------------------------------------------------------------------------------
 	
 	/// 同一判定
-	bool  operator==( const TypeInfo& rhs ) const noexcept  { return this == &rhs; }
+	bool operator==( const TypeInfo& rhs ) const noexcept  { return this == &rhs; }
 	
 	/// 非同一判定
-	bool  operator!=( const TypeInfo& rhs ) const noexcept  { return this != &rhs; }
+	bool operator!=( const TypeInfo& rhs ) const noexcept  { return this != &rhs; }
 	
 	//------------------------------------------------------------------------------
 
-	// 指定したTypeInfoが基底クラスか
-	bool  isBaseType(const TypeInfo& info) const noexcept
-	{
-		// CVがついてたらNG
-		if(isConst() || isVolatile())
-		{
-			return getRemoveCV().isBaseType(info);
-		}
-
-		if(m_baseInfo)
-		{
-			// thisはCVなしなので、baseInfoにもCVがついていない想定
-			if(m_baseInfo == &info.getRemoveCV())
-			{
-				return true;
-			}
-			// 再帰チェック
-			return m_baseInfo->isBaseType(info);
-		}
-		return false;
-	}
-
-	// アップキャスト
+	// 対象型のvoid*を、BaseType*へアップキャストを試みる
 	template <typename BaseType>
-	BaseType*  upcast(const void* p) const noexcept
+	BaseType* TryUpcast(const void* p) const noexcept
 	{
 		using base_type_no_cv = std::remove_cv<BaseType>::type;
 
 		// cvなしのTypeInfoで処理する
 		if(isConst() || isVolatile())
 		{
-			return getRemoveCV().upcast<BaseType>(p);
+			return getRemoveCV().TryUpcast<BaseType>(p);
 		}
-		void* result = upcast(const_cast<void*>(p), TypeInfoOf<base_type_no_cv>::Instance());
+		void* result = TryUpcast(const_cast<void*>(p), TypeInfoOf<base_type_no_cv>::Instance());
 		return static_cast<BaseType*>(result);
 	}
 	
-	// 指定のTypeInfoの型へアップキャスト
-	void*  upcast(void* p, const TypeInfo& target_type_info) const noexcept
-	{
-		if(m_upcastFunc){
-			return m_upcastFunc(p, target_type_info);
-		}
-		return nullptr;
-	}
+	// 対象型のvoid*を、指定のTypeInfoの型へアップキャストする
+	void* TryUpcast(void* p, const TypeInfo& target_type_info) const noexcept;
 
 	// 型がTと同じか
 	template <typename T>
@@ -152,44 +125,35 @@ public:
 		}
 		return false;
 	}
+	
+	// BaseTypeから派生しているかどうか
+	bool IsDerivedFrom(const TypeInfo& base_info) const noexcept;
 
 	// BaseTypeから派生しているかどうか
 	template <typename BaseType>
 	bool IsDerivedFrom() const noexcept
 	{
-		if(isConst() || isVolatile())
-		{
-			return getRemoveCV().IsDerivedFrom<BaseType>();
-		}
 		using base_t = std::remove_cv_t<BaseType>;
-		const TypeInfo* const base_info = &TypeInfoOf<base_t>::Instance();
-		// このクラス
-		if(base_info == this) {
-			return true;
-		}
-		// 登録済みの基底クラスに一致
-		else if(base_info == m_baseInfo) {
-			return true;
-		}
-		// 登録済みの基底クラスを辿って調べる
-		else if(m_baseInfo) {
-			return m_baseInfo->IsDerivedFrom<BaseType>();
-		}
-		return false;
+		const auto& base_info = TypeInfoOf<base_t>::Instance();
+		return IsDerivedFrom(base_info);
 	}
 	
 protected:
 
 	TypeInfo() = delete;
-	explicit TypeInfo(std::string_view name) noexcept : m_name{name} {}
+	explicit TypeInfo(std::string_view name) noexcept : m_Name{name} {}
 	virtual ~TypeInfo() = default;
 	
 protected:
 	
-	const std::string_view  m_name;
+	const std::string_view m_Name;
 	
-	const TypeInfo*  m_baseInfo = nullptr;
-	UpcastFunc m_upcastFunc = nullptr;
+	// 基底クラスのTypeInfoとそのクラスへのUpcastを行う関数ポインタ
+	const TypeInfo* m_BaseInfo = nullptr;
+	UpcastFunc m_UpcastFunc = nullptr;
+
+	// 基底クラスのTypeInfoとそのクラスへのUpcastを行う関数ポインタのmap
+	std::unordered_map<const TypeInfo*, UpcastFunc> m_BaseInfoMap;
 };
 // << TypeInfo
 
@@ -250,24 +214,33 @@ public:
 	bool  isVolatile() const noexcept override { return std::is_volatile_v<T>; }
 	
 	//------------------------------------------------------------------------------
-	// 
+	
 	// 基底クラス設定
 	template <typename BaseType>
 		requires std::derived_from<T, BaseType>
 	void  setBaseType()
 	{
 		// TもBaseTypeもCV修飾がついていたらNG
-		static_assert(std::is_const<T>::value == false);
-		static_assert(std::is_volatile<T>::value == false);
-		static_assert(std::is_const<BaseType>::value == false);
-		static_assert(std::is_volatile<BaseType>::value == false);
+		static_assert(std::is_const_v<T> == false);
+		static_assert(std::is_volatile_v<T> == false);
+		static_assert(std::is_const_v<BaseType> == false);
+		static_assert(std::is_volatile_v<BaseType> == false);
 
-		// 既に設定済みはNG
-		TOFU_ASSERT(m_baseInfo == nullptr);
-		m_baseInfo = &TypeInfoOf<BaseType>::Instance();
+		const TypeInfo* info = &TypeInfoOf<BaseType>::Instance();
+		// 自分自身
+		if(this == info){
+			return;
+		}
+		// 登録済み
+		if(m_BaseInfo == info){
+			return;
+		}
+		if(m_BaseInfoMap.contains(info)){
+			return;
+		}
 
-		// アップキャスト関数を設定
-		m_upcastFunc = [](void* p, const TypeInfo& target_type_info)
+		// アップキャスト関数
+		auto func = [](void* p, const TypeInfo& target_type_info)
 		{
 			// pはTのポインタである前提で、BaseTypeにアップキャストする
 			BaseType* base = static_cast<BaseType*>( static_cast<T*>(p) );
@@ -277,8 +250,19 @@ public:
 				return static_cast<void*>(base);
 			}
 			// 違ったら、BaseTypeの基底クラスへのアップキャストを試みる
-			return TypeInfoOf<BaseType>::Instance().upcast(base, target_type_info);
+			return TypeInfoOf<BaseType>::Instance().TryUpcast(base, target_type_info);
 		};
+		
+		// 既に１つ登録済みならmapに追加登録する
+		if(m_BaseInfo)
+		{
+			m_BaseInfoMap.emplace(info, func);
+		}
+		else
+		{
+			m_BaseInfo = info;
+			m_UpcastFunc = func;
+		}
 	}
 };
 // << TypeInfoOf
@@ -367,7 +351,7 @@ inline TypeId  MakeTypeId( T& ) noexcept
 template <typename Base, typename Derived>
 inline void SetBaseType()
 {
-	GetTypeInfo<Derived>().template setBaseType<Base>();
+	GetTypeInfo<std::remove_cv_t<Derived>>().template setBaseType<std::remove_cv_t<Base>>();
 }
 
 } // tofu
