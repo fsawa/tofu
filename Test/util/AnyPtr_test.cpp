@@ -113,6 +113,6 @@ IUTEST(util, AnyPtr)
 		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B2>() );
 		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B1>() );
 		
-		tofu::AnyPtr ptr2 = &const_b3;
+		[[maybe_unused]] tofu::AnyPtr ptr2 = &const_b3;
 	}
 }

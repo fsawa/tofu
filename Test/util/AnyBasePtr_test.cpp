@@ -29,7 +29,9 @@ namespace
 		B() : b(0) {}
 	};
 
-	class AB : public A, public B
+	class C{};
+
+	class AB : public A, public B, public C
 	{
 	public:
 		int ab;
@@ -38,7 +40,7 @@ namespace
 	
 	// クラス継承関係登録
 	TOFU_SET_BASE_TYPE(A, AB);
-	//TOFU_SET_BASE_TYPE(B, AB);
+	TOFU_SET_BASE_TYPE(B, AB);
 
 	struct S1{};
 	struct S2 : public S1 { using base_type = S1; };
@@ -46,10 +48,12 @@ namespace
 	
 	struct T2 : public S1 { using base_type = S1; };
 
+
 	TOFU_SET_BASE_TYPE(S1, S2);
 	TOFU_SET_BASE_TYPE(S2, S3);
 	
 	TOFU_SET_BASE_TYPE(S1, T2);
+	
 }
 
 IUTEST(util, AnyBasePtr)
@@ -73,7 +77,7 @@ IUTEST(util, AnyBasePtr)
 		tofu::AnyBasePtr<const A>  cp4( &a );
 		tofu::AnyBasePtr<const A>  cp5( &ab );
 		tofu::AnyBasePtr<const A>  cp6( p5 );
-		tofu::AnyBasePtr<const A>  cp7( cp6 );
+		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp7( cp6 );
 		
 		// コピー
 		p2 = p1;
@@ -314,6 +318,27 @@ IUTEST(util, AnyBasePtr)
 			IUTEST_ASSERT_EQ(t2, nullptr);
 		}
 	}
+	// Tから更にupcast
+	{
+		AB ab;
+		tofu::AnyBasePtr<AB> p = &ab;
+		const A* a_any = p;
+		const A* a_ptr = &ab;
+		IUTEST_ASSERT_EQ(a_any, a_ptr);
+	}
+	// 多重継承でそれぞれにキャスト可能
+	{
+		AB ab;
+		tofu::AnyBasePtr<void> p = &ab;
+		A* a_any = p;
+		B* b_any = p;
+		
+		A* a_ptr = &ab;
+		B* b_ptr = &ab;
+		
+		IUTEST_ASSERT_EQ(a_any, a_ptr);
+		IUTEST_ASSERT_EQ(b_any, b_ptr);
+	}
 
 	// shared_ptr
 	std::cout << "-- shared_ptr" << std::endl;
@@ -363,9 +388,12 @@ IUTEST(util, AnyBasePtr)
 			A* a = p1; // A*として取り出せる
 			IUTEST_ASSERT_EQ(static_cast<A*>(ab), a);
 			IUTEST_ASSERT_EQ(static_cast<A*>(ab), p1.tryCast<A>());
-			B* b = p1; // Bは基底クラス登録していないので取り出せない
-			IUTEST_ASSERT_NE(static_cast<B*>(ab), b);
-			IUTEST_ASSERT_NE(static_cast<B*>(ab), p1.tryCast<B>());
+			B* b = p1; // B*
+			IUTEST_ASSERT_EQ(static_cast<B*>(ab), b);
+			IUTEST_ASSERT_EQ(static_cast<B*>(ab), p1.tryCast<B>());
+			C* c = p1; // Cは基底クラス登録していないので取り出せない
+			IUTEST_ASSERT_NE(static_cast<C*>(ab), c);
+			IUTEST_ASSERT_NE(static_cast<C*>(ab), p1.tryCast<C>());
 			
 			p1 = new AB;
 		}
