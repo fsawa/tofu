@@ -78,4 +78,33 @@ bool TypeInfo::IsDerivedFrom(const TypeInfo& base_info) const noexcept
 	return false;
 }
 
+//------------------------------------------------------------------------------
+void TypeInfo::SetBaseTypeImpl(const TypeInfo& base_info, UpcastFunc func)
+{
+	const TypeInfo* info = &base_info;
+	// 自分自身
+	if(this == info){
+		return;
+	}
+	// 登録済み
+	if(m_BaseInfo == info){
+		return;
+	}
+	if(m_BaseInfoMap.contains(info)){
+		return;
+	}
+
+	// 既に１つ登録済みならmapに追加登録する
+	if(m_BaseInfo)
+	{
+		m_BaseInfoMap.emplace(info, func);
+	}
+	else
+	{
+		m_BaseInfo = info;
+		m_UpcastFunc = func;
+	}
+}
+
+//------------------------------------------------------------------------------
 } //tofu

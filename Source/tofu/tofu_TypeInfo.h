@@ -16,7 +16,7 @@
 #include <type_traits>
 #include <string>
 #include <string_view>
-#include <unordered_map>
+#include <map>
 
 #include <tofu_TypeName.h>
 #include <tofu_mpl_String.h>
@@ -169,7 +169,9 @@ protected:
 	explicit TypeInfo(std::string_view name) noexcept : m_Name{name} {}
 	virtual ~TypeInfo() = default;
 	
-protected:
+	void SetBaseTypeImpl(const TypeInfo& base_info, UpcastFunc func);
+
+private:
 	
 	const std::string_view m_Name;
 	
@@ -178,7 +180,7 @@ protected:
 	UpcastFunc m_UpcastFunc = nullptr;
 
 	// 基底クラスのTypeInfoとそのクラスへのUpcastを行う関数ポインタのmap
-	std::unordered_map<const TypeInfo*, UpcastFunc> m_BaseInfoMap;
+	std::map<const TypeInfo*, UpcastFunc> m_BaseInfoMap;
 };
 // << TypeInfo
 
@@ -243,7 +245,7 @@ public:
 	// 基底クラス設定
 	template <typename BaseType>
 		requires std::derived_from<T, BaseType>
-	void  setBaseType()
+	void  SetBaseType()
 	{
 		// TもBaseTypeもCV修飾がついていたらNG
 		static_assert(std::is_const_v<T> == false);
@@ -251,18 +253,7 @@ public:
 		static_assert(std::is_const_v<BaseType> == false);
 		static_assert(std::is_volatile_v<BaseType> == false);
 
-		const TypeInfo* info = &TypeInfoOf<BaseType>::Instance();
-		// 自分自身
-		if(this == info){
-			return;
-		}
-		// 登録済み
-		if(m_BaseInfo == info){
-			return;
-		}
-		if(m_BaseInfoMap.contains(info)){
-			return;
-		}
+		const TypeInfo& info = TypeInfoOf<BaseType>::Instance();
 
 		// アップキャスト関数
 		auto func = [](void* p, const TypeInfo& target_type_info)
@@ -277,17 +268,8 @@ public:
 			// 違ったら、BaseTypeの基底クラスへのアップキャストを試みる
 			return TypeInfoOf<BaseType>::Instance().TryUpcast(base, target_type_info);
 		};
-		
-		// 既に１つ登録済みならmapに追加登録する
-		if(m_BaseInfo)
-		{
-			m_BaseInfoMap.emplace(info, func);
-		}
-		else
-		{
-			m_BaseInfo = info;
-			m_UpcastFunc = func;
-		}
+
+		SetBaseTypeImpl(info, func);
 	}
 };
 // << TypeInfoOf
@@ -376,7 +358,7 @@ inline TypeId  MakeTypeId( T& ) noexcept
 template <typename Base, typename Derived>
 inline void SetBaseType()
 {
-	GetTypeInfo<std::remove_cv_t<Derived>>().template setBaseType<std::remove_cv_t<Base>>();
+	GetTypeInfo<std::remove_cv_t<Derived>>().template SetBaseType<std::remove_cv_t<Base>>();
 }
 
 } // tofu

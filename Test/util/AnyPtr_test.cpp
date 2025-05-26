@@ -93,8 +93,8 @@ IUTEST(util, AnyPtr)
 		using namespace test;
 		B3 b3;
 
-		//tofu::GetTypeInfo<B3>().setBaseType<B2>();
-		//tofu::GetTypeInfo<B2>().setBaseType<B1>();
+		//tofu::GetTypeInfo<B3>().SetBaseType<B2>();
+		//tofu::GetTypeInfo<B2>().SetBaseType<B1>();
 
 		ptr = &b3;
 		IUTEST_ASSERT_EQ( static_cast<B3*>(&b3), ptr.tryCast<B3>() );
