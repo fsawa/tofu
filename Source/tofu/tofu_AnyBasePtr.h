@@ -331,6 +331,7 @@ public:
 //**************************************************************
 private:
 	
+	/// TypeIdのCV修飾を、このクラスのbase_typeに合わせる
 	static inline TypeId iConvertType(TypeId id)
 	{
 		if constexpr ( IsConst ){

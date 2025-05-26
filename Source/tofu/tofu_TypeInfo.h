@@ -26,6 +26,36 @@ namespace tofu {
 // 前方宣言
 template <typename T> class TypeInfoOf;
 
+// Fromのconst修飾をToに反映する
+template <class From, class To>
+struct copy_const_to
+{
+	using type = std::conditional_t<std::is_const_v<From>, std::add_const_t<To>, std::remove_const_t<To>>;
+};
+
+template <class From, class To>
+using copy_const_to_t = typename copy_const_to<From, To>::type;
+
+// Fromのvolatile修飾をToに反映する
+template <class From, class To>
+struct copy_volatile_to
+{
+	using type = std::conditional_t<std::is_volatile_v<From>, std::add_volatile_t<To>, std::remove_volatile_t<To>>;
+};
+
+template <class From, class To>
+using copy_volatile_to_t = typename copy_volatile_to<From, To>::type;
+
+// Fromのcv修飾をToに反映する
+template <class From, class To>
+struct copy_cv_to
+{
+	using type = copy_volatile_to_t<From, copy_const_to_t<From, To>>;
+};
+
+template <class From, class To>
+using copy_cv_to_t = typename copy_cv_to<From, To>::type;
+
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief      型情報クラス
 /// 
@@ -86,21 +116,16 @@ public:
 
 	// 対象型のvoid*を、BaseType*へアップキャストを試みる
 	template <typename BaseType>
-	BaseType* TryUpcast(const void* p) const noexcept
+	BaseType* TryUpcast(copy_cv_to_t<BaseType, void>* p) const noexcept
 	{
 		using base_type_no_cv = std::remove_cv<BaseType>::type;
-
-		// cvなしのTypeInfoで処理する
-		if(isConst() || isVolatile())
-		{
-			return getRemoveCV().TryUpcast<BaseType>(p);
-		}
-		void* result = TryUpcast(const_cast<void*>(p), TypeInfoOf<base_type_no_cv>::Instance());
+		auto result = TryUpcast(p, TypeInfoOf<base_type_no_cv>::Instance());
 		return static_cast<BaseType*>(result);
 	}
 	
 	// 対象型のvoid*を、指定のTypeInfoの型へアップキャストする
 	void* TryUpcast(void* p, const TypeInfo& target_type_info) const noexcept;
+	const void* TryUpcast(const void* p, const TypeInfo& target_type_info) const noexcept;
 
 	// 型がTと同じか
 	template <typename T>

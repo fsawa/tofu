@@ -18,6 +18,12 @@ namespace tofu {
 // 対象型のvoid*を、指定のTypeInfoの型へアップキャストする
 void* TypeInfo::TryUpcast(void* p, const TypeInfo& target_type_info) const noexcept
 {
+	// cvなしのTypeInfoで処理する
+	if(isConst() || isVolatile())
+	{
+		return getRemoveCV().TryUpcast(p, target_type_info);
+	}
+
 	if(m_UpcastFunc){
 		if(void* ptr = m_UpcastFunc(p, target_type_info)){
 			return ptr;
@@ -30,6 +36,10 @@ void* TypeInfo::TryUpcast(void* p, const TypeInfo& target_type_info) const noexc
 		}
 	}
 	return nullptr;
+}
+const void* TypeInfo::TryUpcast(const void* p, const TypeInfo& target_type_info) const noexcept
+{
+	return TryUpcast(const_cast<void*>(p), target_type_info);
 }
 
 //------------------------------------------------------------------------------
