@@ -15,6 +15,18 @@
 #include <tofu_SafePtr.h>
 
 namespace tofu {
+	
+/// @brief concept : cv修飾がcast可能な関係か
+template <class From, class To>
+concept castable_cv_to =
+	!(std::is_const_v<From> && !std::is_const_v<To>) &&
+	!(std::is_volatile_v<From> && !std::is_volatile_v<To>);
+
+/// @brief concept : 安全にcast可能か
+template <class From, class To>
+concept safe_castable_to =
+	castable_cv_to<From, To> && 
+	std::derived_from<From, To>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief      特定のクラスから派生したクラスのポインタと型情報を保持するポインタクラス
@@ -273,7 +285,7 @@ public:
 			if(!std::is_const_v<Derived> && m_typeId.info().isConst()) return nullptr;
 			if(!std::is_volatile_v<Derived> && m_typeId.info().isVolatile()) return nullptr;
 
-			return _tryCast<Derived>();
+			return iTryCast<Derived>();
 		}
 	}
 	
@@ -319,10 +331,6 @@ public:
 //**************************************************************
 private:
 	
-// DEFINE
-	
-// FUNCTION
-
 	static inline TypeId iConvertType(TypeId id)
 	{
 		if constexpr ( IsConst ){
@@ -370,7 +378,7 @@ private:
 	
 	template <typename U>
 		requires IsVoid
-	U* _tryCast() const noexcept
+	U* iTryCast() const noexcept
 	{
 		// cv修飾のチェックはtryCast側で済ましている
 		// Uがm_typeIdの型かそのcv修飾の場合、キャストOK
@@ -380,10 +388,19 @@ private:
 		// アップキャストを試みる
 		return m_typeId.info().TryUpcast<U>(m_ptr.get());
 	}
-
+	
+	// upcast or same type cast
 	template <typename U>
-		requires std::derived_from<U, T>
-	U* _tryCast() const noexcept
+		requires safe_castable_to<T, U>
+	U* iTryCast() const noexcept
+	{
+		return m_ptr.get();
+	}
+
+	// downcast
+	template <typename U>
+		requires (std::derived_from<U, T> && !safe_castable_to<T, U>)
+	U* iTryCast() const noexcept
 	{
 		// cv修飾のチェックはtryCast側で済ましている
 		// UもしくはUから派生したクラスを保持している
@@ -394,13 +411,8 @@ private:
 		}
 		return nullptr;
 	}
-	
-	//------------------------------------------------------------------------------
-	
-	//const void*  _getConstVoidPtr() const noexcept { return m_ptr.get(); }
-	//void*  _getVoidPtr() const noexcept { return const_cast<void*>(_getConstVoidPtr()); }
 
-// VARIABLE
+private:
 	
 	holder_type m_ptr{};
 	TypeId m_typeId{};
