@@ -31,6 +31,9 @@
     <Filter Include="src\mpl">
       <UniqueIdentifier>{0b7d5dda-db3c-422f-bee1-016d1810f5b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\tofu\detail">
+      <UniqueIdentifier>{d1492ec9-087e-4504-abfe-55bedabf9627}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Source\tofu\tofu.cpp">
@@ -47,6 +50,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\Source\tofu\tofu_Reflection.cpp">
       <Filter>src\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.cpp">
+      <Filter>src\tofu\detail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +130,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseUtil.h">
       <Filter>src\tofu\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeTraits.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.h">
+      <Filter>src\tofu\detail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

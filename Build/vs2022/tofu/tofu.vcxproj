@@ -116,6 +116,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\Source\math\tofu_math_Angle.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\base\tofu_Assert.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu_Reflection.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu_TypeInfo.cpp" />
@@ -132,6 +133,7 @@
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Compiler.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Config.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h" />
+    <ClInclude Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_AnyBasePtr.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_AnyPtr.h" />
@@ -146,6 +148,7 @@
     <ClInclude Include="..\..\..\Source\tofu\tofu_StringData.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_TypeInfo.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_TypeName.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeTraits.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

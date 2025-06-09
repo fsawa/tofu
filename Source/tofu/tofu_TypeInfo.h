@@ -16,45 +16,17 @@
 #include <type_traits>
 #include <string>
 #include <string_view>
-#include <map>
 
+#include <tofu_TypeTraits.h>
 #include <tofu_TypeName.h>
 #include <tofu_mpl_String.h>
+#include <detail/tofu_BaseClassInfo.h>
 
 namespace tofu {
 	
 // 前方宣言
+class TypeInfo;
 template <typename T> class TypeInfoOf;
-
-// Fromのconst修飾をToに反映する
-template <class From, class To>
-struct copy_const_to
-{
-	using type = std::conditional_t<std::is_const_v<From>, std::add_const_t<To>, std::remove_const_t<To>>;
-};
-
-template <class From, class To>
-using copy_const_to_t = typename copy_const_to<From, To>::type;
-
-// Fromのvolatile修飾をToに反映する
-template <class From, class To>
-struct copy_volatile_to
-{
-	using type = std::conditional_t<std::is_volatile_v<From>, std::add_volatile_t<To>, std::remove_volatile_t<To>>;
-};
-
-template <class From, class To>
-using copy_volatile_to_t = typename copy_volatile_to<From, To>::type;
-
-// Fromのcv修飾をToに反映する
-template <class From, class To>
-struct copy_cv_to
-{
-	using type = copy_volatile_to_t<From, copy_const_to_t<From, To>>;
-};
-
-template <class From, class To>
-using copy_cv_to_t = typename copy_cv_to<From, To>::type;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief      型情報クラス
@@ -62,11 +34,10 @@ using copy_cv_to_t = typename copy_cv_to<From, To>::type;
 ////////////////////////////////////////////////////////////////////////////////
 class TypeInfo
 {
-	using self_t = TypeInfo;
-	
-public:
+	using self_type = TypeInfo;
 
-	using UpcastFunc = void* (*)(void*, const TypeInfo&);
+	friend class detail::BaseClassInfo;
+	using BaseClassInfo = detail::BaseClassInfo;
 
 public:
 	
@@ -115,12 +86,12 @@ public:
 	//------------------------------------------------------------------------------
 
 	// 対象型のvoid*を、BaseType*へアップキャストを試みる
-	template <typename BaseType>
-	BaseType* TryUpcast(copy_cv_to_t<BaseType, void>* p) const noexcept
+	template <typename BaseT>
+	BaseT* TryUpcast(copy_cv_to_t<BaseT, void>* p) const noexcept
 	{
-		using base_type_no_cv = std::remove_cv<BaseType>::type;
+		using base_type_no_cv = std::remove_cv<BaseT>::type;
 		auto result = TryUpcast(p, TypeInfoOf<base_type_no_cv>::Instance());
-		return static_cast<BaseType*>(result);
+		return static_cast<BaseT*>(result);
 	}
 	
 	// 対象型のvoid*を、指定のTypeInfoの型へアップキャストする
@@ -151,14 +122,14 @@ public:
 		return false;
 	}
 	
-	// BaseTypeから派生しているかどうか
+	// base_infoから派生しているかどうか
 	bool IsDerivedFrom(const TypeInfo& base_info) const noexcept;
 
-	// BaseTypeから派生しているかどうか
-	template <typename BaseType>
+	// BaseTから派生しているかどうか
+	template <typename BaseT>
 	bool IsDerivedFrom() const noexcept
 	{
-		using base_t = std::remove_cv_t<BaseType>;
+		using base_t = std::remove_cv_t<BaseT>;
 		const auto& base_info = TypeInfoOf<base_t>::Instance();
 		return IsDerivedFrom(base_info);
 	}
@@ -168,19 +139,14 @@ protected:
 	TypeInfo() = delete;
 	explicit TypeInfo(std::string_view name) noexcept : m_Name{name} {}
 	virtual ~TypeInfo() = default;
-	
-	void SetBaseTypeImpl(const TypeInfo& base_info, UpcastFunc func);
 
 private:
+	const BaseClassInfo* AddBaseInfo(const BaseClassInfo& info);
 	
+private:
 	const std::string_view m_Name;
 	
-	// 基底クラスのTypeInfoとそのクラスへのUpcastを行う関数ポインタ
-	const TypeInfo* m_BaseInfo = nullptr;
-	UpcastFunc m_UpcastFunc = nullptr;
-
-	// 基底クラスのTypeInfoとそのクラスへのUpcastを行う関数ポインタのmap
-	std::map<const TypeInfo*, UpcastFunc> m_BaseInfoMap;
+	const BaseClassInfo* m_BaseClassInfo = nullptr;
 };
 // << TypeInfo
 
@@ -191,7 +157,7 @@ private:
 template <typename T>
 class TypeInfoOf : public TypeInfo
 {
-	using self_t = TypeInfoOf;
+	using self_type = TypeInfoOf;
 	
 public:
 	
@@ -202,9 +168,9 @@ public:
 	static constexpr auto Name = TypeName<T>::Value;
 	
 	/// インスタンス取得
-	static self_t&  Instance() noexcept
+	static self_type&  Instance() noexcept
 	{
-		static self_t  sInstance;
+		static self_type sInstance;
 		return sInstance;
 	}
 	
@@ -217,10 +183,10 @@ public:
 	virtual ~TypeInfoOf() = default;
 	
 	/// const修飾ありのTypeInfoを取得
-	const TypeInfo&  getAddConst() const noexcept override { return TypeInfoOf<std::add_const_t<T>>::Instance(); }
+	const TypeInfo& getAddConst() const noexcept override { return TypeInfoOf<std::add_const_t<T>>::Instance(); }
 	
 	/// const修飾なしのTypeInfoを取得
-	const TypeInfo&  getRemoveConst() const noexcept override { return TypeInfoOf<std::remove_const_t<T>>::Instance(); }
+	const TypeInfo& getRemoveConst() const noexcept override { return TypeInfoOf<std::remove_const_t<T>>::Instance(); }
 	
 	/// volatile修飾ありのTypeInfoを取得
 	const TypeInfo& getAddVolatile() const noexcept { return TypeInfoOf<std::add_volatile_t<T>>::Instance(); }
@@ -235,42 +201,10 @@ public:
 	const TypeInfo& getRemoveCV() const noexcept override { return TypeInfoOf<std::remove_cv_t<T>>::Instance(); }
 
 	/// const修飾されているか
-	bool  isConst() const noexcept override { return std::is_const_v<T>; }
+	bool isConst() const noexcept override { return std::is_const_v<T>; }
 	
 	/// volatile修飾されているか
-	bool  isVolatile() const noexcept override { return std::is_volatile_v<T>; }
-	
-	//------------------------------------------------------------------------------
-	
-	// 基底クラス設定
-	template <typename BaseType>
-		requires std::derived_from<T, BaseType>
-	void  SetBaseType()
-	{
-		// TもBaseTypeもCV修飾がついていたらNG
-		static_assert(std::is_const_v<T> == false);
-		static_assert(std::is_volatile_v<T> == false);
-		static_assert(std::is_const_v<BaseType> == false);
-		static_assert(std::is_volatile_v<BaseType> == false);
-
-		const TypeInfo& info = TypeInfoOf<BaseType>::Instance();
-
-		// アップキャスト関数
-		auto func = [](void* p, const TypeInfo& target_type_info)
-		{
-			// pはTのポインタである前提で、BaseTypeにアップキャストする
-			BaseType* base = static_cast<BaseType*>( static_cast<T*>(p) );
-			// targetがBaseTypeだったらポインタを返す
-			if(target_type_info == TypeInfoOf<BaseType>::Instance())
-			{
-				return static_cast<void*>(base);
-			}
-			// 違ったら、BaseTypeの基底クラスへのアップキャストを試みる
-			return TypeInfoOf<BaseType>::Instance().TryUpcast(base, target_type_info);
-		};
-
-		SetBaseTypeImpl(info, func);
-	}
+	bool isVolatile() const noexcept override { return std::is_volatile_v<T>; }
 };
 // << TypeInfoOf
 
@@ -291,31 +225,34 @@ class TypeId
 {
 public:
 	
-	TypeId() noexcept {}
-	explicit TypeId( const TypeInfo* info ) noexcept : m_pTypeInfo(info) {}
-	explicit TypeId( const TypeInfo& info ) noexcept : m_pTypeInfo(&info) {}
+	constexpr TypeId() noexcept {}
+	explicit constexpr TypeId( const TypeInfo* info ) noexcept : m_pTypeInfo(info) {}
+	explicit constexpr TypeId( const TypeInfo& info ) noexcept : m_pTypeInfo(&info) {}
 	
 	/// 指定した型のIDを設定
 	template <typename T>
-	void  assign() noexcept  { m_pTypeInfo = &GetTypeInfo<T>(); }
+	constexpr void  assign() noexcept  { m_pTypeInfo = &GetTypeInfo<T>(); }
 	
 	/// 空かどうか
-	bool  empty() const noexcept  { return nullptr == m_pTypeInfo; }
+	constexpr bool  empty() const noexcept  { return nullptr == m_pTypeInfo; }
 	
 	/// クリア
-	void  clear() noexcept
+	constexpr void  clear() noexcept
 	{
 		m_pTypeInfo = nullptr;
 	}
 	
 	/// TypeInfo取得
-	const TypeInfo&  info() const  { TOFU_ASSERT(m_pTypeInfo); return *m_pTypeInfo; }
+	constexpr const TypeInfo& info() const  { TOFU_ASSERT(m_pTypeInfo); return *m_pTypeInfo; }
 	
+	/// TypeInfo取得
+	constexpr const TypeInfo* GetInfoPtr() const noexcept  { return m_pTypeInfo; }
+
 	/// const修飾ありのTypeId取得
-	TypeId  makeAddConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getAddConst() ) : TypeId(); }
+	constexpr TypeId  makeAddConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getAddConst() ) : TypeId(); }
 	
 	/// const修飾なしのTypeId取得
-	TypeId  makeRemoveConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getRemoveConst() ) : TypeId(); }
+	constexpr TypeId  makeRemoveConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getRemoveConst() ) : TypeId(); }
 	
 	/// volatile修飾ありのTypeId取得
 	//TypeId  makeAddVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getAddVolatile() ) : TypeId(); }
@@ -323,42 +260,50 @@ public:
 	/// volatile修飾なしのTypeId取得
 	//TypeId  makeRemoveVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getRemoveVolatile() ) : TypeId(); }
 	
-	/// 同一判定
-	bool  operator==( const TypeId& rhs ) const noexcept  { return m_pTypeInfo == rhs.m_pTypeInfo; }
-	
-	/// 非同一判定
-	bool  operator!=( const TypeId& rhs ) const noexcept  { return m_pTypeInfo != rhs.m_pTypeInfo; }
-	
 private:
 	const TypeInfo* m_pTypeInfo = nullptr;
 };
 
 //------------------------------------------------------------------------------
+// TypeIdの２項演算子
+//------------------------------------------------------------------------------
+
+/// 比較 ==
+constexpr bool operator ==(const TypeId& a, const TypeId& b)
+	{ return a.GetInfoPtr() == b.GetInfoPtr(); }
+
+/// 三方比較 <=>
+constexpr auto operator <=>(const TypeId& a, const TypeId& b)
+	{ return a.GetInfoPtr() <=> b.GetInfoPtr(); }
+
+
+//------------------------------------------------------------------------------
 
 /// TypeId作成
 template <typename T>
-inline TypeId  MakeTypeId() noexcept
+constexpr TypeId MakeTypeId() noexcept
 {
 	return TypeId( &GetTypeInfo<T>() );
 };
 
 /// 変数からTypeId作成
 template <typename T>
-inline TypeId  MakeTypeId( T& ) noexcept
+constexpr TypeId MakeTypeId( T& ) noexcept
 {
 	return TypeId( &GetTypeInfo<T>() );
 };
 	
 //------------------------------------------------------------------------------
 
-/// 基底クラス情報の設定マクロ
-#define TOFU_SET_BASE_TYPE(Base, Derived)  TOFU_STATIC_CALL(::tofu::SetBaseType<Base,Derived>)
-
-/// 基底クラス情報の設定
-template <typename Base, typename Derived>
-inline void SetBaseType()
+// 継承関係を定義させる
+template <class DerivedT, class BaseT>
+constexpr void DefineDerivedFrom() noexcept
 {
-	GetTypeInfo<std::remove_cv_t<Derived>>().template SetBaseType<std::remove_cv_t<Base>>();
+	detail::DefineDerivedFrom<std::remove_cv_t<DerivedT>, std::remove_cv_t<BaseT>>();
 }
+
+/// 独自RTTIの継承関係を定義するマクロ
+#define TOFU_RTTI_DERIVED_FROM(Derived, Base)  TOFU_STATIC_CALL(::tofu::DefineDerivedFrom<Derived, Base>)
+
 
 } // tofu

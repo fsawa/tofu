@@ -34,13 +34,17 @@ namespace
 	class AB : public A, public B, public C
 	{
 	public:
+		//using base_types = std::tuple<A, B, C>;
+		using base_types = std::tuple<A, B>;
+
+	public:
 		int ab;
 		AB() : ab(0){}
 	};
 	
 	// クラス継承関係登録
-	TOFU_SET_BASE_TYPE(A, AB);
-	TOFU_SET_BASE_TYPE(B, AB);
+	TOFU_RTTI_DERIVED_FROM(AB, A);
+	TOFU_RTTI_DERIVED_FROM(AB, B);
 
 	struct S1{};
 	struct S2 : public S1 { using base_type = S1; };
@@ -49,10 +53,10 @@ namespace
 	struct T2 : public S1 { using base_type = S1; };
 
 
-	TOFU_SET_BASE_TYPE(S1, S2);
-	TOFU_SET_BASE_TYPE(S2, S3);
+	TOFU_RTTI_DERIVED_FROM(S2, S1);
+	TOFU_RTTI_DERIVED_FROM(S3, S2);
 	
-	TOFU_SET_BASE_TYPE(S1, T2);
+	TOFU_RTTI_DERIVED_FROM(T2, S1);
 	
 }
 
@@ -71,12 +75,12 @@ IUTEST(util, AnyBasePtr)
 		tofu::AnyBasePtr<A>  p6( p5 );
 		
 		// 非const to const
-		tofu::AnyBasePtr<const A>  cp1;
-		tofu::AnyBasePtr<const A>  cp2( p1 );
-		tofu::AnyBasePtr<const A>  cp3{};
-		tofu::AnyBasePtr<const A>  cp4( &a );
-		tofu::AnyBasePtr<const A>  cp5( &ab );
-		tofu::AnyBasePtr<const A>  cp6( p5 );
+		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp1;
+		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp2( p1 );
+		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp3{};
+		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp4( &a );
+		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp5( &ab );
+		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp6( p5 );
 		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp7( cp6 );
 		
 		// コピー

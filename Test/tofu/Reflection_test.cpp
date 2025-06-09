@@ -49,8 +49,8 @@ namespace test
 	};
 
 	// クラス継承関係登録
-	TOFU_SET_BASE_TYPE(Base, A);
-	TOFU_SET_BASE_TYPE(Base, B);
+	TOFU_RTTI_DERIVED_FROM(A, Base);
+	TOFU_RTTI_DERIVED_FROM(B, Base);
 
 	enum E1{};
 	enum class E2{};

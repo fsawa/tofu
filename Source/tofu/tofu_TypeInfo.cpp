@@ -11,6 +11,7 @@
 //------------------------------------------------------------------------------
 
 #include <tofu_TypeInfo.h>
+#include <iostream>
 
 namespace tofu {
 
@@ -23,17 +24,17 @@ void* TypeInfo::TryUpcast(void* p, const TypeInfo& target_type_info) const noexc
 	{
 		return getRemoveCV().TryUpcast(p, target_type_info);
 	}
-
-	if(m_UpcastFunc){
-		if(void* ptr = m_UpcastFunc(p, target_type_info)){
-			return ptr;
-		}
-	}
-	for(auto& it : m_BaseInfoMap)
+	
+	//std::cout << GetName() << " upcast : " <<  target_type_info.GetName() << std::endl;
+	const auto* base_info = m_BaseClassInfo;
+	while(base_info)
 	{
-		if(void* ptr = it.second(p, target_type_info)){
+		//std::cout << base_info->GetTypeInfo().GetName() << std::endl;
+
+		if(void* ptr = base_info->TryCastTo(p, target_type_info)){
 			return ptr;
 		}
+		base_info = base_info->m_Next;
 	}
 	return nullptr;
 }
@@ -43,67 +44,44 @@ const void* TypeInfo::TryUpcast(const void* p, const TypeInfo& target_type_info)
 }
 
 //------------------------------------------------------------------------------
-bool TypeInfo::IsDerivedFrom(const TypeInfo& base_info) const noexcept
+bool TypeInfo::IsDerivedFrom(const TypeInfo& base_type_info_) const noexcept
 {
 	if(isConst() || isVolatile())
 	{
-		return getRemoveCV().IsDerivedFrom(base_info);
+		return getRemoveCV().IsDerivedFrom(base_type_info_);
 	}
 	// cv外す
-	const auto* ptr = &base_info.getRemoveCV();
+	const auto& target = base_type_info_.getRemoveCV();
 
 	// このクラス
-	if(ptr == this) {
+	if(target == *this) {
 		return true;
 	}
-	// 登録済みの基底クラスに一致
-	else if(ptr == m_BaseInfo) {
-		return true;
-	}
-	else if(m_BaseInfoMap.contains(ptr)){
-		return true;
-	}
-		
-	// 登録済みの基底クラスを辿って調べる
-	if(m_BaseInfo && m_BaseInfo->IsDerivedFrom(base_info)) {
-		return true;
-	}
-	for(auto& it : m_BaseInfoMap)
+	
+	//std::cout << GetName() << " search : " <<  base_type_info_.GetName() << std::endl;
+	const auto* base_info = m_BaseClassInfo;
+	while(base_info)
 	{
-		if(it.first->IsDerivedFrom(base_info)){
+		//std::cout << base_info->GetTypeInfo().GetName() << std::endl;
+		if(target == base_info->GetBaseTypeInfo()){
 			return true;
 		}
+		// 登録済みの基底クラスを辿って調べる
+		if(base_info->GetBaseTypeInfo().IsDerivedFrom(target)){
+			return true;
+		}
+		base_info = base_info->m_Next;
 	}
 
 	return false;
 }
 
 //------------------------------------------------------------------------------
-void TypeInfo::SetBaseTypeImpl(const TypeInfo& base_info, UpcastFunc func)
+const detail::BaseClassInfo* TypeInfo::AddBaseInfo(const BaseClassInfo& info)
 {
-	const TypeInfo* info = &base_info;
-	// 自分自身
-	if(this == info){
-		return;
-	}
-	// 登録済み
-	if(m_BaseInfo == info){
-		return;
-	}
-	if(m_BaseInfoMap.contains(info)){
-		return;
-	}
-
-	// 既に１つ登録済みならmapに追加登録する
-	if(m_BaseInfo)
-	{
-		m_BaseInfoMap.emplace(info, func);
-	}
-	else
-	{
-		m_BaseInfo = info;
-		m_UpcastFunc = func;
-	}
+	auto next = m_BaseClassInfo;
+	m_BaseClassInfo = &info;
+	return next;
 }
 
 //------------------------------------------------------------------------------

@@ -16,6 +16,11 @@
 
 namespace tofu {
 	
+/// @brief concept : cv修飾なしか
+template <class T>
+concept not_cv =
+	!std::is_const_v<T> && !std::is_volatile_v<T>;
+
 /// @brief concept : cv修飾がcast可能な関係か
 template <class From, class To>
 concept castable_cv_to =
@@ -358,8 +363,8 @@ private:
 		requires std::derived_from<U, T>
 	TypeId iMakeTypeId()
 	{
-		// 基底クラス自動登録
-		//SetBaseType<T, U>();
+		// 継承関係を自動定義
+		DefineDerivedFrom<U, T>();
 
 		// 基底がconst、かつ、Uが非constの場合、
 		// TypeIdがconstになるようにする。

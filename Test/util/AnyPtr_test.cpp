@@ -24,8 +24,8 @@ namespace test
 
 	//template class BaseTypeInfo<B3, B2>;
 	
-	TOFU_SET_BASE_TYPE(B1, B2);
-	TOFU_SET_BASE_TYPE(B2, B3);
+	TOFU_RTTI_DERIVED_FROM(B2, B1);
+	TOFU_RTTI_DERIVED_FROM(B3, B2);
 }
 
 IUTEST(util, AnyPtr)
