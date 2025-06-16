@@ -38,7 +38,7 @@ concept safe_castable_to =
 /// @note 特定のクラス(T)から派生したクラスのポインタと型情報を保持し、参照時に指定した型でなければnullを返す
 ////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T = void, template <class> typename Holder = SafePtr >
-class AnyBasePtr
+class AnyBasePtr final
 {
 	using self_type = AnyBasePtr;
 	
