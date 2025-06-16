@@ -310,10 +310,10 @@ public:
 	operator const_cast_type() const noexcept  { return m_ptr; }
 
 	/// boolキャスト
-	operator bool() const noexcept  { return nullptr != m_ptr; }
+	explicit operator bool() const noexcept  { return nullptr != get(); }
 	
 	/// ポインタ未設定か
-	bool  empty() const noexcept  { return nullptr == m_ptr; }
+	bool  empty() const noexcept  { return nullptr == get(); }
 	
 	//------------------------------------------------------------------------------
 	
@@ -330,7 +330,7 @@ public:
 	
 	/// 参照 *
 	reference operator*() const { null_assert(); return *m_ptr; }
-	
+
 //**************************************************************
 //              : private
 //**************************************************************
@@ -431,25 +431,23 @@ private:
 
 /// 比較 ==
 template <typename T, typename U, template <class> typename Holder>
-inline bool operator ==(const AnyBasePtr<T, Holder>& x, const AnyBasePtr<U, Holder>& y)
+constexpr bool operator ==(const AnyBasePtr<T, Holder>& x, const AnyBasePtr<U, Holder>& y) noexcept
 	{ return x.get() == y.get(); }
 
 /// 三方比較 <=>
 template <typename T, typename U, template <class> typename Holder>
-constexpr auto operator <=>(AnyBasePtr<T, Holder>a, AnyBasePtr<U, Holder>b)
-	{ return a.get() <=> b.get(); }
-
-//------------------------------------------------------------------------------
+constexpr auto operator <=>(const AnyBasePtr<T, Holder>& x, const AnyBasePtr<U, Holder>& y) noexcept
+	{ return x.get() <=> y.get(); }
 
 /// 比較 (nullptr) ==
 template <typename T, template <class> typename Holder>
-inline bool operator ==(const AnyBasePtr<T, Holder>& x, nullptr_t)
+constexpr bool operator ==(const AnyBasePtr<T, Holder>& x, std::nullptr_t)
 	{ return x.get() == nullptr; }
 
-/// 比較 (nullptr) ==
+/// 三方比較 (nullptr) <=>
 template <typename T, template <class> typename Holder>
-inline bool operator ==(nullptr_t, const AnyBasePtr<T, Holder>& x)
-	{ return nullptr == x.get(); }
+constexpr bool operator <=>(const AnyBasePtr<T, Holder>&x, std::nullptr_t)
+	{ return x.get() <=> nullptr; }
 
 //------------------------------------------------------------------------------
 

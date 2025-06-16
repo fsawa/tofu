@@ -37,7 +37,7 @@ IUTEST(util, AnyPtr)
 	
 	IUTEST_ASSERT_EQ(ptr.get(), nullptr);
 	IUTEST_ASSERT_EQ(ptr.tryCast<int>(), nullptr);
-	IUTEST_ASSERT_EQ(ptr, false);
+	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), false);
 	IUTEST_ASSERT(ptr.empty());
 	ptr.type();
 	ptr.makeAddConst();
@@ -47,7 +47,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(ptr.get(), &a);
 	IUTEST_ASSERT_EQ(ptr.tryCast<int>(), nullptr);
 	IUTEST_ASSERT_EQ(ptr.tryCast<test::A>(), &a);
-	IUTEST_ASSERT_EQ(ptr, true);
+	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), true);
 	IUTEST_ASSERT(!ptr.empty());
 	ptr.type();
 	IUTEST_ASSERT_EQ(ptr.makeAddConst().type().info().isConst(), true);

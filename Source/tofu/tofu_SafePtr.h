@@ -189,9 +189,6 @@ public:
 	/// 減算
 	self_type& operator-=( int n ) { null_assert(); m_p -= n; return *this; }
 	
-	/// 三方比較演算子
-	//constexpr auto operator<=>(const self_type& rhs) const noexcept { return m_p <=> rhs.m_p; }
-
 	//------------------------------------------------------------------------------
 	// 特種な拡張
 	//------------------------------------------------------------------------------
@@ -247,22 +244,18 @@ constexpr bool operator ==(SafePtr<T> a, SafePtr<U> b)
 
 /// 三方比較 <=>
 template <typename T, typename U>
-constexpr auto operator <=>(SafePtr<T>a, SafePtr<U>b)
+constexpr auto operator <=>(SafePtr<T> a, SafePtr<U> b)
 	{ return a.get() <=> b.get(); }
 
-//------------------------------------------------------------------------------
-// nullptrとの比較
-//------------------------------------------------------------------------------
-
 /// 比較 (nullptr) ==
 template <typename T>
-constexpr bool operator ==(SafePtr<T> a, nullptr_t)
+constexpr bool operator ==(SafePtr<T> a, std::nullptr_t)
 	{ return a.get() == nullptr; }
 
-/// 比較 (nullptr) ==
+/// 三方比較 (nullptr) <=>
 template <typename T>
-constexpr bool operator ==(nullptr_t, SafePtr<T> a)
-	{ return nullptr == a.get(); }
+constexpr bool operator <=>(SafePtr<T> a, std::nullptr_t)
+	{ return a.get() <=> nullptr; }
 
 //------------------------------------------------------------------------------
 
