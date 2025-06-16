@@ -25,13 +25,10 @@ template <typename T> class TypeInfoOf;
 
 namespace detail {
 
-// 基底クラス情報
+//------------------------------------------------------------------------------
+// 基底クラス情報クラス
 class BaseClassInfo
 {
-public:
-	const TypeInfo& m_BaseTypeInfo;
-	const BaseClassInfo* const m_Next = nullptr;
-
 public:
 	BaseClassInfo() = delete;
 	BaseClassInfo(TypeInfo& derived, const TypeInfo& base);
@@ -40,6 +37,8 @@ public:
 	{
 		return m_BaseTypeInfo;
 	}
+	
+	const BaseClassInfo* GetNext() const noexcept { return m_Next; }
 
 	// アップキャスト
 	virtual void* TryCastTo(void* p, const TypeInfo& target_type_info) const noexcept = 0;
@@ -49,16 +48,14 @@ public:
 		return TryCastTo(const_cast<void*>(p), target_type_info);
 	}
 
-	// ダウンキャスト
-	virtual void* TryCastFrom(void* p, const TypeInfo& target_type_info) const noexcept = 0;
-		
-	const void* TryCastFrom(const void* p, const TypeInfo& target_type_info) const noexcept
-	{
-		return TryCastFrom(const_cast<void*>(p), target_type_info);
-	}
+private:
+	const TypeInfo& m_BaseTypeInfo;
+	const BaseClassInfo* const m_Next = nullptr;
+
 };
 
-// 
+//------------------------------------------------------------------------------
+// 基底クラス情報クラス
 template <class DerivedT, class BaseT>
 requires (std::derived_from<DerivedT, BaseT> && std::negation_v<std::is_same<DerivedT, BaseT>>)
 class BaseClassInfoOf final : private BaseClassInfo
@@ -93,19 +90,16 @@ public:
 		// 違ったら、BaseTypeの基底クラスへのアップキャストを試みる
 		return GetBaseTypeInfo().TryUpcast(base, target_type_info);
 	}
-
-	// ダウンキャスト
-	void* TryCastFrom(void* p, const TypeInfo& target_type_info) const noexcept override
-	{
-		return nullptr;
-	}
 };
+
+//------------------------------------------------------------------------------
 
 // インスタンス
 template <class DerivedT, class BaseT>
 requires (std::derived_from<DerivedT, BaseT> && std::negation_v<std::is_same<DerivedT, BaseT>>)
 BaseClassInfoOf<DerivedT, BaseT> BaseClassInfoOf<DerivedT, BaseT>::s_Instance{};
-	
+
+//------------------------------------------------------------------------------
 // 継承関係を定義させる
 template <class DerivedT, class BaseT>
 constexpr void DefineDerivedFrom() noexcept

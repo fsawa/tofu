@@ -34,10 +34,11 @@ void* TypeInfo::TryUpcast(void* p, const TypeInfo& target_type_info) const noexc
 		if(void* ptr = base_info->TryCastTo(p, target_type_info)){
 			return ptr;
 		}
-		base_info = base_info->m_Next;
+		base_info = base_info->GetNext();
 	}
 	return nullptr;
 }
+//------------------------------------------------------------------------------
 const void* TypeInfo::TryUpcast(const void* p, const TypeInfo& target_type_info) const noexcept
 {
 	return TryUpcast(const_cast<void*>(p), target_type_info);
@@ -70,7 +71,7 @@ bool TypeInfo::IsDerivedFrom(const TypeInfo& base_type_info_) const noexcept
 		if(base_info->GetBaseTypeInfo().IsDerivedFrom(target)){
 			return true;
 		}
-		base_info = base_info->m_Next;
+		base_info = base_info->GetNext();
 	}
 
 	return false;
