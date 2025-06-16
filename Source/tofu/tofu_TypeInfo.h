@@ -19,7 +19,6 @@
 
 #include <tofu_TypeTraits.h>
 #include <tofu_TypeName.h>
-#include <tofu_mpl_String.h>
 #include <detail/tofu_BaseClassInfo.h>
 
 namespace tofu {
@@ -77,11 +76,13 @@ public:
 	
 	//------------------------------------------------------------------------------
 	
-	/// 同一判定
-	bool operator==( const TypeInfo& rhs ) const noexcept  { return this == &rhs; }
+	/// 比較 ==
+	bool operator==( const TypeInfo& rhs ) const noexcept
+		{ return this == &rhs; }
 	
-	/// 非同一判定
-	bool operator!=( const TypeInfo& rhs ) const noexcept  { return this != &rhs; }
+	/// 三方比較 <=>
+	constexpr auto operator <=>(const TypeInfo& rhs) const noexcept
+		{ return this <=> &rhs; }
 	
 	//------------------------------------------------------------------------------
 
@@ -146,7 +147,7 @@ private:
 private:
 	const std::string_view m_Name;
 	
-	const BaseClassInfo* m_BaseClassInfo = nullptr;
+	const BaseClassInfo* m_BaseClassInfo = nullptr; // 基底クラス情報
 };
 // << TypeInfo
 
@@ -260,22 +261,17 @@ public:
 	/// volatile修飾なしのTypeId取得
 	//TypeId  makeRemoveVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getRemoveVolatile() ) : TypeId(); }
 	
+	/// 比較 ==
+	constexpr bool operator ==(const TypeId& rhs) const noexcept
+		{ return GetInfoPtr() == rhs.GetInfoPtr(); }
+
+	/// 三方比較 <=>
+	constexpr auto operator <=>(const TypeId& rhs) const noexcept
+		{ return GetInfoPtr() <=> rhs.GetInfoPtr(); }
+
 private:
 	const TypeInfo* m_pTypeInfo = nullptr;
 };
-
-//------------------------------------------------------------------------------
-// TypeIdの２項演算子
-//------------------------------------------------------------------------------
-
-/// 比較 ==
-constexpr bool operator ==(const TypeId& a, const TypeId& b)
-	{ return a.GetInfoPtr() == b.GetInfoPtr(); }
-
-/// 三方比較 <=>
-constexpr auto operator <=>(const TypeId& a, const TypeId& b)
-	{ return a.GetInfoPtr() <=> b.GetInfoPtr(); }
-
 
 //------------------------------------------------------------------------------
 
