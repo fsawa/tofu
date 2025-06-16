@@ -88,6 +88,20 @@ IUTEST(util, AnyPtr)
 	result = ptr != nullptr;
 	result = nullptr != ptr;
 
+	// const代入
+	{
+		const test::A ca;
+		tofu::AnyPtr ptr3 = &ca;
+		IUTEST_ASSERT_NE(ptr3.get(), nullptr);
+		
+		const test::A* ptr1 = ptr3;
+		IUTEST_ASSERT_EQ(ptr1, &ca);
+
+		// const外せない
+		test::A* ptr2 = ptr3;
+		IUTEST_ASSERT_EQ(ptr2, nullptr);
+	}
+
 	// アップキャスト
 	{
 		using namespace test;

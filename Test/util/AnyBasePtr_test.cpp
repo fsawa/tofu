@@ -256,6 +256,10 @@ IUTEST(util, AnyBasePtr)
 		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<AB>() ); // 非constへはキャスト不可
 		IUTEST_ASSERT_TRUE( &ab == p2.tryCast<const AB>() ); //
 	}
+	{
+		[[maybe_unused]] tofu::AnyBasePtr<A>  p2;
+		//p2 = &c_a; // const入れられない　コンパイル時エラー
+	}
 
 	// 別テンプレート同士の比較
 	{
