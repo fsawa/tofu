@@ -20,16 +20,22 @@ namespace test
 
 	class B1 {};
 	class B2 : public B1 {};
-	class B3 : public B2 {};
+	class B3 : public B2
+	{
+	public:
+		using Base = B2; // Baseを定義すれば自動で基底クラス検出される
+	};
 
 	//template class BaseTypeInfo<B3, B2>;
 	
 	TOFU_RTTI_DERIVED_FROM(B2, B1);
-	TOFU_RTTI_DERIVED_FROM(B3, B2);
+	//TOFU_RTTI_DERIVED_FROM(B3, B2);
 }
 
 IUTEST(util, AnyPtr)
 {
+		//tofu::DefineDerivedFrom<test::B3, test::B2>();
+		//tofu::DefineDerivedFromAuto<test::B3>();
 	test::A a;
 	test::B b;
 

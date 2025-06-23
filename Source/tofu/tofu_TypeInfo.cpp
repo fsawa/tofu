@@ -78,7 +78,7 @@ bool TypeInfo::IsDerivedFrom(const TypeInfo& base_type_info_) const noexcept
 }
 
 //------------------------------------------------------------------------------
-const detail::BaseClassInfo* TypeInfo::AddBaseInfo(const BaseClassInfo& info)
+const rtti_detail::BaseClassInfo* TypeInfo::AddBaseInfo(const BaseClassInfo& info)
 {
 	auto next = m_BaseClassInfo;
 	m_BaseClassInfo = &info;

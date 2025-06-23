@@ -36,6 +36,7 @@ namespace
 	public:
 		//using base_types = std::tuple<A, B, C>;
 		using base_types = std::tuple<A, B>;
+		using Base = A;
 
 	public:
 		int ab;
@@ -47,16 +48,16 @@ namespace
 	TOFU_RTTI_DERIVED_FROM(AB, B);
 
 	struct S1{};
-	struct S2 : public S1 { using base_type = S1; };
-	struct S3 : public S2 { using base_type = S2; };
+	struct S2 : public S1 { using Base = S1; };
+	struct S3 : public S2 { using Base = S2; };
 	
-	struct T2 : public S1 { using base_type = S1; };
+	struct T2 : public S1 { using Base = S1; };
 
 
-	TOFU_RTTI_DERIVED_FROM(S2, S1);
-	TOFU_RTTI_DERIVED_FROM(S3, S2);
+	//TOFU_RTTI_DERIVED_FROM(S2, S1);
+	//TOFU_RTTI_DERIVED_FROM(S3, S2);
 	
-	TOFU_RTTI_DERIVED_FROM(T2, S1);
+	//TOFU_RTTI_DERIVED_FROM(T2, S1);
 	
 }
 

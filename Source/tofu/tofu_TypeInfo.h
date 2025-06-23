@@ -35,8 +35,8 @@ class TypeInfo
 {
 	using self_type = TypeInfo;
 
-	friend class detail::BaseClassInfo;
-	using BaseClassInfo = detail::BaseClassInfo;
+	friend class rtti_detail::BaseClassInfo;
+	using BaseClassInfo = rtti_detail::BaseClassInfo;
 
 public:
 	
@@ -293,13 +293,20 @@ constexpr TypeId MakeTypeId( T& ) noexcept
 
 // 継承関係を定義させる
 template <class DerivedT, class BaseT>
+requires std::derived_from<DerivedT, BaseT>
 constexpr void DefineDerivedFrom() noexcept
 {
-	detail::DefineDerivedFrom<std::remove_cv_t<DerivedT>, std::remove_cv_t<BaseT>>();
+	rtti_detail::DefineDerivedFrom<std::remove_cv_t<DerivedT>, std::remove_cv_t<BaseT>>();
 }
 
 /// 独自RTTIの継承関係を定義するマクロ
 #define TOFU_RTTI_DERIVED_FROM(Derived, Base)  TOFU_STATIC_CALL(::tofu::DefineDerivedFrom<Derived, Base>)
 
+// 継承関係を定義させる
+template <class DerivedT>
+constexpr void DefineDerivedFromAuto() noexcept
+{
+	rtti_detail::DefineDerivedFromAuto<DerivedT>();
+}
 
 } // tofu

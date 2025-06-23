@@ -336,6 +336,12 @@ public:
 //**************************************************************
 private:
 	
+	static constexpr void iDummy() noexcept
+	{
+		// 継承関係を自動定義
+		DefineDerivedFromAuto<T>();
+	}
+
 	/// TypeIdのCV修飾を、このクラスのbase_typeに合わせる
 	static inline TypeId iConvertType(TypeId id)
 	{
@@ -354,17 +360,22 @@ private:
 	
 	template <typename U>
 		requires IsVoid
-	TypeId iMakeTypeId()
+	constexpr TypeId iMakeTypeId()
 	{
+		// 継承関係を自動定義
+		DefineDerivedFromAuto<U>();
+
 		return MakeTypeId<U>();
 	}
 
 	template <typename U>
 		requires std::derived_from<U, T>
-	TypeId iMakeTypeId()
+	constexpr TypeId iMakeTypeId()
 	{
 		// 継承関係を自動定義
 		DefineDerivedFrom<U, T>();
+		DefineDerivedFromAuto<T>();
+		DefineDerivedFromAuto<U>();
 
 		// 基底がconst、かつ、Uが非constの場合、
 		// TypeIdがconstになるようにする。
