@@ -60,13 +60,17 @@ template <class DerivedT, class BaseT>
 requires (std::derived_from<DerivedT, BaseT> && std::negation_v<std::is_same<DerivedT, BaseT>>)
 class BaseClassInfoOf final : private BaseClassInfo
 {
-public:
 	// 静的初期化時に登録させるためのインスタンス
-	static BaseClassInfoOf s_Instance;
-
-	// インスタンスを実体化させるため参照
-	static constexpr const BaseClassInfoOf& Fetch() noexcept {
+	static const BaseClassInfoOf s_Instance;
+	
+	static constexpr const BaseClassInfoOf& FetchImpl() noexcept {
 		return s_Instance;
+	}
+	
+public:
+	// インスタンスを実体化させるため参照
+	static constexpr void Fetch() noexcept {
+		(void)FetchImpl();
 	}
 
 public:
@@ -95,7 +99,7 @@ public:
 // インスタンス
 template <class DerivedT, class BaseT>
 requires (std::derived_from<DerivedT, BaseT> && std::negation_v<std::is_same<DerivedT, BaseT>>)
-BaseClassInfoOf<DerivedT, BaseT> BaseClassInfoOf<DerivedT, BaseT>::s_Instance{};
+const BaseClassInfoOf<DerivedT, BaseT> BaseClassInfoOf<DerivedT, BaseT>::s_Instance{};
 
 //------------------------------------------------------------------------------
 // 継承関係を定義させる
