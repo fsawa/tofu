@@ -140,9 +140,9 @@ IUTEST(util, AnyBasePtr)
 		//p1.safe_get(); // ng
 		p4.safe_get(); // ok
 		
-		// makeAddConst
-		tofu::AnyBasePtr<const A>  p10 = p5.makeAddConst();
-		p10 = p5.makeAddConst();
+		// GetAddConst
+		tofu::AnyBasePtr<const A>  p10 = p5.GetAddConst();
+		p10 = p5.GetAddConst();
 		
 		// to const
 		tofu::AnyBasePtr<const A>  p11( p5 );

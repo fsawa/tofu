@@ -49,30 +49,30 @@ public:
 	//------------------------------------------------------------------------------
 	
 	/// const修飾ありのTypeInfoを取得
-	virtual const TypeInfo&  getAddConst() const noexcept = 0;
+	virtual const TypeInfo&  GetAddConst() const noexcept = 0;
 	
 	/// const修飾なしのTypeInfoを取得
-	virtual const TypeInfo&  getRemoveConst() const noexcept = 0;
+	virtual const TypeInfo&  GetRemoveConst() const noexcept = 0;
 	
 	/// volatile修飾ありのTypeInfoを取得
-	virtual const TypeInfo&  getAddVolatile() const noexcept = 0;
+	virtual const TypeInfo&  GetAddVolatile() const noexcept = 0;
 	
 	/// volatile修飾なしのTypeInfoを取得
-	virtual const TypeInfo&  getRemoveVolatile() const noexcept = 0;
+	virtual const TypeInfo&  GetRemoveVolatile() const noexcept = 0;
 	
 	/// CV修飾ありのTypeInfoを取得
-	virtual const TypeInfo& getAddCV() const noexcept = 0;
+	virtual const TypeInfo& GetAddCV() const noexcept = 0;
 
 	/// CV修飾なしのTypeInfoを取得
-	virtual const TypeInfo& getRemoveCV() const noexcept = 0;
+	virtual const TypeInfo& GetRemoveCV() const noexcept = 0;
 	
 	//------------------------------------------------------------------------------
 	
 	/// const修飾されているか
-	virtual bool  isConst() const noexcept = 0;
+	virtual bool  IsConst() const noexcept = 0;
 	
 	/// volatile修飾されているか
-	virtual bool  isVolatile() const noexcept = 0;
+	virtual bool  IsVolatile() const noexcept = 0;
 	
 	//------------------------------------------------------------------------------
 	
@@ -117,7 +117,7 @@ public:
 		// cv外した型がTと同じならOK
 		using target_t = std::remove_cv_t<T>;
 		const TypeInfo* const target_info = &TypeInfoOf<target_t>::Instance();
-		if(target_info == &getRemoveCV()){
+		if(target_info == &GetRemoveCV()){
 			return true;
 		}
 		return false;
@@ -184,28 +184,28 @@ public:
 	virtual ~TypeInfoOf() = default;
 	
 	/// const修飾ありのTypeInfoを取得
-	const TypeInfo& getAddConst() const noexcept override { return TypeInfoOf<std::add_const_t<T>>::Instance(); }
+	const TypeInfo& GetAddConst() const noexcept override { return TypeInfoOf<std::add_const_t<T>>::Instance(); }
 	
 	/// const修飾なしのTypeInfoを取得
-	const TypeInfo& getRemoveConst() const noexcept override { return TypeInfoOf<std::remove_const_t<T>>::Instance(); }
+	const TypeInfo& GetRemoveConst() const noexcept override { return TypeInfoOf<std::remove_const_t<T>>::Instance(); }
 	
 	/// volatile修飾ありのTypeInfoを取得
-	const TypeInfo& getAddVolatile() const noexcept { return TypeInfoOf<std::add_volatile_t<T>>::Instance(); }
+	const TypeInfo& GetAddVolatile() const noexcept { return TypeInfoOf<std::add_volatile_t<T>>::Instance(); }
 	
 	/// volatile修飾なしのTypeInfoを取得
-	const TypeInfo& getRemoveVolatile() const noexcept { return TypeInfoOf<std::remove_volatile_t<T>>::Instance(); }
+	const TypeInfo& GetRemoveVolatile() const noexcept { return TypeInfoOf<std::remove_volatile_t<T>>::Instance(); }
 	
 	/// CV修飾ありのTypeInfoを取得
-	const TypeInfo& getAddCV() const noexcept override { return TypeInfoOf<std::add_cv_t<T>>::Instance(); }
+	const TypeInfo& GetAddCV() const noexcept override { return TypeInfoOf<std::add_cv_t<T>>::Instance(); }
 
 	/// CV修飾なしのTypeInfoを取得
-	const TypeInfo& getRemoveCV() const noexcept override { return TypeInfoOf<std::remove_cv_t<T>>::Instance(); }
+	const TypeInfo& GetRemoveCV() const noexcept override { return TypeInfoOf<std::remove_cv_t<T>>::Instance(); }
 
 	/// const修飾されているか
-	bool isConst() const noexcept override { return std::is_const_v<T>; }
+	bool IsConst() const noexcept override { return std::is_const_v<T>; }
 	
 	/// volatile修飾されているか
-	bool isVolatile() const noexcept override { return std::is_volatile_v<T>; }
+	bool IsVolatile() const noexcept override { return std::is_volatile_v<T>; }
 };
 // << TypeInfoOf
 
@@ -250,16 +250,16 @@ public:
 	constexpr const TypeInfo* GetInfoPtr() const noexcept  { return m_pTypeInfo; }
 
 	/// const修飾ありのTypeId取得
-	constexpr TypeId  makeAddConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getAddConst() ) : TypeId(); }
+	constexpr TypeId  GetAddConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->GetAddConst() ) : TypeId(); }
 	
 	/// const修飾なしのTypeId取得
-	constexpr TypeId  makeRemoveConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getRemoveConst() ) : TypeId(); }
+	constexpr TypeId  GetRemoveConst() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->GetRemoveConst() ) : TypeId(); }
 	
 	/// volatile修飾ありのTypeId取得
-	//TypeId  makeAddVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getAddVolatile() ) : TypeId(); }
+	//TypeId  makeAddVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->GetAddVolatile() ) : TypeId(); }
 	
 	/// volatile修飾なしのTypeId取得
-	//TypeId  makeRemoveVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->getRemoveVolatile() ) : TypeId(); }
+	//TypeId  makeRemoveVolatile() const noexcept  { return m_pTypeInfo ? TypeId( m_pTypeInfo->GetRemoveVolatile() ) : TypeId(); }
 	
 	/// 比較 ==
 	constexpr bool operator ==(const TypeId& rhs) const noexcept

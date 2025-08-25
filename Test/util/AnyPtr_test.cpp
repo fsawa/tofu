@@ -46,7 +46,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), false);
 	IUTEST_ASSERT(ptr.empty());
 	ptr.type();
-	ptr.makeAddConst();
+	ptr.GetAddConst();
 	ptr.reset();
 
 	ptr = &a;
@@ -56,7 +56,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), true);
 	IUTEST_ASSERT(!ptr.empty());
 	ptr.type();
-	IUTEST_ASSERT_EQ(ptr.makeAddConst().type().info().isConst(), true);
+	IUTEST_ASSERT_EQ(ptr.GetAddConst().type().info().IsConst(), true);
 	//ptr.Clear();
 
 	ptr = {};
@@ -73,10 +73,10 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(ptr_ca, &a);
 
 	// constから非constへはNG
-	ptr_a = ptr.makeAddConst();
+	ptr_a = ptr.GetAddConst();
 	IUTEST_ASSERT_EQ(ptr_a, nullptr);
 	
-	IUTEST_ASSERT_EQ(ptr, ptr.makeAddConst());
+	IUTEST_ASSERT_EQ(ptr, ptr.GetAddConst());
 	
 	// ポインタ比較
 	[[maybe_unused]] bool result = false;

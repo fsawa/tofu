@@ -20,9 +20,9 @@ namespace tofu {
 void* TypeInfo::TryUpcast(void* p, const TypeInfo& target_type_info) const noexcept
 {
 	// cvなしのTypeInfoで処理する
-	if(isConst() || isVolatile())
+	if(IsConst() || IsVolatile())
 	{
-		return getRemoveCV().TryUpcast(p, target_type_info);
+		return GetRemoveCV().TryUpcast(p, target_type_info);
 	}
 	
 	//std::cout << GetName() << " upcast : " <<  target_type_info.GetName() << std::endl;
@@ -47,12 +47,12 @@ const void* TypeInfo::TryUpcast(const void* p, const TypeInfo& target_type_info)
 //------------------------------------------------------------------------------
 bool TypeInfo::IsDerivedFrom(const TypeInfo& base_type_info_) const noexcept
 {
-	if(isConst() || isVolatile())
+	if(IsConst() || IsVolatile())
 	{
-		return getRemoveCV().IsDerivedFrom(base_type_info_);
+		return GetRemoveCV().IsDerivedFrom(base_type_info_);
 	}
 	// cv外す
-	const auto& target = base_type_info_.getRemoveCV();
+	const auto& target = base_type_info_.GetRemoveCV();
 
 	// このクラス
 	if(target == *this) {

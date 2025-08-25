@@ -287,8 +287,8 @@ public:
 		{
 			if(m_typeId.empty()) return nullptr;
 			// constとvolatileは外せない
-			if(!std::is_const_v<Derived> && m_typeId.info().isConst()) return nullptr;
-			if(!std::is_volatile_v<Derived> && m_typeId.info().isVolatile()) return nullptr;
+			if(!std::is_const_v<Derived> && m_typeId.info().IsConst()) return nullptr;
+			if(!std::is_volatile_v<Derived> && m_typeId.info().IsVolatile()) return nullptr;
 
 			return iTryCast<Derived>();
 		}
@@ -318,7 +318,7 @@ public:
 	//------------------------------------------------------------------------------
 	
 	/// インスタンスの型にconst修飾を付加したAnyBasePtrを取得
-	AnyBasePtr<const T>  makeAddConst() const noexcept
+	AnyBasePtr<const T>  GetAddConst() const noexcept
 	{
 		return AnyBasePtr<const T>( *this );
 	}
@@ -346,7 +346,7 @@ private:
 	static inline TypeId iConvertType(TypeId id)
 	{
 		if constexpr ( IsConst ){
-			return id.makeAddConst();
+			return id.GetAddConst();
 		}
 		else{
 			return id;

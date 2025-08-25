@@ -120,8 +120,8 @@ public:
 	{
 		if(m_typeId.empty()) return nullptr;
 		// constとvolatileは外せない
-		if(m_typeId.info().isConst() && !std::is_const_v<T> ) return nullptr;
-		if(m_typeId.info().isVolatile() && !std::is_volatile_v<T> ) return nullptr;
+		if(m_typeId.info().IsConst() && !std::is_const_v<T> ) return nullptr;
+		if(m_typeId.info().IsVolatile() && !std::is_volatile_v<T> ) return nullptr;
 
 		if( _castTest< std::is_const<T>::value >( MakeTypeId<T>() ) ){
 			return reinterpret_cast<T*>( _getVoidPtr() );
@@ -148,7 +148,7 @@ public:
 	//------------------------------------------------------------------------------
 	
 	/// インスタンスの型にconst修飾を付加したAnyPtrを取得
-	AnyPtr  makeAddConst() const noexcept  { return AnyPtr( m_ptr, m_typeId.makeAddConst() ); }
+	AnyPtr  GetAddConst() const noexcept  { return AnyPtr( m_ptr, m_typeId.GetAddConst() ); }
 	
 //**************************************************************
 //              : private
@@ -176,7 +176,7 @@ private:
 template <>
 inline bool  AnyPtr::_castTest<true>( const TypeId& target ) const noexcept
 {
-	return target == m_typeId.makeAddConst();
+	return target == m_typeId.GetAddConst();
 }
 
 //------------------------------------------------------------------------------
