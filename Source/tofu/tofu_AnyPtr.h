@@ -107,16 +107,16 @@ public:
 	
 	/// ポインタ変換（変換出来なかったらアサート）
 	template <typename T>
-	T*  cast() const
+	T*  Cast() const
 	{
-		T* ret = tryCast<T>();
-		TOFU_ASSERT_MSG( ret, "[AnyPtr::cast] failed cast.\n" );
+		T* ret = TryCast<T>();
+		TOFU_ASSERT_MSG( ret, "[AnyPtr::Cast] failed Cast.\n" );
 		return ret;
 	}
 	
 	/// ポインタ変換（変換出来なかったらnullptr）
 	template <typename T>
-	T*  tryCast() const noexcept
+	T*  TryCast() const noexcept
 	{
 		if(m_typeId.empty()) return nullptr;
 		// constとvolatileは外せない
@@ -132,7 +132,7 @@ public:
 	
 	/// 暗黙的キャスト（型が違ったらnullptr）
 	template <typename T>
-	operator T*() const noexcept  { return tryCast<T>(); }
+	operator T*() const noexcept  { return TryCast<T>(); }
 	
 	//------------------------------------------------------------------------------
 	

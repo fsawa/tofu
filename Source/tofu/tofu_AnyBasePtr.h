@@ -88,7 +88,7 @@ public:
 	// -- copy
 
 	AnyBasePtr( const AnyBasePtr& rhs ) noexcept = default;
-	AnyBasePtr&  operator=( const AnyBasePtr& rhs ) noexcept = default;
+	AnyBasePtr& operator=( const AnyBasePtr& rhs ) noexcept = default;
 	
 	// -- move <U> / void
 	
@@ -130,7 +130,7 @@ public:
 	
 	template <typename U>
 		requires IsVoid
-	AnyBasePtr&  operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
+	AnyBasePtr& operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
 	{
 		m_ptr = rhs.GetHolder();
 		iSetTypeId(rhs.type());
@@ -145,7 +145,7 @@ public:
 
 	template <typename U>
 		requires std::derived_from<U, T>
-	AnyBasePtr&  operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
+	AnyBasePtr& operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
 	{
 		m_ptr = rhs.GetHolder();
 		iSetTypeId(rhs.type());
@@ -165,7 +165,7 @@ public:
 	
 	template <typename U>
 		requires IsVoid
-	AnyBasePtr&  operator=( U* p ) noexcept
+	AnyBasePtr& operator=( U* p ) noexcept
 	{
 		// T=void の場合はconstのポインタも受け付ける
 		m_ptr.reset(const_cast<std::remove_const_t<U>*>(p));
@@ -185,7 +185,7 @@ public:
 
 	template <typename U>
 		requires std::derived_from<U, T>
-	AnyBasePtr&  operator=( U* p ) noexcept
+	AnyBasePtr& operator=( U* p ) noexcept
 	{
 		m_ptr.reset(p);
 		iSetTypeId<U>();
@@ -200,7 +200,7 @@ public:
 	
 	template <typename U>
 		requires IsVoid
-	AnyBasePtr&  operator=( Holder<U> p ) noexcept
+	AnyBasePtr& operator=( Holder<U> p ) noexcept
 	{
 		//m_ptr = const_cast<std::remove_const_t<U>*>(p.get());
 		m_ptr = p;
@@ -216,7 +216,7 @@ public:
 
 	template <typename U>
 		requires std::derived_from<U, T>
-	AnyBasePtr&  operator=( Holder<U> p ) noexcept
+	AnyBasePtr& operator=( Holder<U> p ) noexcept
 	{
 		m_ptr = p;
 		iSetTypeId<U>();
@@ -230,7 +230,7 @@ public:
 	/*explicit*/ AnyBasePtr( nullptr_t ) noexcept {}
 
 	/// 代入（nullptr）
-	AnyBasePtr&  operator=( nullptr_t ) noexcept
+	AnyBasePtr& operator=( nullptr_t ) noexcept
 	{
 		reset();
 		return *this;
@@ -240,20 +240,20 @@ public:
 	//==============================
 	
 	/// リセット
-	void  reset() noexcept
+	void reset() noexcept
 	{
 		m_ptr.reset();
 		m_typeId.clear();
 	}
 	
 	/// TypeId取得
-	TypeId  type() const noexcept  { return m_typeId; }
+	TypeId type() const noexcept { return m_typeId; }
 	
 	/// 基底の生ポインタ取得
-	pointer  get() const noexcept  { return m_ptr.get(); }
+	pointer get() const noexcept { return m_ptr.get(); }
 	
 	/// 基底の生ポインタ取得（nullチェック済み取得）
-	pointer  safe_get() const  { null_assert(); return m_ptr.get(); }
+	pointer safe_get() const { null_assert(); return m_ptr.get(); }
 
 	/// holder取得
 	const holder_type& GetHolder() const { return m_ptr; }
@@ -265,16 +265,16 @@ public:
 	
 	/// ポインタ変換（変換出来なかったらアサート）
 	template <typename Derived>
-	Derived*  cast() const
+	Derived* Cast() const
 	{
-		Derived* ret = tryCast<Derived>();
-		TOFU_ASSERT_MSG( ret, "[AnyBasePtr::cast] failed cast.\n" );
+		Derived* ret = TryCast<Derived>();
+		TOFU_ASSERT_MSG( ret, "[AnyBasePtr::Cast] failed Cast.\n" );
 		return ret;
 	}
 	
 	/// ポインタ変換（変換出来なかったらnullptr）
 	template <typename Derived>
-	Derived*  tryCast() const noexcept
+	Derived* TryCast() const noexcept
 	{
 		// constとvolatileは外せない
 		if constexpr (IsConst && !std::is_const_v<Derived>){
@@ -296,29 +296,29 @@ public:
 	
 	/// 暗黙的キャスト（型が違ったらnullptr）
 	template <typename U>
-	operator U*() const noexcept  { return tryCast<U>(); }
+	operator U*() const noexcept { return TryCast<U>(); }
 	
 	//------------------------------------------------------------------------------
 	
 	/// ポインタのnullアサートチェック
-	void  null_assert() const  { TOFU_ASSERT(m_ptr); }
+	void null_assert() const { TOFU_ASSERT(m_ptr); }
 	
 	/// 基底の生ポインタにキャスト
-	operator pointer() const noexcept  { return m_ptr; }
+	operator pointer() const noexcept { return m_ptr; }
 	
 	/// 基底の生ポインタにキャスト ( const付加 )
-	operator const_cast_type() const noexcept  { return m_ptr; }
+	operator const_cast_type() const noexcept { return m_ptr; }
 
 	/// boolキャスト
-	explicit operator bool() const noexcept  { return nullptr != get(); }
+	explicit operator bool() const noexcept { return nullptr != get(); }
 	
 	/// ポインタ未設定か
-	bool  empty() const noexcept  { return nullptr == get(); }
+	bool empty() const noexcept { return nullptr == get(); }
 	
 	//------------------------------------------------------------------------------
 	
 	/// インスタンスの型にconst修飾を付加したAnyBasePtrを取得
-	AnyBasePtr<const T>  GetAddConst() const noexcept
+	AnyBasePtr<const T> GetAddConst() const noexcept
 	{
 		return AnyBasePtr<const T>( *this );
 	}

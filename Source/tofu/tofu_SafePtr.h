@@ -40,7 +40,7 @@ namespace detail_safe_ptr
 		using type = const T*; // const追加
 		
 		// T* を const T* に
-		static inline type cast( T* m_p ) noexcept { return m_p; }
+		static inline type Cast( T* m_p ) noexcept { return m_p; }
 	};
 	
 	// Tがconstの場合はポインタに変換しない
@@ -51,7 +51,7 @@ namespace detail_safe_ptr
 		using type = const dummy_t;
 		
 		// const dummy_t を返す。ポインタにしない。
-		static inline type cast( const T* ) noexcept { return type(); }
+		static inline type Cast( const T* ) noexcept { return type(); }
 	};
 	
 	//------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ public:
 	constexpr operator pointer_type() const noexcept  { return m_p; }
 	
 	/// const付与した生のポインタにキャスト
-	constexpr operator const_cast_type() const  { return const_cast_helper::cast(m_p); }
+	constexpr operator const_cast_type() const  { return const_cast_helper::Cast(m_p); }
 	
 	/// bool値にキャスト
 	explicit constexpr operator bool() const noexcept  { return nullptr != m_p; }

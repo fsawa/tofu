@@ -42,7 +42,7 @@ IUTEST(util, AnyPtr)
 	tofu::AnyPtr ptr;
 	
 	IUTEST_ASSERT_EQ(ptr.get(), nullptr);
-	IUTEST_ASSERT_EQ(ptr.tryCast<int>(), nullptr);
+	IUTEST_ASSERT_EQ(ptr.TryCast<int>(), nullptr);
 	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), false);
 	IUTEST_ASSERT(ptr.empty());
 	ptr.type();
@@ -51,8 +51,8 @@ IUTEST(util, AnyPtr)
 
 	ptr = &a;
 	IUTEST_ASSERT_EQ(ptr.get(), &a);
-	IUTEST_ASSERT_EQ(ptr.tryCast<int>(), nullptr);
-	IUTEST_ASSERT_EQ(ptr.tryCast<test::A>(), &a);
+	IUTEST_ASSERT_EQ(ptr.TryCast<int>(), nullptr);
+	IUTEST_ASSERT_EQ(ptr.TryCast<test::A>(), &a);
 	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), true);
 	IUTEST_ASSERT(!ptr.empty());
 	ptr.type();
@@ -117,21 +117,21 @@ IUTEST(util, AnyPtr)
 		//tofu::GetTypeInfo<B2>().SetBaseType<B1>();
 
 		ptr = &b3;
-		IUTEST_ASSERT_EQ( static_cast<B3*>(&b3), ptr.tryCast<B3>() );
-		IUTEST_ASSERT_EQ( static_cast<B2*>(&b3), ptr.tryCast<B2>() );
-		IUTEST_ASSERT_EQ( static_cast<B1*>(&b3), ptr.tryCast<B1>() );
-		IUTEST_ASSERT_EQ( static_cast<B1*>(&b3), ptr.tryCast<const B1>() );
-		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<A>() );
+		IUTEST_ASSERT_EQ( static_cast<B3*>(&b3), ptr.TryCast<B3>() );
+		IUTEST_ASSERT_EQ( static_cast<B2*>(&b3), ptr.TryCast<B2>() );
+		IUTEST_ASSERT_EQ( static_cast<B1*>(&b3), ptr.TryCast<B1>() );
+		IUTEST_ASSERT_EQ( static_cast<B1*>(&b3), ptr.TryCast<const B1>() );
+		IUTEST_ASSERT_EQ( nullptr, ptr.TryCast<A>() );
 
 		const B3 const_b3;
 		ptr = &const_b3;
-		IUTEST_ASSERT_EQ( static_cast<const B3*>(&const_b3), ptr.tryCast<const B3>() );
-		IUTEST_ASSERT_EQ( static_cast<const B2*>(&const_b3), ptr.tryCast<const B2>() );
-		IUTEST_ASSERT_EQ( static_cast<const B1*>(&const_b3), ptr.tryCast<const B1>() );
+		IUTEST_ASSERT_EQ( static_cast<const B3*>(&const_b3), ptr.TryCast<const B3>() );
+		IUTEST_ASSERT_EQ( static_cast<const B2*>(&const_b3), ptr.TryCast<const B2>() );
+		IUTEST_ASSERT_EQ( static_cast<const B1*>(&const_b3), ptr.TryCast<const B1>() );
 		// constは外せない
-		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B3>() );
-		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B2>() );
-		IUTEST_ASSERT_EQ( nullptr, ptr.tryCast<B1>() );
+		IUTEST_ASSERT_EQ( nullptr, ptr.TryCast<B3>() );
+		IUTEST_ASSERT_EQ( nullptr, ptr.TryCast<B2>() );
+		IUTEST_ASSERT_EQ( nullptr, ptr.TryCast<B1>() );
 		
 		[[maybe_unused]] tofu::AnyPtr ptr2 = &const_b3;
 	}

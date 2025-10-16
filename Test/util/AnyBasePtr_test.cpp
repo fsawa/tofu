@@ -215,27 +215,27 @@ IUTEST(util, AnyBasePtr)
 	
 	// cast 基底
 	p1 = &a;
-	IUTEST_ASSERT_TRUE( &a == p1.cast<A>() ); // 同一の型はOK
-	IUTEST_ASSERT_TRUE( &a == p1.cast<const A>() ); // const昇格はOK
-//	IUTEST_ASSERT_TRUE( nullptr == p1.cast<B>() ); // 別の型はNG, 内部のassertに引っかかる
+	IUTEST_ASSERT_TRUE( &a == p1.Cast<A>() ); // 同一の型はOK
+	IUTEST_ASSERT_TRUE( &a == p1.Cast<const A>() ); // const昇格はOK
+//	IUTEST_ASSERT_TRUE( nullptr == p1.Cast<B>() ); // 別の型はNG, 内部のassertに引っかかる
 	
-	IUTEST_ASSERT_TRUE( &a == p1.tryCast<A>() ); // 同一の型はOK
-	IUTEST_ASSERT_TRUE( &a == p1.tryCast<const A>() ); // const昇格はOK
-//	IUTEST_ASSERT_TRUE( nullptr == p1.tryCast<B>() ); // 別の型はNG
+	IUTEST_ASSERT_TRUE( &a == p1.TryCast<A>() ); // 同一の型はOK
+	IUTEST_ASSERT_TRUE( &a == p1.TryCast<const A>() ); // const昇格はOK
+//	IUTEST_ASSERT_TRUE( nullptr == p1.TryCast<B>() ); // 別の型はNG
 	
 	// cast 派生
 	p1 = &ab;
-	IUTEST_ASSERT_TRUE( &ab == p1.cast<A>() ); // 基底クラスへのキャスト
-	IUTEST_ASSERT_TRUE( &ab == p1.cast<const A>() ); // const基底クラスへのキャスト
-	IUTEST_ASSERT_TRUE( &ab == p1.cast<AB>() ); // 同一の型はOK
-	IUTEST_ASSERT_TRUE( &ab == p1.cast<const AB>() ); // const昇格はOK
-//	IUTEST_ASSERT_TRUE( nullptr == p1.cast<B>() ); // 別の型はNG, コンパイルエラー
+	IUTEST_ASSERT_TRUE( &ab == p1.Cast<A>() ); // 基底クラスへのキャスト
+	IUTEST_ASSERT_TRUE( &ab == p1.Cast<const A>() ); // const基底クラスへのキャスト
+	IUTEST_ASSERT_TRUE( &ab == p1.Cast<AB>() ); // 同一の型はOK
+	IUTEST_ASSERT_TRUE( &ab == p1.Cast<const AB>() ); // const昇格はOK
+//	IUTEST_ASSERT_TRUE( nullptr == p1.Cast<B>() ); // 別の型はNG, コンパイルエラー
 	
-	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<A>() ); // 
-	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<const A>() ); // 
-	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<AB>() ); // 同一の型はOK
-	IUTEST_ASSERT_TRUE( &ab == p1.tryCast<const AB>() ); // const昇格はOK
-//	IUTEST_ASSERT_TRUE( nullptr == p1.tryCast<B>() ); // 別の型はNG, コンパイルエラー
+	IUTEST_ASSERT_TRUE( &ab == p1.TryCast<A>() ); // 
+	IUTEST_ASSERT_TRUE( &ab == p1.TryCast<const A>() ); // 
+	IUTEST_ASSERT_TRUE( &ab == p1.TryCast<AB>() ); // 同一の型はOK
+	IUTEST_ASSERT_TRUE( &ab == p1.TryCast<const AB>() ); // const昇格はOK
+//	IUTEST_ASSERT_TRUE( nullptr == p1.TryCast<B>() ); // 別の型はNG, コンパイルエラー
 	
 	IUTEST_ASSERT_TRUE( &ab == (A*)(p1) ); // 基底クラスへのキャスト演算はOK
 	IUTEST_ASSERT_TRUE( &ab == (const A*)(p1) ); // 基底クラスへのキャスト演算はOK
@@ -248,14 +248,14 @@ IUTEST(util, AnyBasePtr)
 		p2 = &c_a; // const
 		p2 = &a; // const昇格
 
-		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<A>() ); // 非constへはキャスト不可
-		IUTEST_ASSERT_TRUE( &a == p2.tryCast<const A>() ); //
+		IUTEST_ASSERT_TRUE( nullptr == p2.TryCast<A>() ); // 非constへはキャスト不可
+		IUTEST_ASSERT_TRUE( &a == p2.TryCast<const A>() ); //
 		
 		p2 = &ab;
-		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<A>() ); // 非constへはキャスト不可
-		IUTEST_ASSERT_TRUE( &ab == p2.tryCast<const A>() ); //
-		IUTEST_ASSERT_TRUE( nullptr == p2.tryCast<AB>() ); // 非constへはキャスト不可
-		IUTEST_ASSERT_TRUE( &ab == p2.tryCast<const AB>() ); //
+		IUTEST_ASSERT_TRUE( nullptr == p2.TryCast<A>() ); // 非constへはキャスト不可
+		IUTEST_ASSERT_TRUE( &ab == p2.TryCast<const A>() ); //
+		IUTEST_ASSERT_TRUE( nullptr == p2.TryCast<AB>() ); // 非constへはキャスト不可
+		IUTEST_ASSERT_TRUE( &ab == p2.TryCast<const AB>() ); //
 	}
 	{
 		[[maybe_unused]] tofu::AnyBasePtr<A>  p2;
@@ -396,13 +396,13 @@ IUTEST(util, AnyBasePtr)
 			IUTEST_ASSERT_EQ(p1.type(), tofu::MakeTypeId<AB>());
 			A* a = p1; // A*として取り出せる
 			IUTEST_ASSERT_EQ(static_cast<A*>(ab), a);
-			IUTEST_ASSERT_EQ(static_cast<A*>(ab), p1.tryCast<A>());
+			IUTEST_ASSERT_EQ(static_cast<A*>(ab), p1.TryCast<A>());
 			B* b = p1; // B*
 			IUTEST_ASSERT_EQ(static_cast<B*>(ab), b);
-			IUTEST_ASSERT_EQ(static_cast<B*>(ab), p1.tryCast<B>());
+			IUTEST_ASSERT_EQ(static_cast<B*>(ab), p1.TryCast<B>());
 			C* c = p1; // Cは基底クラス登録していないので取り出せない
 			IUTEST_ASSERT_NE(static_cast<C*>(ab), c);
-			IUTEST_ASSERT_NE(static_cast<C*>(ab), p1.tryCast<C>());
+			IUTEST_ASSERT_NE(static_cast<C*>(ab), p1.TryCast<C>());
 			
 			p1 = new AB;
 		}
