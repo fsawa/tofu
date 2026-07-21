@@ -224,7 +224,7 @@ inline TypeInfoOf<T>& GetTypeInfo() noexcept
 ////////////////////////////////////////////////////////////////////////////////
 class TypeId final
 {
-	//explicit constexpr TypeId( const TypeInfo* info ) noexcept : m_pTypeInfo(info) {}
+	//explicit constexpr TypeId( const TypeInfo* Info ) noexcept : m_pTypeInfo(Info) {}
 	explicit constexpr TypeId( const TypeInfo& info ) noexcept : m_pTypeInfo(&info) {}
 
 public:
@@ -240,20 +240,16 @@ public:
 	
 	constexpr TypeId() noexcept {}
 	
-	/// 指定した型のIDを設定
-	template <typename T>
-	constexpr void assign() noexcept { m_pTypeInfo = &GetTypeInfo<T>(); }
-	
 	/// 空かどうか
-	constexpr bool empty() const noexcept { return nullptr == m_pTypeInfo; }
+	constexpr bool IsEmpty() const noexcept { return nullptr == m_pTypeInfo; }
 	
 	/// クリア
-	constexpr void clear() noexcept
+	constexpr void Clear() noexcept
 	{
 		m_pTypeInfo = nullptr;
 	}
 	
-	/// TypeInfo取得
+	/// TypeInfo参照
 	constexpr const TypeInfo& info() const { TOFU_ASSERT(m_pTypeInfo); return *m_pTypeInfo; }
 	
 	/// TypeInfo取得

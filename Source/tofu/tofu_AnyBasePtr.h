@@ -243,7 +243,7 @@ public:
 	void reset() noexcept
 	{
 		m_ptr.reset();
-		m_typeId.clear();
+		m_typeId.Clear();
 	}
 	
 	/// TypeId取得
@@ -282,7 +282,7 @@ public:
 		}
 		else
 		{
-			if(m_typeId.empty()) return nullptr;
+			if(m_typeId.IsEmpty()) return nullptr;
 			// constとvolatileは外せない
 			if(!std::is_const_v<Derived> && m_typeId.info().IsConst()) return nullptr;
 			if(!std::is_volatile_v<Derived> && m_typeId.info().IsVolatile()) return nullptr;

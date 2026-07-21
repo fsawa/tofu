@@ -101,11 +101,11 @@ IUTEST(util, TypeInfo)
 	// assignとclear
 	{
 		tofu::TypeId id;
-		IUTEST_ASSERT(id.empty());
-		id.assign<void>();
-		IUTEST_ASSERT(!id.empty());
-		id.clear();
-		IUTEST_ASSERT(id.empty());
+		IUTEST_ASSERT(id.IsEmpty());
+		id = tofu::TypeId::Make<void>();
+		IUTEST_ASSERT(!id.IsEmpty());
+		id.Clear();
+		IUTEST_ASSERT(id.IsEmpty());
 	}
 
 	{
