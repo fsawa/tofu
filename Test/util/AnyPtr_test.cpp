@@ -41,12 +41,18 @@ IUTEST(util, AnyPtr)
 
 	tofu::AnyPtr ptr;
 	
+	// nullptrからの暗黙変換
+	[](tofu::AnyPtr<>){}(nullptr);
+
 	IUTEST_ASSERT_EQ(ptr.get(), nullptr);
 	IUTEST_ASSERT_EQ(ptr.TryCast<int>(), nullptr);
 	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), false);
 	IUTEST_ASSERT(ptr.empty());
+	
+	ptr = nullptr;
+	ptr = tofu::AnyPtr(nullptr);
 	ptr.type();
-	ptr.GetAddConst();
+	ptr.ToConst();
 	ptr.reset();
 
 	ptr = &a;
@@ -56,7 +62,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), true);
 	IUTEST_ASSERT(!ptr.empty());
 	ptr.type();
-	IUTEST_ASSERT_EQ(ptr.GetAddConst().type().info().IsConst(), true);
+	IUTEST_ASSERT_EQ(ptr.ToConst().type().info().IsConst(), true);
 	//ptr.Clear();
 
 	ptr = {};
@@ -73,10 +79,10 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(ptr_ca, &a);
 
 	// constから非constへはNG
-	ptr_a = ptr.GetAddConst();
+	ptr_a = ptr.ToConst();
 	IUTEST_ASSERT_EQ(ptr_a, nullptr);
 	
-	IUTEST_ASSERT_EQ(ptr, ptr.GetAddConst());
+	IUTEST_ASSERT_EQ(ptr, ptr.ToConst());
 	
 	// ポインタ比較
 	[[maybe_unused]] bool result = false;

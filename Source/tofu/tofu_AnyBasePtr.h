@@ -252,9 +252,6 @@ public:
 	/// 基底の生ポインタ取得
 	pointer get() const noexcept { return m_ptr.get(); }
 	
-	/// 基底の生ポインタ取得（nullチェック済み取得）
-	pointer safe_get() const { null_assert(); return m_ptr.get(); }
-
 	/// holder取得
 	const holder_type& GetHolder() const { return m_ptr; }
 

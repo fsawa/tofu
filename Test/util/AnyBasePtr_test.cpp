@@ -136,10 +136,6 @@ IUTEST(util, AnyBasePtr)
 		IUTEST_ASSERT_TRUE( p1.empty() );
 		IUTEST_ASSERT_FALSE( p5.empty() );
 		
-		// safe
-		//p1.safe_get(); // ng
-		p4.safe_get(); // ok
-		
 		// GetAddConst
 		tofu::AnyBasePtr<const A>  p10 = p5.GetAddConst();
 		p10 = p5.GetAddConst();

@@ -32,9 +32,9 @@ class AnyPtr final
 public:
 	
 	using value_type = void;
-	using pointer    = value_type*;
+	using pointer    = void*;
 
-	using holder_type = Holder<value_type>; ///< ポインタを保持する型
+	using holder_type = Holder<void>; ///< ポインタを保持する型
 	
 public:
 	
@@ -46,7 +46,7 @@ public:
 	AnyPtr( AnyPtr&& rhs ) noexcept { *this = rhs; }
 	AnyPtr& operator=( AnyPtr&& rhs ) noexcept
 	{
-		m_ptr = rhs.MoveHolder();
+		m_ptr = std::move(rhs.m_ptr);
 		m_typeId = rhs.type();
 		rhs.reset();
 		return *this;
@@ -79,20 +79,18 @@ public:
 	// -- holder<U> copy
 	
 	template <typename U>
-	AnyPtr( Holder<U> p ) noexcept { *this = p; }
+	AnyPtr( Holder<U> p ) noexcept { *this = std::move(p); }
 	
 	template <typename U>
 	AnyPtr& operator=( Holder<U> p ) noexcept
 	{
-		//m_ptr = const_cast<std::remove_const_t<U>*>(p.get());
-		m_ptr = p;
+		m_ptr = std::move(p);
 		iSetTypeId<U>();
 		return *this;
 	}
-	
-	//==============================
 
-#if 0
+	// -- nullptr
+
 	/// nullptr代入コンストラクタ
 	/*explicit*/ AnyPtr( nullptr_t ) noexcept {}
 
@@ -102,9 +100,8 @@ public:
 		reset();
 		return *this;
 	}
-#endif
 	
-	//==============================
+	//------------------------------------------------------------------------------
 	
 	/// リセット
 	void reset() noexcept
@@ -116,20 +113,29 @@ public:
 	/// TypeId取得
 	TypeId type() const noexcept { return m_typeId; }
 	
-	/// 基底の生ポインタ取得
+	/// 生ポインタ取得
 	pointer get() const noexcept { return m_ptr.get(); }
 	
-	/// 基底の生ポインタ取得（nullチェック済み取得）
-	pointer safe_get() const { null_assert(); return m_ptr.get(); }
+	/// ポインタのnullアサートチェック
+	void null_assert() const { TOFU_ASSERT(m_ptr); }
+	
+	/// void生ポインタにキャスト
+	operator pointer() const noexcept { return m_ptr; }
+	
+	/// const void生ポインタにキャスト
+	operator const pointer() const noexcept { return m_ptr; }
+
+	/// boolキャスト
+	explicit operator bool() const noexcept { return nullptr != get(); }
+	
+	/// ポインタ未設定か
+	bool empty() const noexcept { return nullptr == get(); }
+	
+	//------------------------------------------------------------------------------
 
 	/// holder取得
 	const holder_type& GetHolder() const { return m_ptr; }
 
-	holder_type MoveHolder()
-	{
-		return std::move(m_ptr);
-	}
-	
 	/// ポインタ変換（変換出来なかったらアサート）
 	template <typename Derived>
 	Derived* Cast() const
@@ -155,27 +161,8 @@ public:
 	template <typename U>
 	operator U*() const noexcept { return TryCast<U>(); }
 	
-	//------------------------------------------------------------------------------
-	
-	/// ポインタのnullアサートチェック
-	void null_assert() const { TOFU_ASSERT(m_ptr); }
-	
-	/// void生ポインタにキャスト
-	operator pointer() const noexcept { return m_ptr; }
-	
-	/// const void生ポインタにキャスト
-	operator const pointer() const noexcept { return m_ptr; }
-
-	/// boolキャスト
-	explicit operator bool() const noexcept { return nullptr != get(); }
-	
-	/// ポインタ未設定か
-	bool empty() const noexcept { return nullptr == get(); }
-	
-	//------------------------------------------------------------------------------
-	
-	/// インスタンスの型にconst修飾を付加したAnyBasePtrを取得
-	self_type GetAddConst() const noexcept
+	/// インスタンスの型にconst修飾を付加したAnyPtrを取得
+	self_type ToConst() const noexcept
 	{
 		self_type a = *this;
 		a.iSetTypeId(m_typeId.GetAddConst());
@@ -187,11 +174,6 @@ public:
 //**************************************************************
 private:
 	
-	void iSetTypeId(TypeId id)
-	{
-		m_typeId = id;
-	}
-	
 	template <typename U>
 	constexpr TypeId iMakeTypeId()
 	{
@@ -199,6 +181,11 @@ private:
 		DefineDerivedFromAuto<U>();
 
 		return MakeTypeId<U>();
+	}
+	
+	void iSetTypeId(TypeId id)
+	{
+		m_typeId = id;
 	}
 
 	template <typename U>
@@ -249,223 +236,6 @@ constexpr bool operator ==(const AnyPtr<Holder>& x, std::nullptr_t)
 template <template <class> typename Holder>
 constexpr bool operator <=>(const AnyPtr<Holder>&x, std::nullptr_t)
 	{ return x.get() <=> nullptr; }
-
-
-#if 0
-////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief      何かのポインタとその型情報を保持し、意図した型のポインタとして安全に取り出すクラス
-/// 
-////////////////////////////////////////////////////////////////////////////////////////////////
-class AnyPtr
-{
-	typedef AnyPtr  self_type;
-	
-//**************************************************************
-//              : public
-//**************************************************************
-public:
-	
-// DEFINE
-	
-// FUNCTION
-	
-	/// constructor
-	AnyPtr() noexcept : m_ptr(nullptr), m_typeId() {}
-	
-	/// copy constructor
-	AnyPtr( const AnyPtr& rhs ) noexcept
-		: m_ptr(rhs.m_ptr)
-		, m_typeId(rhs.m_typeId)
-	{}
-	
-	/// ポインタ代入コンストラクタ
-	template <typename T>
-	/*explicit*/ AnyPtr( T* p ) noexcept : m_ptr(nullptr) { *this = p; }
-	
-	/// nullptr代入コンストラクタ
-	/*explicit*/ AnyPtr( nullptr_t ) noexcept : m_ptr(nullptr) {}
-	
-	/// 型を直接指定
-	AnyPtr( const void* p, TypeId typeId ) noexcept : m_ptr(nullptr) { assign( p, typeId ); }
-	
-	/// destructor
-	//~AnyPtr();
-	
-	//==============================
-	
-	/// copy
-	AnyPtr&  operator=( const AnyPtr& rhs ) noexcept
-	{
-		m_ptr = rhs.m_ptr;
-		m_typeId = rhs.m_typeId;
-		return *this;
-	}
-	
-	/// 代入（生のポインタから）
-	template <typename T>
-	AnyPtr&  operator=( T* p ) noexcept
-	{
-		m_ptr = p;
-		m_typeId = MakeTypeId<T>();
-		return *this;
-	}
-	
-	/// 代入（nullptr）
-	AnyPtr&  operator=( nullptr_t ) noexcept
-	{
-		m_ptr = nullptr;
-		m_typeId.clear();
-		return *this;
-	}
-	
-	//==============================
-	
-	/// 設定
-	void  assign( const void* p, TypeId typeId ) noexcept
-	{
-		m_ptr = p;
-		m_typeId = typeId;
-	}
-	
-	/// クリア
-	void  Clear() noexcept
-	{
-		m_ptr = nullptr;
-		m_typeId.clear();
-	}
-	
-	/// TypeId取得
-	const TypeId&  type() const noexcept  { return m_typeId; }
-	
-	/// 生のポインタ取得
-	const void*  get() const noexcept  { return m_ptr; }
-	
-	/// ポインタ変換（変換出来なかったらアサート）
-	template <typename T>
-	T*  Cast() const
-	{
-		T* ret = TryCast<T>();
-		TOFU_ASSERT_MSG( ret, "[AnyPtr::Cast] failed Cast.\n" );
-		return ret;
-	}
-	
-	/// ポインタ変換（変換出来なかったらnullptr）
-	template <typename T>
-	T*  TryCast() const noexcept
-	{
-		if(m_typeId.empty()) return nullptr;
-		// constとvolatileは外せない
-		if(m_typeId.info().IsConst() && !std::is_const_v<T> ) return nullptr;
-		if(m_typeId.info().IsVolatile() && !std::is_volatile_v<T> ) return nullptr;
-
-		if( _castTest< std::is_const<T>::value >( MakeTypeId<T>() ) ){
-			return reinterpret_cast<T*>( _getVoidPtr() );
-		}
-		// アップキャストを試みる
-		return m_typeId.info().upcast<T>(_getVoidPtr());
-	}
-	
-	/// 暗黙的キャスト（型が違ったらnullptr）
-	template <typename T>
-	operator T*() const noexcept  { return TryCast<T>(); }
-	
-	//------------------------------------------------------------------------------
-	
-	/// ポインタのnullアサートチェック
-	void  null_assert() const  { TOFU_ASSERT(m_ptr); }
-	
-	/// boolキャスト
-	operator bool() const noexcept  { return nullptr != m_ptr; }
-	
-	/// ポインタ未設定か
-	bool  empty() const noexcept  { return nullptr == m_ptr; }
-	
-	//------------------------------------------------------------------------------
-	
-	/// インスタンスの型にconst修飾を付加したAnyPtrを取得
-	AnyPtr  GetAddConst() const noexcept  { return AnyPtr( m_ptr, m_typeId.GetAddConst() ); }
-	
-//**************************************************************
-//              : private
-//**************************************************************
-private:
-	
-// DEFINE
-	
-// FUNCTION
-	
-	void*  _getVoidPtr() const noexcept { return const_cast<void*>(m_ptr); }
-	const void*  _getConstVoidPtr() const noexcept { return m_ptr; }
-	
-	template <bool IsConst>
-	inline bool  _castTest( const TypeId& target ) const noexcept  { return target == m_typeId; }
-	
-// VARIABLE
-	
-	const void*  m_ptr;
-	TypeId  m_typeId;
-};
-// << AnyPtr
-
-// cast対象がconstの場合
-template <>
-inline bool  AnyPtr::_castTest<true>( const TypeId& target ) const noexcept
-{
-	return target == m_typeId.GetAddConst();
-}
-
-//------------------------------------------------------------------------------
-// AnyPtrの２項演算子
-//------------------------------------------------------------------------------
-
-/// AnyPtr比較 ==
-inline bool operator ==(const AnyPtr& a, const AnyPtr& b) noexcept
-	{ return a.get() == b.get(); }
-
-/// AnyPtr比較 !=
-inline bool operator !=(const AnyPtr& a, const AnyPtr& b) noexcept
-	{ return a.get() != b.get(); }
-
-/// AnyPtr比較 <
-inline bool operator <(const AnyPtr& a, const AnyPtr& b) noexcept
-	{ return a.get() < b.get(); }
-
-/// AnyPtr比較 <=
-inline bool operator <=(const AnyPtr& a, const AnyPtr& b) noexcept
-	{ return a.get() <= b.get(); }
-
-/// AnyPtr比較 >
-inline bool operator >(const AnyPtr& a, const AnyPtr& b) noexcept
-	{ return a.get() > b.get(); }
-
-/// AnyPtr比較 >=
-inline bool operator >=(const AnyPtr& a, const AnyPtr& b) noexcept
-	{ return a.get() >= b.get(); }
-
-//------------------------------------------------------------------------------
-
-/// AnyPtr比較 (nullptr) ==
-template <typename T>
-inline bool operator ==(const AnyPtr& a, nullptr_t) noexcept
-	{ return a.get() == nullptr; }
-
-/// AnyPtr比較 (nullptr) ==
-template <typename T>
-inline bool operator ==(nullptr_t, const AnyPtr& a) noexcept
-	{ return nullptr == a.get(); }
-
-/// AnyPtr比較 (nullptr) !=
-template <typename T>
-inline bool operator !=(const AnyPtr& a, nullptr_t) noexcept
-	{ return a.get() != nullptr; }
-
-/// AnyPtr比較 (nullptr) !=
-template <typename T>
-inline bool operator !=(nullptr_t, const AnyPtr& a) noexcept
-	{ return nullptr != a.get(); }
-
-//------------------------------------------------------------------------------
-#endif
 
 //using AnyPtr = AnyBasePtr<void>;
 
