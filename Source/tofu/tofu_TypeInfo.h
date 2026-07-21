@@ -156,7 +156,7 @@ private:
 /// 
 ////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-class TypeInfoOf : public TypeInfo
+class TypeInfoOf final : public TypeInfo
 {
 	using self_type = TypeInfoOf;
 	
@@ -222,13 +222,23 @@ inline TypeInfoOf<T>& GetTypeInfo() noexcept
 /// @brief      型ID
 /// 
 ////////////////////////////////////////////////////////////////////////////////
-class TypeId
+class TypeId final
 {
+	//explicit constexpr TypeId( const TypeInfo* info ) noexcept : m_pTypeInfo(info) {}
+	explicit constexpr TypeId( const TypeInfo& info ) noexcept : m_pTypeInfo(&info) {}
+
+public:
+	
+	/// TypeId作成
+	template <typename T>
+	static constexpr TypeId Make() noexcept
+	{
+		return TypeId( GetTypeInfo<T>() );
+	};
+
 public:
 	
 	constexpr TypeId() noexcept {}
-	explicit constexpr TypeId( const TypeInfo* info ) noexcept : m_pTypeInfo(info) {}
-	explicit constexpr TypeId( const TypeInfo& info ) noexcept : m_pTypeInfo(&info) {}
 	
 	/// 指定した型のIDを設定
 	template <typename T>
@@ -273,14 +283,14 @@ private:
 template <typename T>
 constexpr TypeId MakeTypeId() noexcept
 {
-	return TypeId( &GetTypeInfo<T>() );
+	return TypeId::Make<T>();
 };
 
 /// 変数からTypeId作成
 template <typename T>
 constexpr TypeId MakeTypeId( T& ) noexcept
 {
-	return TypeId( &GetTypeInfo<T>() );
+	return TypeId::Make<T>();
 };
 	
 //------------------------------------------------------------------------------
