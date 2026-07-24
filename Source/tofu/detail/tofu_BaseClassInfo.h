@@ -126,7 +126,7 @@ namespace detail
 
 	// 基底クラスかどうかの条件付き
 	template<class T, template<class> class Check>
-	requires std::derived_from<T, Check<T>>
+	requires std::derived_from<T, Check<T>> && (!std::same_as<T, Check<T>>)
 	struct BaseDetect<T, Check, std::void_t<Check<T>>>
 	{
 		static constexpr bool value = true;
@@ -134,7 +134,7 @@ namespace detail
 	};
 
 	// 基底クラスの型を定義しているかどうかの検出
-	//template<class T> using check_base = typename T::base;
+	template<class T> using check_base = typename T::base;
 	template<class T> using check_Base = typename T::Base;
 	template<class T> using check_BaseType = typename T::BaseType;
 	template<class T> using check_base_type = typename T::base_type;
@@ -158,10 +158,11 @@ namespace detail
 
 		// いくつかの定義名候補を調べる
 		using FinalDetect = 
+			MyDetect<check_base,
 			MyDetect<check_Base,
 			MyDetect<check_BaseType,
 			MyDetect<check_base_type
-			>>>;
+			>>>>;
 	
 	public:
 		// 基底クラスが検出できたらtrue
@@ -172,6 +173,7 @@ namespace detail
 	};
 } // detail
 
+
 // 基底クラスの定義が見つかれば、自動で継承関係を定義させる
 template <class DerivedT>
 constexpr void DefineDerivedFromAuto() noexcept
@@ -179,7 +181,15 @@ constexpr void DefineDerivedFromAuto() noexcept
 	using derived_type = std::remove_cv_t<DerivedT>;
 	if constexpr (detail::BaseTypeDetect<derived_type>::value)
 	{
-		DefineDerivedFrom<derived_type, typename detail::BaseTypeDetect<derived_type>::type>();
+		using base_type = typename detail::BaseTypeDetect<derived_type>::type;
+
+		DefineDerivedFrom<derived_type, base_type>();
+		
+		//std::cout << GetTypeName<DerivedT>() << std::endl;
+		//std::cout << "base=" << GetTypeName<base_type>() << std::endl;
+
+		// 再起チェック
+		DefineDerivedFromAuto<base_type>();
 	}
 }
 
