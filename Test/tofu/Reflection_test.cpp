@@ -108,9 +108,13 @@ IUTEST(tofu, Reflection)
 		IUTEST_ASSERT_NE(ptr.get(), nullptr);
 		std::cout << ptr.type().info().GetName() << std::endl;
 		IUTEST_ASSERT_EQ(ptr.type().info().GetName(), "test::A");
-		//delete ptr.get();
-		//ptr.Clear();
 		IUTEST_ASSERT_EQ(test::s_CountA, 1);
+
+		test::A* a = ptr;
+		IUTEST_ASSERT_NE(a, nullptr);
+		
+		test::B* b = ptr;
+		IUTEST_ASSERT_EQ(b, nullptr);
 	}
 	IUTEST_ASSERT_EQ(test::s_CountBase, 0);
 	IUTEST_ASSERT_EQ(test::s_CountA, 0);
