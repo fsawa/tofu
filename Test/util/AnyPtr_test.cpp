@@ -43,7 +43,9 @@ IUTEST(util, AnyPtr)
 	
 	// nullptrからの暗黙変換
 	[](tofu::AnyPtr<>){}(nullptr);
-
+	
+	IUTEST_ASSERT_EQ(ptr, nullptr);
+	IUTEST_ASSERT_EQ(nullptr, ptr);
 	IUTEST_ASSERT_EQ(ptr.get(), nullptr);
 	IUTEST_ASSERT_EQ(ptr.TryCast<int>(), nullptr);
 	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), false);
