@@ -18,6 +18,8 @@
 
 namespace tofu {
 namespace reflection {
+
+using InstancePtr = AnyPtr<std::shared_ptr>;
 	
 namespace detail
 {
@@ -25,7 +27,7 @@ namespace detail
 	{
 	public:
 		virtual TypeId GetTypeId() const = 0;
-		virtual AnyBasePtr<void, std::shared_ptr> Create() const = 0;
+		virtual InstancePtr Create() const = 0;
 	};
 
 	template <typename T>
@@ -42,9 +44,9 @@ namespace detail
 			return MakeTypeId<T>();
 		}
 
-		AnyBasePtr<void, std::shared_ptr> Create() const override
+		InstancePtr Create() const override
 		{
-			return AnyBasePtr<T, std::shared_ptr>(new T);
+			return InstancePtr(new T);
 		}
 	};
 
@@ -63,7 +65,7 @@ inline void EntryClass()
 #define TOFU_REFLECTION_CLASS(type)  TOFU_STATIC_CALL(::tofu::reflection::detail::ClassCreatorOf<type>::CreateInstance)
 
 /// @brief 型名からクラスインスタンスを生成する
-AnyBasePtr<void, std::shared_ptr> Create(std::string_view typeName);
+InstancePtr Create(std::string_view typeName);
 
 /// @brief 型名から派生クラスのshared_ptrを作る
 /// @tparam T 基底クラス
