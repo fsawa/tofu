@@ -12,7 +12,7 @@
 
 #include <tofu.h>
 #include <tofu_TypeInfo.h>
-#include <tofu_AnyBasePtr.h>
+#include <tofu_SafePtr.h>
 
 namespace tofu {
 	
@@ -126,11 +126,29 @@ public:
 	operator const pointer() const noexcept { return m_ptr; }
 
 	/// boolキャスト
-	explicit operator bool() const noexcept { return nullptr != get(); }
+	explicit operator bool() const noexcept { return nullptr != m_ptr; }
 	
 	/// ポインタ未設定か
-	bool empty() const noexcept { return nullptr == get(); }
+	bool empty() const noexcept { return m_ptr.empty(); }
 	
+	//------------------------------------------------------------------------------
+	
+	/// 比較 ==
+	friend constexpr bool operator ==(const AnyPtr<Holder>& x, const AnyPtr<Holder>& y) noexcept
+		{ return x.m_ptr == y.m_ptr; }
+
+	/// 三方比較 <=>
+	friend constexpr auto operator <=>(const AnyPtr<Holder>& x, const AnyPtr<Holder>& y) noexcept
+		{ return x.m_ptr <=> y.m_ptr; }
+
+	/// 比較 (nullptr) ==
+	friend constexpr bool operator ==(const AnyPtr<Holder>& x, std::nullptr_t)
+		{ return x.m_ptr == nullptr; }
+
+	/// 三方比較 (nullptr) <=>
+	friend constexpr bool operator <=>(const AnyPtr<Holder>&x, std::nullptr_t)
+		{ return x.m_ptr <=> nullptr; }
+
 	//------------------------------------------------------------------------------
 
 	/// holder取得
@@ -212,31 +230,5 @@ private:
 	TypeId m_typeId{};
 };
 // << AnyPtr
-
-//------------------------------------------------------------------------------
-// AnyPtrの２項演算子
-//------------------------------------------------------------------------------
-
-/// 比較 ==
-template <template <class> typename Holder>
-constexpr bool operator ==(const AnyPtr<Holder>& x, const AnyPtr<Holder>& y) noexcept
-	{ return x.get() == y.get(); }
-
-/// 三方比較 <=>
-template <template <class> typename Holder>
-constexpr auto operator <=>(const AnyPtr<Holder>& x, const AnyPtr<Holder>& y) noexcept
-	{ return x.get() <=> y.get(); }
-
-/// 比較 (nullptr) ==
-template <template <class> typename Holder>
-constexpr bool operator ==(const AnyPtr<Holder>& x, std::nullptr_t)
-	{ return x.get() == nullptr; }
-
-/// 三方比較 (nullptr) <=>
-template <template <class> typename Holder>
-constexpr bool operator <=>(const AnyPtr<Holder>&x, std::nullptr_t)
-	{ return x.get() <=> nullptr; }
-
-//using AnyPtr = AnyBasePtr<void>;
 
 } // tofu
