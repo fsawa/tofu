@@ -30,6 +30,10 @@ namespace test
 	
 	TOFU_RTTI_DERIVED_FROM(B2, B1);
 	//TOFU_RTTI_DERIVED_FROM(B3, B2);
+
+	class C1 {};
+	class C2 : public C1 { public: using Base = C1; };
+	class C3 : public C2 { public: using Base = C2; };
 }
 
 IUTEST(util, AnyPtr)
@@ -142,5 +146,12 @@ IUTEST(util, AnyPtr)
 		IUTEST_ASSERT_EQ( nullptr, ptr.TryCast<B1>() );
 		
 		[[maybe_unused]] tofu::AnyPtr ptr2 = &const_b3;
+
+		// 基底クラス自動登録の確認
+		C3 c3;
+		ptr = &c3;
+		IUTEST_ASSERT_EQ( static_cast<C3*>(&c3), ptr.TryCast<C3>() );
+		IUTEST_ASSERT_EQ( static_cast<C2*>(&c3), ptr.TryCast<C2>() );
+		IUTEST_ASSERT_EQ( static_cast<C1*>(&c3), ptr.TryCast<C1>() );
 	}
 }
