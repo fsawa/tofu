@@ -67,6 +67,8 @@ IUTEST(util, AnyBasePtr)
 	AB ab;
 	
 	{
+		auto func = [](tofu::AnyBasePtr<A>){};
+
 		// コンストラクタ
 		tofu::AnyBasePtr<A>  p1;
 		tofu::AnyBasePtr<A>  p2( p1 );
@@ -74,6 +76,13 @@ IUTEST(util, AnyBasePtr)
 		tofu::AnyBasePtr<A>  p4( &a );
 		tofu::AnyBasePtr<A>  p5( &ab );
 		tofu::AnyBasePtr<A>  p6( p5 );
+		tofu::AnyBasePtr<A>  p7( nullptr );
+
+		func({});
+		func( p1 );
+		func( &a );
+		func( &ab );
+		func( nullptr );
 		
 		// 非const to const
 		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp1;
@@ -83,6 +92,8 @@ IUTEST(util, AnyBasePtr)
 		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp5( &ab );
 		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp6( p5 );
 		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp7( cp6 );
+
+		p1 = nullptr;
 		
 		// コピー
 		p2 = p1;
@@ -136,9 +147,9 @@ IUTEST(util, AnyBasePtr)
 		IUTEST_ASSERT_TRUE( p1.empty() );
 		IUTEST_ASSERT_FALSE( p5.empty() );
 		
-		// GetAddConst
-		tofu::AnyBasePtr<const A>  p10 = p5.GetAddConst();
-		p10 = p5.GetAddConst();
+		// ToConst
+		tofu::AnyBasePtr<const A>  p10 = p5.ToConst();
+		p10 = p5.ToConst();
 		
 		// to const
 		tofu::AnyBasePtr<const A>  p11( p5 );
@@ -334,7 +345,7 @@ IUTEST(util, AnyBasePtr)
 	// 多重継承でそれぞれにキャスト可能
 	{
 		AB ab;
-		tofu::AnyBasePtr<void> p = &ab;
+		tofu::AnyBasePtr<AB> p = &ab;
 		A* a_any = p;
 		B* b_any = p;
 		
@@ -378,29 +389,6 @@ IUTEST(util, AnyBasePtr)
 		{
 			tofu::AnyBasePtr<A, std::shared_ptr> p1 = new AB;
 			tofu::AnyBasePtr<A, std::shared_ptr> p2 = std::make_shared<AB>();
-		}
-		// void
-		{
-			tofu::AnyBasePtr<void, std::shared_ptr> p1 = new A;
-			IUTEST_ASSERT_EQ(p1.type(), tofu::MakeTypeId<A>());
-			A* a = p1; // A*として取り出せる
-			IUTEST_ASSERT_FALSE(a == nullptr);
-		}
-		{
-			AB* ab = new AB;
-			tofu::AnyBasePtr<void, std::shared_ptr> p1 = ab;
-			IUTEST_ASSERT_EQ(p1.type(), tofu::MakeTypeId<AB>());
-			A* a = p1; // A*として取り出せる
-			IUTEST_ASSERT_EQ(static_cast<A*>(ab), a);
-			IUTEST_ASSERT_EQ(static_cast<A*>(ab), p1.TryCast<A>());
-			B* b = p1; // B*
-			IUTEST_ASSERT_EQ(static_cast<B*>(ab), b);
-			IUTEST_ASSERT_EQ(static_cast<B*>(ab), p1.TryCast<B>());
-			C* c = p1; // Cは基底クラス登録していないので取り出せない
-			IUTEST_ASSERT_NE(static_cast<C*>(ab), c);
-			IUTEST_ASSERT_NE(static_cast<C*>(ab), p1.TryCast<C>());
-			
-			p1 = new AB;
 		}
 	}
 	std::cout << "-- done" << std::endl;
