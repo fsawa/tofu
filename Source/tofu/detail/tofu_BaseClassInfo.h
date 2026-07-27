@@ -31,7 +31,6 @@ class BaseClassInfo
 {
 public:
 	BaseClassInfo() = delete;
-	BaseClassInfo(TypeInfo& derived, const TypeInfo& base);
 		
 	const TypeInfo& GetBaseTypeInfo() const noexcept
 	{
@@ -47,6 +46,9 @@ public:
 	{
 		return TryCastTo(const_cast<void*>(p), target_type_info);
 	}
+	
+protected:
+	BaseClassInfo(TypeInfo& derived, const TypeInfo& base);
 
 private:
 	const TypeInfo& m_BaseTypeInfo;
@@ -57,20 +59,21 @@ private:
 //------------------------------------------------------------------------------
 // 基底クラス情報クラス
 template <class DerivedT, class BaseT>
-requires (std::derived_from<DerivedT, BaseT> && std::negation_v<std::is_same<DerivedT, BaseT>>)
-class BaseClassInfoOf final : private BaseClassInfo
+requires (std::derived_from<DerivedT, BaseT> && (!std::same_as<DerivedT, BaseT>))
+class BaseClassInfoOf final : public BaseClassInfo
 {
 	// 静的初期化時に登録させるためのインスタンス
-	static const BaseClassInfoOf s_Instance;
-	
-	static constexpr const BaseClassInfoOf& FetchImpl() noexcept {
+	static const BaseClassInfoOf& Instance() noexcept {
+		static const BaseClassInfoOf s_Instance{};
 		return s_Instance;
 	}
+	
+	inline static const bool s_dummy = (Instance(), true);
 	
 public:
 	// インスタンスを実体化させるため参照
 	static constexpr void Fetch() noexcept {
-		(void)FetchImpl();
+		(void)s_dummy;
 	}
 
 public:
@@ -93,13 +96,6 @@ public:
 		return GetBaseTypeInfo().TryUpcast(base, target_type_info);
 	}
 };
-
-//------------------------------------------------------------------------------
-
-// インスタンス
-template <class DerivedT, class BaseT>
-requires (std::derived_from<DerivedT, BaseT> && std::negation_v<std::is_same<DerivedT, BaseT>>)
-const BaseClassInfoOf<DerivedT, BaseT> BaseClassInfoOf<DerivedT, BaseT>::s_Instance{};
 
 //------------------------------------------------------------------------------
 // 継承関係を定義させる
