@@ -95,11 +95,11 @@ public:
 	// -- move <U> / derived
 
 	template <typename U>
-	requires std::derived_from<U, T>
+	requires safe_castable_to<U, T>
 	AnyBasePtr( AnyBasePtr<U, Holder>&& rhs ) noexcept { *this = std::move(rhs); }
 
 	template <typename U>
-	requires std::derived_from<U, T>
+	requires safe_castable_to<U, T>
 	AnyBasePtr& operator=( AnyBasePtr<U, Holder>&& rhs ) noexcept
 	{
 		m_ptr = std::move(rhs.m_ptr);
@@ -111,11 +111,11 @@ public:
 	// -- copy <U> / derived
 
 	template <typename U>
-	requires std::derived_from<U, T>
+	requires safe_castable_to<U, T>
 	AnyBasePtr( const AnyBasePtr<U, Holder>& rhs ) noexcept { *this = rhs; }
 
 	template <typename U>
-	requires std::derived_from<U, T>
+	requires safe_castable_to<U, T>
 	AnyBasePtr& operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
 	{
 		m_ptr = rhs.GetHolder();
@@ -126,15 +126,16 @@ public:
 	// -- from raw-pointer <U> / derived
 
 	template <typename U>
-	requires std::derived_from<U, T>
+	requires safe_castable_to<U, T>
 	AnyBasePtr( U* p ) noexcept
 		: m_ptr(p)
-		, m_typeId(iMakeTypeId<U>())
+		, m_typeId()
 	{
+		iSetTypeId<U>();
 	}
 
 	template <typename U>
-	requires std::derived_from<U, T>
+	requires safe_castable_to<U, T>
 	AnyBasePtr& operator=( U* p ) noexcept
 	{
 		m_ptr.reset(p);
@@ -145,11 +146,11 @@ public:
 	// -- holder<U> copy / derived
 
 	template <typename U>
-	requires std::derived_from<U, T>
+	requires safe_castable_to<U, T>
 	AnyBasePtr( Holder<U> p ) noexcept { *this = p; }
 
 	template <typename U>
-	requires std::derived_from<U, T>
+	requires safe_castable_to<U, T>
 	AnyBasePtr& operator=( Holder<U> p ) noexcept
 	{
 		m_ptr = p;
@@ -236,10 +237,11 @@ public:
 		{
 			if(m_typeId.IsEmpty()) return nullptr;
 			// constとvolatileは外せない
-			if(!std::is_const_v<Derived> && m_typeId.info().IsConst()) return nullptr;
-			if(!std::is_volatile_v<Derived> && m_typeId.info().IsVolatile()) return nullptr;
+			// →T=非constの場合にconstが入ることはないし、T=constの場合は↑でチェックしている
+			//if(!std::is_const_v<Derived> && m_typeId.info().IsConst()) return nullptr;
+			//if(!std::is_volatile_v<Derived> && m_typeId.info().IsVolatile()) return nullptr;
 
-			return iTryCast<Derived>();
+			return iTryCastImpl<Derived>();
 		}
 	}
 	
@@ -267,7 +269,7 @@ private:
 	}
 
 	/// TypeIdのCV修飾を、このクラスのbase_typeに合わせる
-	static inline TypeId iConvertType(TypeId id)
+	static inline TypeId ConvertType(TypeId id)
 	{
 		if constexpr ( IsConst ){
 			return id.GetAddConst();
@@ -276,52 +278,75 @@ private:
 			return id;
 		}
 	}
+
+	// 代入可能チェック
+	// 非constにconstは入れられない
+	//template <typename U>
 	
-	void iSetTypeId(TypeId id)
+	void iSetTypeId(TypeId id) noexcept
 	{
-		m_typeId = iConvertType(id);
+		m_typeId = ConvertType(id);
 	}
 	
 	template <typename U>
-		requires std::derived_from<U, T>
-	constexpr TypeId iMakeTypeId()
+	requires safe_castable_to<U, T>
+	constexpr TypeId iMakeTypeId() noexcept
 	{
 		// 継承関係を自動定義
 		DefineDerivedFrom<U, T>();
-		DefineDerivedFromAuto<T>();
+		//DefineDerivedFromAuto<T>();
 		DefineDerivedFromAuto<U>();
 
-		// 基底がconst、かつ、Uが非constの場合、
-		// TypeIdがconstになるようにする。
-		if constexpr ( IsConst ){
-			return MakeTypeId<const U>();
-		}
-		else{
-			return MakeTypeId<U>();
-		}
+		// cvは必ず同じになる
+		return MakeTypeId<copy_cv_to_t<T,U>>();
 	}
 
 	template <typename U>
-	void iSetTypeId()
+	void iSetTypeId() noexcept
 	{
 		m_typeId = iMakeTypeId<U>();
 	}
 	
 	// upcast or same type cast
 	template <typename U>
-		requires safe_castable_to<T, U>
-	U* iTryCast() const noexcept
+	requires safe_castable_to<T, U>
+	U* iTryCastImpl() const noexcept
 	{
 		return m_ptr.get();
 	}
 
 	// downcast
 	template <typename U>
-		requires (std::derived_from<U, T> && !safe_castable_to<T, U>)
-	U* iTryCast() const noexcept
+	requires (std::derived_from<U, T> && !safe_castable_to<T, U>)
+	U* iTryCastImpl() const noexcept
 	{
-		// cv修飾のチェックはtryCast側で済ましている
-		// UもしくはUから派生したクラスを保持している
+		// cv修飾の変換可能チェックはTryCast側で済ましている
+#if 0
+		// Uが、保持している形と一致しているか判定
+		// Tがconst (m_typeIdはconst)
+		if constexpr (IsConst)
+		{
+			// Uはconstのみ
+			static_assert(std::is_const_v<U>);
+			if(MakeTypeId<U>() == m_typeId)
+			{
+				// T*をU*にキャストする
+				return static_cast<U*>(m_ptr.get());
+			}
+		}
+		// Tが非const (m_typeIdは非const)
+		else
+		{
+			// Uはconst or 非const
+			if(MakeTypeId<std::remove_const_t<U>>() == m_typeId)
+			{
+				// T*をU*にキャストする
+				return static_cast<U*>(m_ptr.get());
+			}
+		}
+#endif
+
+		// UもしくはUから派生したクラスを保持しているか
 		if(m_typeId.info().IsDerivedFrom<U>())
 		{
 			// T*をU*にキャストする
