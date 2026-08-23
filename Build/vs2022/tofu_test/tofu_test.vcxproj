@@ -128,6 +128,8 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Project\tofu\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level4</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">Level4</WarningLevel>
     </ClCompile>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">tofu.lib;%(AdditionalDependencies)</AdditionalDependencies>

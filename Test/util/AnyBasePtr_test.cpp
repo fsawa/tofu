@@ -93,6 +93,13 @@ IUTEST(util, AnyBasePtr)
 		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp6( p5 );
 		[[maybe_unused]] tofu::AnyBasePtr<const A>  cp7( cp6 );
 
+		// constから非constへはNG
+		{
+			[[maybe_unused]] const A* p = &a;
+			//p1 = cp1;
+			//p1 = p;
+		}
+
 		p1 = nullptr;
 		
 		// コピー
@@ -303,20 +310,20 @@ IUTEST(util, AnyBasePtr)
 		S2* ap2 = ap; // ここがうまくいくかどうか
 		S3* ap3 = ap;
 		
-		S1* p1 = &s3;
-		S2* p2 = &s3;
-		S3* p3 = &s3;
+		S1* p_1 = &s3;
+		S2* p_2 = &s3;
+		S3* p_3 = &s3;
 
-		IUTEST_ASSERT_EQ(ap1, p1);
-		IUTEST_ASSERT_EQ(ap2, p2);
-		IUTEST_ASSERT_EQ(ap3, p3);
+		IUTEST_ASSERT_EQ(ap1, p_1);
+		IUTEST_ASSERT_EQ(ap2, p_2);
+		IUTEST_ASSERT_EQ(ap3, p_3);
 		
 		const S1* cs1 = ap;
 		const S2* cs2 = ap;
 		const S3* cs3 = ap;
-		IUTEST_ASSERT_EQ(cs1, p1);
-		IUTEST_ASSERT_EQ(cs2, p2);
-		IUTEST_ASSERT_EQ(cs3, p3);
+		IUTEST_ASSERT_EQ(cs1, p_1);
+		IUTEST_ASSERT_EQ(cs2, p_2);
+		IUTEST_ASSERT_EQ(cs3, p_3);
 	}
 	{
 		S2 s2;
@@ -336,21 +343,21 @@ IUTEST(util, AnyBasePtr)
 	}
 	// Tから更にupcast
 	{
-		AB ab;
-		tofu::AnyBasePtr<AB> p = &ab;
+		AB ab2;
+		tofu::AnyBasePtr<AB> p = &ab2;
 		const A* a_any = p;
-		const A* a_ptr = &ab;
+		const A* a_ptr = &ab2;
 		IUTEST_ASSERT_EQ(a_any, a_ptr);
 	}
 	// 多重継承でそれぞれにキャスト可能
 	{
-		AB ab;
-		tofu::AnyBasePtr<AB> p = &ab;
+		AB ab2;
+		tofu::AnyBasePtr<AB> p = &ab2;
 		A* a_any = p;
 		B* b_any = p;
 		
-		A* a_ptr = &ab;
-		B* b_ptr = &ab;
+		A* a_ptr = &ab2;
+		B* b_ptr = &ab2;
 		
 		IUTEST_ASSERT_EQ(a_any, a_ptr);
 		IUTEST_ASSERT_EQ(b_any, b_ptr);
@@ -360,35 +367,35 @@ IUTEST(util, AnyBasePtr)
 	std::cout << "-- shared_ptr" << std::endl;
 	{
 		{
-			tofu::AnyBasePtr<A, std::shared_ptr> p1 = new A;
-			tofu::AnyBasePtr<A, std::shared_ptr> p2 = std::make_shared<A>();
+			tofu::AnyBasePtr<A, std::shared_ptr> p_1 = new A;
+			tofu::AnyBasePtr<A, std::shared_ptr> p_2 = std::make_shared<A>();
 
 			// move
-			p2 = std::move(p1);
+			p_2 = std::move(p_1);
 			IUTEST_ASSERT_TRUE(p1.get() == nullptr);
 
 			// copy
-			p1 = p2;
-			IUTEST_ASSERT_EQ(p1.get(), p2.get());
-			IUTEST_ASSERT_EQ(p1, p2);
+			p_1 = p_2;
+			IUTEST_ASSERT_EQ(p_1.get(), p_2.get());
+			IUTEST_ASSERT_EQ(p_1, p_2);
 
 			// 生ポインタの代入
-			p1 = new A;
-			p1 = new AB;
+			p_1 = new A;
+			p_1 = new AB;
 			
 			// holder代入
-			p1 = std::make_shared<A>();
-			p1 = std::make_shared<AB>();
+			p_1 = std::make_shared<A>();
+			p_1 = std::make_shared<AB>();
 
 			// 派生
-			tofu::AnyBasePtr<AB, std::shared_ptr> p3 = new AB;
-			p1 = p3;
-			p1 = std::move(p3);
+			tofu::AnyBasePtr<AB, std::shared_ptr> p_3 = new AB;
+			p_1 = p_3;
+			p_1 = std::move(p_3);
 		}
 		// 派生クラスのインスタンス代入
 		{
-			tofu::AnyBasePtr<A, std::shared_ptr> p1 = new AB;
-			tofu::AnyBasePtr<A, std::shared_ptr> p2 = std::make_shared<AB>();
+			tofu::AnyBasePtr<A, std::shared_ptr> p_1 = new AB;
+			tofu::AnyBasePtr<A, std::shared_ptr> p_2 = std::make_shared<AB>();
 		}
 	}
 	std::cout << "-- done" << std::endl;

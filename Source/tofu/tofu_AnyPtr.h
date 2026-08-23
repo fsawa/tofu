@@ -169,9 +169,14 @@ public:
 	{
 		if(m_typeId.IsEmpty()) return nullptr;
 		// constとvolatileは外せない
-		if(!std::is_const_v<Derived> && m_typeId.info().IsConst()) return nullptr;
-		if(!std::is_volatile_v<Derived> && m_typeId.info().IsVolatile()) return nullptr;
-
+		if constexpr (!std::is_const_v<Derived>)
+		{
+			if(m_typeId.info().IsConst()) return nullptr;
+		}
+		if constexpr (!std::is_volatile_v<Derived>)
+		{
+			if(m_typeId.info().IsVolatile()) return nullptr;
+		}
 		return iTryCast<Derived>();
 	}
 	

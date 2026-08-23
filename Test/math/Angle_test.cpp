@@ -72,9 +72,9 @@ IUTEST(math, Angle)
 	IUTEST_ASSERT_EQ( 0.25f, a.value() );
 	IUTEST_ASSERT_EQ( 0.0f, Angle(0.0f).normalize().value() );
 	IUTEST_ASSERT_EQ( 0.0f, Angle(1.0f).normalize().value() );
-	IUTEST_ASSERT_EQ( 0.0f, Angle(-1.0f).normalize() );
-	IUTEST_ASSERT_EQ( 350.f, Degree(-10.f).normalize() );
-	IUTEST_ASSERT_EQ( 10.f, Degree(10.f).normalize() );
+	IUTEST_ASSERT_EQ( 0.0f, Angle(-1.0f).normalize().value() );
+	IUTEST_ASSERT_EQ( 350.f, Degree(-10.f).normalize().value() );
+	IUTEST_ASSERT_EQ( 10.f, Degree(10.f).normalize().value() );
 	IUTEST_ASSERT_GE( FLT_EPSILON*100, Abs(Degree(370.f).normalize().value() - 10.0f) );
 	
 	a = Angle(-2.25f).normalize();

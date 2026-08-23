@@ -116,8 +116,8 @@ IUTEST(util, AnyPtr)
 		IUTEST_ASSERT_EQ(ptr1, &ca);
 
 		// const外せない
-		test::A* ptr2 = ptr3;
-		IUTEST_ASSERT_EQ(ptr2, nullptr);
+		test::A* ptr4 = ptr3;
+		IUTEST_ASSERT_EQ(ptr4, nullptr);
 	}
 
 	// アップキャスト
@@ -145,7 +145,7 @@ IUTEST(util, AnyPtr)
 		IUTEST_ASSERT_EQ( nullptr, ptr.TryCast<B2>() );
 		IUTEST_ASSERT_EQ( nullptr, ptr.TryCast<B1>() );
 		
-		[[maybe_unused]] tofu::AnyPtr ptr2 = &const_b3;
+		[[maybe_unused]] tofu::AnyPtr ptr20 = &const_b3;
 
 		// 基底クラス自動登録の確認
 		C3 c3;

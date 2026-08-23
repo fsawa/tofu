@@ -38,7 +38,7 @@ namespace detail
 {
 
 	//------------------------------------------------------------------------------
-	void  Assert(const char* filename, int line, const char* msg)
+	void  Assert(const char* filename, [[maybe_unused]] int line, const char* msg)
 	{
 		if (!filename) filename = "";
 		if (!msg) msg = "";

@@ -111,6 +111,8 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">stdcpp20</LanguageStandard>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">Level4</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level4</WarningLevel>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
