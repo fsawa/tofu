@@ -29,7 +29,7 @@
     <ClCompile Include="..\..\..\Test\math\Nearly_test.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Test\util\AnyBasePtr_test.cpp">
+    <ClCompile Include="..\..\..\Test\util\SubPtr_test.cpp">
       <Filter>Source Files\util</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Test\util\AnyPtr_test.cpp">

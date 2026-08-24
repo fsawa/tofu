@@ -150,7 +150,7 @@
     <ClCompile Include="..\..\..\Test\math\Angle_test.cpp" />
     <ClCompile Include="..\..\..\Test\math\Nearly_test.cpp" />
     <ClCompile Include="..\..\..\Test\tofu\Reflection_test.cpp" />
-    <ClCompile Include="..\..\..\Test\util\AnyBasePtr_test.cpp" />
+    <ClCompile Include="..\..\..\Test\util\SubPtr_test.cpp" />
     <ClCompile Include="..\..\..\Test\util\AnyPtr_test.cpp" />
     <ClCompile Include="..\..\..\Test\util\Finalizer_test.cpp" />
     <ClCompile Include="..\..\..\Test\util\SafePtr_test.cpp" />

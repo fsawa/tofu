@@ -59,7 +59,7 @@
     <ClInclude Include="..\..\..\Source\tofu\tofu.h">
       <Filter>src\tofu</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\tofu_AnyBasePtr.h">
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SubPtr.h">
       <Filter>src\tofu</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Source\tofu\tofu_AnyPtr.h">

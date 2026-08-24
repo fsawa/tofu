@@ -137,7 +137,7 @@
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h" />
     <ClInclude Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu.h" />
-    <ClInclude Include="..\..\..\Source\tofu\tofu_AnyBasePtr.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SubPtr.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_AnyPtr.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_DisallowCopy.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_Finalizer.h" />

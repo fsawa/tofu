@@ -1,6 +1,6 @@
 ﻿//------------------------------------------------------------------------------
 /**
- * @file    AnyBasePtr.h
+ * @file    SubPtr.h
  * @brief   特定のクラスから派生したクラスのポインタと型情報を保持するポインタクラス
  * @author  y.fujisawa
  * @par     copyright
@@ -38,15 +38,15 @@ concept safe_castable_to =
 /// @note 特定のクラス(T)から派生したクラスのポインタと型情報を保持し、参照時に指定した型でなければnullを返す
 ////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T, template <class> typename Holder = SafePtr >
-class AnyBasePtr final
+class SubPtr final
 {
-	using self_type = AnyBasePtr;
+	using self_type = SubPtr;
 	
 	using const_cast_helper = detail_safe_ptr::const_cast_helper<T>;
 	using const_cast_type = typename const_cast_helper::type;
 	
 	template <typename BaseU, template <class> typename HolderU>
-    friend class AnyBasePtr;
+    friend class SubPtr;
 
 //**************************************************************
 //              : public
@@ -59,9 +59,9 @@ public:
 	
 	using reference_type = typename detail_safe_ptr::ptr_traits<T>::reference;
 	
-	using ConstType     = AnyBasePtr<typename std::add_const<T>::type    >; ///< TがconstのPtrクラスへキャスト
-	using NotConstType  = AnyBasePtr<typename std::remove_const<T>::type >; ///< TがconstじゃないPtrクラスへキャスト
-	using ReverseConstType = AnyBasePtr<typename detail_safe_ptr::reverse_const<T>::type>; ///< Tのconst修飾を反転した型
+	using ConstType     = SubPtr<typename std::add_const<T>::type    >; ///< TがconstのPtrクラスへキャスト
+	using NotConstType  = SubPtr<typename std::remove_const<T>::type >; ///< TがconstじゃないPtrクラスへキャスト
+	using ReverseConstType = SubPtr<typename detail_safe_ptr::reverse_const<T>::type>; ///< Tのconst修飾を反転した型
 	
 	static constexpr bool IsConst = std::is_const_v<T>;      ///< Tがconstかどうか
 	static constexpr bool IsVolatile = std::is_volatile_v<T>;      ///< Tがvolatileかどうか
@@ -73,13 +73,13 @@ public:
 	
 public:
 	
-	AnyBasePtr() noexcept = default;
-	~AnyBasePtr() = default;
+	SubPtr() noexcept = default;
+	~SubPtr() = default;
 	
 	// -- move
 	
-	AnyBasePtr( AnyBasePtr&& rhs ) noexcept { *this = rhs; }
-	AnyBasePtr& operator=( AnyBasePtr&& rhs ) noexcept
+	SubPtr( SubPtr&& rhs ) noexcept { *this = rhs; }
+	SubPtr& operator=( SubPtr&& rhs ) noexcept
 	{
 		m_ptr = std::move(rhs.m_ptr);
 		m_typeId = rhs.type();
@@ -89,18 +89,18 @@ public:
 
 	// -- copy
 
-	AnyBasePtr( const AnyBasePtr& rhs ) noexcept = default;
-	AnyBasePtr& operator=( const AnyBasePtr& rhs ) noexcept = default;
+	SubPtr( const SubPtr& rhs ) noexcept = default;
+	SubPtr& operator=( const SubPtr& rhs ) noexcept = default;
 	
 	// -- move <U> / derived
 
 	template <typename U>
 	requires safe_castable_to<U, T>
-	AnyBasePtr( AnyBasePtr<U, Holder>&& rhs ) noexcept { *this = std::move(rhs); }
+	SubPtr( SubPtr<U, Holder>&& rhs ) noexcept { *this = std::move(rhs); }
 
 	template <typename U>
 	requires safe_castable_to<U, T>
-	AnyBasePtr& operator=( AnyBasePtr<U, Holder>&& rhs ) noexcept
+	SubPtr& operator=( SubPtr<U, Holder>&& rhs ) noexcept
 	{
 		m_ptr = std::move(rhs.m_ptr);
 		iSetTypeId(rhs.type());
@@ -112,11 +112,11 @@ public:
 
 	template <typename U>
 	requires safe_castable_to<U, T>
-	AnyBasePtr( const AnyBasePtr<U, Holder>& rhs ) noexcept { *this = rhs; }
+	SubPtr( const SubPtr<U, Holder>& rhs ) noexcept { *this = rhs; }
 
 	template <typename U>
 	requires safe_castable_to<U, T>
-	AnyBasePtr& operator=( const AnyBasePtr<U, Holder>& rhs ) noexcept
+	SubPtr& operator=( const SubPtr<U, Holder>& rhs ) noexcept
 	{
 		m_ptr = rhs.GetHolder();
 		iSetTypeId(rhs.type());
@@ -127,7 +127,7 @@ public:
 
 	template <typename U>
 	requires safe_castable_to<U, T>
-	AnyBasePtr( U* p ) noexcept
+	SubPtr( U* p ) noexcept
 		: m_ptr(p)
 		, m_typeId()
 	{
@@ -136,7 +136,7 @@ public:
 
 	template <typename U>
 	requires safe_castable_to<U, T>
-	AnyBasePtr& operator=( U* p ) noexcept
+	SubPtr& operator=( U* p ) noexcept
 	{
 		m_ptr.reset(p);
 		iSetTypeId<U>();
@@ -147,11 +147,11 @@ public:
 
 	template <typename U>
 	requires safe_castable_to<U, T>
-	AnyBasePtr( Holder<U> p ) noexcept { *this = p; }
+	SubPtr( Holder<U> p ) noexcept { *this = p; }
 
 	template <typename U>
 	requires safe_castable_to<U, T>
-	AnyBasePtr& operator=( Holder<U> p ) noexcept
+	SubPtr& operator=( Holder<U> p ) noexcept
 	{
 		m_ptr = p;
 		iSetTypeId<U>();
@@ -161,10 +161,10 @@ public:
 	// -- nullptr
 
 	/// nullptr代入コンストラクタ
-	AnyBasePtr( nullptr_t ) noexcept {}
+	SubPtr( nullptr_t ) noexcept {}
 
 	/// 代入（nullptr）
-	AnyBasePtr& operator=( nullptr_t ) noexcept
+	SubPtr& operator=( nullptr_t ) noexcept
 	{
 		reset();
 		return *this;
@@ -218,7 +218,7 @@ public:
 	Derived* Cast() const
 	{
 		Derived* ret = TryCast<Derived>();
-		TOFU_ASSERT_MSG( ret, "[AnyBasePtr::Cast] failed Cast.\n" );
+		TOFU_ASSERT_MSG( ret, "[SubPtr::Cast] failed Cast.\n" );
 		return ret;
 	}
 	
@@ -251,10 +251,10 @@ public:
 	
 	//------------------------------------------------------------------------------
 	
-	/// インスタンスの型にconst修飾を付加したAnyBasePtrを取得
-	AnyBasePtr<const T> ToConst() const noexcept
+	/// インスタンスの型にconst修飾を付加したSubPtrを取得
+	SubPtr<const T> ToConst() const noexcept
 	{
-		return AnyBasePtr<const T>( *this );
+		return SubPtr<const T>( *this );
 	}
 
 //**************************************************************
@@ -360,30 +360,30 @@ private:
 	holder_type m_ptr{};
 	TypeId m_typeId{};
 };
-// << AnyBasePtr
+// << SubPtr
 
 //------------------------------------------------------------------------------
-// AnyBasePtrの２項演算子
+// SubPtrの２項演算子
 //------------------------------------------------------------------------------
 
 /// 比較 ==
 template <typename T, typename U, template <class> typename Holder>
-constexpr bool operator ==(const AnyBasePtr<T, Holder>& x, const AnyBasePtr<U, Holder>& y) noexcept
+constexpr bool operator ==(const SubPtr<T, Holder>& x, const SubPtr<U, Holder>& y) noexcept
 	{ return x.get() == y.get(); }
 
 /// 三方比較 <=>
 template <typename T, typename U, template <class> typename Holder>
-constexpr auto operator <=>(const AnyBasePtr<T, Holder>& x, const AnyBasePtr<U, Holder>& y) noexcept
+constexpr auto operator <=>(const SubPtr<T, Holder>& x, const SubPtr<U, Holder>& y) noexcept
 	{ return x.get() <=> y.get(); }
 
 /// 比較 (nullptr) ==
 template <typename T, template <class> typename Holder>
-constexpr bool operator ==(const AnyBasePtr<T, Holder>& x, std::nullptr_t)
+constexpr bool operator ==(const SubPtr<T, Holder>& x, std::nullptr_t)
 	{ return x.get() == nullptr; }
 
 /// 三方比較 (nullptr) <=>
 template <typename T, template <class> typename Holder>
-constexpr bool operator <=>(const AnyBasePtr<T, Holder>&x, std::nullptr_t)
+constexpr bool operator <=>(const SubPtr<T, Holder>&x, std::nullptr_t)
 	{ return x.get() <=> nullptr; }
 
 //------------------------------------------------------------------------------

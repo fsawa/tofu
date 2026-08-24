@@ -13,7 +13,6 @@
 #include <tofu.h>
 #include <tofu_TypeInfo.h>
 #include <tofu_AnyPtr.h>
-#include <tofu_AnyBasePtr.h>
 #include <tofu_Singleton.h>
 
 namespace tofu {
