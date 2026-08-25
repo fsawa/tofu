@@ -74,7 +74,7 @@ public:
 	
 	// -- move
 	
-	SubPtr( SubPtr&& rhs ) noexcept { *this = rhs; }
+	SubPtr( SubPtr&& rhs ) noexcept { *this = std::move(rhs); }
 	SubPtr& operator=( SubPtr&& rhs ) noexcept
 	{
 		m_ptr = std::move(rhs.m_ptr);
@@ -182,13 +182,10 @@ public:
 	pointer get() const noexcept { return m_ptr.get(); }
 	
 	/// ポインタのnullアサートチェック
-	void null_assert() const { TOFU_ASSERT(m_ptr); }
+	void null_assert() const { TOFU_ASSERT(get()); }
 	
 	/// 基底の生ポインタにキャスト
-	operator pointer() const noexcept { return m_ptr; }
-	
-	/// 基底の生ポインタにキャスト ( const付加 )
-	operator const_cast_type() const noexcept { return m_ptr; }
+	operator pointer() const noexcept { return m_ptr.get(); }
 
 	/// boolキャスト
 	explicit operator bool() const noexcept { return nullptr != get(); }
@@ -211,6 +208,7 @@ public:
 
 	/// ポインタ変換（変換出来なかったらアサート）
 	template <typename Derived>
+	requires std::derived_from<Derived, T>
 	Derived* Cast() const
 	{
 		Derived* ret = TryCast<Derived>();
@@ -220,6 +218,7 @@ public:
 	
 	/// ポインタ変換（変換出来なかったらnullptr）
 	template <typename Derived>
+	requires std::derived_from<Derived, T>
 	Derived* TryCast() const noexcept
 	{
 		// constとvolatileは外せない
@@ -242,8 +241,9 @@ public:
 	}
 	
 	/// 暗黙的キャスト（型が違ったらnullptr）
-	template <typename U>
-	operator U*() const noexcept { return TryCast<U>(); }
+	template <typename Derived>
+	requires std::derived_from<Derived, T>
+	operator Derived*() const noexcept { return TryCast<Derived>(); }
 	
 	//------------------------------------------------------------------------------
 	
