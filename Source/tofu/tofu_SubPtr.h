@@ -1,7 +1,7 @@
 ﻿//------------------------------------------------------------------------------
 /**
  * @file    SubPtr.h
- * @brief   特定のクラスから派生したクラスのポインタと型情報を保持するポインタクラス
+ * @brief   代入したサブクラスのポインタと型情報を保持するポインタクラス
  * @author  y.fujisawa
  * @par     copyright
  * Copyright (C) 2020 Yasuhito Fujisawa\n
@@ -34,8 +34,8 @@ concept safe_castable_to =
 	std::derived_from<From, To>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief      特定のクラスから派生したクラスのポインタと型情報を保持するポインタクラス
-/// @note 特定のクラス(T)から派生したクラスのポインタと型情報を保持し、参照時に指定した型でなければnullを返す
+/// @brief      代入したサブクラスのポインタと型情報を保持するポインタクラス
+/// @note RTTIを使わずに代入した型へ高速にダウンキャストを行える
 ////////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T, template <class> typename Holder = SafePtr >
 class SubPtr final
@@ -53,23 +53,19 @@ class SubPtr final
 //**************************************************************
 public:
 	
-	using base_type = T; ///< 扱う基底クラス
-	using pointer_type = T*; ///< 扱うポインタの型
 	using holder_type = Holder<T>; ///< ポインタを保持する型
 	
-	using reference_type = typename detail_safe_ptr::ptr_traits<T>::reference;
-	
-	using ConstType     = SubPtr<typename std::add_const<T>::type    >; ///< TがconstのPtrクラスへキャスト
-	using NotConstType  = SubPtr<typename std::remove_const<T>::type >; ///< TがconstじゃないPtrクラスへキャスト
-	using ReverseConstType = SubPtr<typename detail_safe_ptr::reverse_const<T>::type>; ///< Tのconst修飾を反転した型
+	//using ConstType     = SubPtr<typename std::add_const<T>::type    >; ///< TがconstのPtrクラスへキャスト
+	//using NotConstType  = SubPtr<typename std::remove_const<T>::type >; ///< TがconstじゃないPtrクラスへキャスト
+	//using ReverseConstType = SubPtr<typename detail_safe_ptr::reverse_const<T>::type>; ///< Tのconst修飾を反転した型
 	
 	static constexpr bool IsConst = std::is_const_v<T>;      ///< Tがconstかどうか
 	static constexpr bool IsVolatile = std::is_volatile_v<T>;      ///< Tがvolatileかどうか
 	
 	//------------------------------------------------------------------------------
-	using value_type = base_type;
-	using pointer    = pointer_type;
-	using reference  = reference_type;
+	using value_type = T;
+	using pointer    = T*;
+	using reference  = typename detail_safe_ptr::ptr_traits<T>::reference;
 	
 public:
 	
@@ -268,7 +264,7 @@ private:
 		DefineDerivedFromAuto<T>();
 	}
 
-	/// TypeIdのCV修飾を、このクラスのbase_typeに合わせる
+	/// TypeIdのCV修飾を、このクラスのTに合わせる
 	static inline TypeId ConvertType(TypeId id)
 	{
 		if constexpr ( IsConst ){
