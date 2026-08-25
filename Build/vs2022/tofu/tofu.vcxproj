@@ -132,6 +132,7 @@
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_Assert.h" />
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseTypes.h" />
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseUtil.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Concepts.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Compiler.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Config.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h" />

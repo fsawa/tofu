@@ -17,6 +17,7 @@
 #include <base/tofu_BaseUtil.h>
 #include <base/tofu_Assert.h>
 #include <base/tofu_BaseTypes.h>
+#include <base/tofu_Concepts.h>
 
 // 基本include
 #include <memory>

@@ -15,35 +15,6 @@
 #include <tofu_SafePtr.h>
 
 namespace tofu {
-	
-/// @brief concept : cv修飾なしか
-template <class T>
-concept not_cv =
-	!std::is_const_v<T> && !std::is_volatile_v<T>;
-
-/// @brief concept : cv修飾がcast可能な関係か
-template <class From, class To>
-concept castable_cv_to =
-	!(std::is_const_v<From> && !std::is_const_v<To>) &&
-	!(std::is_volatile_v<From> && !std::is_volatile_v<To>);
-
-/// @brief concept : 安全にcast可能か
-template <class From, class To>
-concept safe_castable_to =
-	castable_cv_to<From, To> && 
-	std::derived_from<From, To>;
-
-/// @brief concept : ポインタから初期化可能か
-template <class From, class To>
-concept ptr_initializable_to =
-	safe_castable_to<From, To> || std::derived_from<To, From>;
-
-/// @brief concept : SubPtrテンプレートインスタンス
-template <class T>
-concept is_subptr = requires {
-	typename T::holder_type;
-	typename T::value_type;
-};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief      代入したサブクラスのポインタと型情報を保持するポインタクラス
@@ -52,8 +23,6 @@ concept is_subptr = requires {
 template <typename T, template <class> typename Holder = SafePtr >
 class SubPtr final
 {
-	using self_type = SubPtr;
-	
 	template <typename BaseU, template <class> typename HolderU>
     friend class SubPtr;
 

@@ -137,5 +137,8 @@
     <ClInclude Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.h">
       <Filter>src\tofu\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Concepts.h">
+      <Filter>src\tofu\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
