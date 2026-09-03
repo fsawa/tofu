@@ -126,7 +126,7 @@ public:
 	template <typename U>
 	requires safe_castable_to<U, T>
 	SubPtr( HolderOf<U> p ) noexcept
-		: m_holder(p)
+		: m_holder(std::move(p))
 	{
 		iSetTypeIdFrom<U>();
 	}
@@ -135,7 +135,7 @@ public:
 	requires safe_castable_to<U, T>
 	SubPtr& operator=( HolderOf<U> p ) noexcept
 	{
-		m_holder = p;
+		m_holder = std::move(p);
 		iSetTypeIdFrom<U>();
 		return *this;
 	}
