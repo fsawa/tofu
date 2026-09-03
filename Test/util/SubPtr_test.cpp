@@ -100,6 +100,8 @@ IUTEST(util, SubPtr)
 			//p1 = p;
 		}
 
+		p1.ToConst();
+
 		p1 = nullptr;
 		
 		// コピー
@@ -391,6 +393,8 @@ IUTEST(util, SubPtr)
 			tofu::SubPtr<AB, std::shared_ptr> p_3 = new AB;
 			p_1 = p_3;
 			p_1 = std::move(p_3);
+
+			auto p_4 = p_1.ToConst();
 		}
 		// 派生クラスのインスタンス代入
 		{
