@@ -1,7 +1,7 @@
 ﻿//------------------------------------------------------------------------------
 /**
  * @file    AnyPtr.h
- * @brief   何かのポインタとその型情報を保持し、意図した型のポインタとして安全に取り出すクラス
+ * @brief   任意のポインタを型情報と共に保持し、参照時に型チェックをして安全に取り出すクラス
  * @author  y.fujisawa
  * @par     copyright
  * Copyright (C) 2020 Yasuhito Fujisawa\n
@@ -16,16 +16,13 @@
 
 namespace tofu {
 	
-
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/// @brief      特定のクラスから派生したクラスのポインタと型情報を保持するポインタクラス
-/// @note 特定のクラス(T)から派生したクラスのポインタと型情報を保持し、参照時に指定した型でなければnullを返す
+/// @brief     任意のポインタを型情報と共に保持し、参照時に型チェックをして安全に取り出すクラス
+/// @note 格納されている型からキャストできない型として取り出そうとしたらnullを返す
 ////////////////////////////////////////////////////////////////////////////////////////////////
 template <template <class> typename HolderOf = SafePtr>
 class AnyPtr final
 {
-	using self_type = AnyPtr;
-	
 //------------------------------------------------------------------------------
 public:
 	
@@ -186,9 +183,9 @@ public:
 	operator U*() const noexcept { return TryCast<U>(); }
 	
 	/// インスタンスの型にconst修飾を付加したAnyPtrを取得
-	self_type ToConst() const noexcept
+	AnyPtr ToConst() const noexcept
 	{
-		self_type a = *this;
+		AnyPtr a = *this;
 		a.m_type_id = m_type_id.GetAddConst();
 		return a;
 	}
