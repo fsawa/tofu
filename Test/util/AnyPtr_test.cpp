@@ -68,7 +68,7 @@ IUTEST(util, AnyPtr)
 	IUTEST_ASSERT_EQ(static_cast<bool>(ptr), true);
 	IUTEST_ASSERT(!ptr.empty());
 	ptr.type();
-	IUTEST_ASSERT_EQ(ptr.ToConst().type().info().IsConst(), true);
+	IUTEST_ASSERT_EQ(ptr.ToConst().type().IsConst(), true);
 	//ptr.Clear();
 
 	ptr = {};

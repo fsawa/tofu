@@ -168,12 +168,7 @@ public:
 		// constは外せない
 		if constexpr (!std::is_const_v<Derived>)
 		{
-			if(m_type_id.info().IsConst()) return nullptr;
-		}
-		// volatileは外せない
-		if constexpr (!std::is_volatile_v<Derived>)
-		{
-			if(m_type_id.info().IsVolatile()) return nullptr;
+			if(m_type_id.IsConst()) return nullptr;
 		}
 		return iTryCastImpl<Derived>();
 	}
@@ -186,7 +181,7 @@ public:
 	AnyPtr ToConst() const noexcept
 	{
 		AnyPtr a = *this;
-		a.m_type_id = m_type_id.GetAddConst();
+		a.m_type_id = m_type_id.ToConst();
 		return a;
 	}
 
@@ -207,7 +202,7 @@ private:
 	{
 		// cv修飾のチェックはTryCast側で済ましている
 		// Uがm_type_idの型かそのcv修飾の場合、キャストOK
-		if(m_type_id.info().IsSameRemoveCV<U>()){
+		if(m_type_id.RawTypeIs<U>()){
 			return static_cast<U*>(m_holder.get());
 		}
 		// アップキャストを試みる

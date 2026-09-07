@@ -242,7 +242,7 @@ private:
 	static constexpr TypeId ConvertType(TypeId id) noexcept
 	{
 		if constexpr ( IsConst ){
-			return id.GetAddConst();
+			return id.ToConst();
 		}
 		else{
 			return id;

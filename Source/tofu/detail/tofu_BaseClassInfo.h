@@ -21,7 +21,10 @@ namespace tofu {
 	
 // 前方宣言
 class TypeInfo;
-template <typename T> class TypeInfoOf;
+
+template <typename T>
+requires (!std::is_const_v<T> && !std::is_volatile_v<T> && !std::is_reference_v<T>)
+class TypeInfoOf;
 
 namespace rtti_detail {
 
