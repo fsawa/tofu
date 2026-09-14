@@ -10,7 +10,7 @@
 */
 //------------------------------------------------------------------------------
 
-#include <detail/tofu_BaseClassInfo.h>
+#include <tofu_BaseClassInfo.h>
 #include <tofu_TypeInfo.h>
 #include <iostream>
 

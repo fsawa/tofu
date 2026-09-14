@@ -51,8 +51,8 @@
     <ClCompile Include="..\..\..\Source\tofu\tofu_Reflection.cpp">
       <Filter>src\tofu</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.cpp">
-      <Filter>src\tofu\detail</Filter>
+    <ClCompile Include="..\..\..\Source\tofu\tofu_BaseClassInfo.cpp">
+      <Filter>src\tofu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -134,11 +134,11 @@
     <ClInclude Include="..\..\..\Source\tofu\tofu_TypeTraits.h">
       <Filter>src\tofu</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.h">
-      <Filter>src\tofu\detail</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_Concepts.h">
       <Filter>src\tofu\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_BaseClassInfo.h">
+      <Filter>src\tofu</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

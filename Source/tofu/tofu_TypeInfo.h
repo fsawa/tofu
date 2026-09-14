@@ -19,7 +19,6 @@
 
 #include <tofu_TypeTraits.h>
 #include <tofu_TypeName.h>
-//#include <detail/tofu_BaseClassInfo.h>
 
 namespace tofu {
 

@@ -118,8 +118,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\Source\math\tofu_math_Angle.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\base\tofu_Assert.cpp" />
-    <ClCompile Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\tofu_BaseClassInfo.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu_Reflection.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu_TypeInfo.cpp" />
   </ItemGroup>
@@ -136,8 +136,8 @@
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Compiler.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Config.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h" />
-    <ClInclude Include="..\..\..\Source\tofu\detail\tofu_BaseClassInfo.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_BaseClassInfo.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_SubPtr.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_AnyPtr.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_DisallowCopy.h" />
