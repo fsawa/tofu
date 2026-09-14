@@ -30,7 +30,7 @@ namespace detail
 			Manager() = default;
 
 			// クラス登録
-			void EntryClass(const detail::ClassCreator& creator)
+			void EntryClass(const ClassReflection& creator)
 			{
 				TypeId typeId = creator.GetTypeId();
 				std::string_view name = typeId.info().GetName();
@@ -42,11 +42,22 @@ namespace detail
 				std::cout << "EntryClass: " << name << std::endl;
 				m_Classes.try_emplace(name, &creator);
 			}
+
+			// 型名からクラスリフレクションクラスを取得する
+			SafePtr<const ClassReflection> FindClassReflection(std::string_view name) const noexcept
+			{
+				auto it = m_Classes.find(name);
+				if(it != m_Classes.end())
+				{
+					return it->second;
+				}
+				return nullptr;
+			}
 			
 			// クラス生成
-			InstancePtr Create(std::string_view typeName) const
+			InstancePtr Create(std::string_view type_name) const
 			{
-				auto it = m_Classes.find(typeName);
+				auto it = m_Classes.find(type_name);
 				if(it != m_Classes.end())
 				{
 					return it->second->Create();
@@ -55,21 +66,30 @@ namespace detail
 			}
 
 		private:
-			std::unordered_map<std::string_view, const detail::ClassCreator*> m_Classes;
+			std::unordered_map<std::string_view, const ClassReflection*> m_Classes;
 		};
 	}
 
 	//------------------------------------------------------------------------------
-	void EntryClass(const ClassCreator& creator)
+	void EntryClass(const ClassReflection& creator)
 	{
 		Manager::Instance().EntryClass(creator);
 	}
 }
 
 //------------------------------------------------------------------------------
-InstancePtr Create(std::string_view typeName)
+SafePtr<const ClassReflection> FindClassReflection(std::string_view name) noexcept
 {
-	return detail::Manager::Instance().Create(typeName);
+	return detail::Manager::Instance().FindClassReflection(name);
+}
+
+//------------------------------------------------------------------------------
+InstancePtr Create(std::string_view type_name)
+{
+	if(auto ptr = FindClassReflection(type_name))
+		return ptr->Create();
+	return nullptr;
+	//return detail::Manager::Instance().Create(type_name);
 }
 
 } // reflection

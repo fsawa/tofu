@@ -11,6 +11,7 @@
 //------------------------------------------------------------------------------
 
 #include <tofu_TypeInfo.h>
+#include <detail/tofu_BaseClassInfo.h>
 #include <iostream>
 
 namespace tofu {

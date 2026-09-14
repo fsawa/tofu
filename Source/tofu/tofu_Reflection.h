@@ -16,66 +16,75 @@
 #include <tofu_Singleton.h>
 
 namespace tofu {
+
+// 動的リフレクション
 namespace reflection {
 
+// 動的生成したインスタンスを保持するポインター
 using InstancePtr = AnyPtr<std::shared_ptr>;
+
+// クラスの動的リフレクションクラス
+class ClassReflection
+{
+protected:
+	ClassReflection() = default;
+
+public:
+
+	// 型ID取得
+	virtual TypeId GetTypeId() const noexcept = 0;
+
+	// 型情報取得
+	const TypeInfo& GetTypeInfo() const noexcept
+	{
+		return GetTypeId().info();
+	}
+
+	// インスタンス生成
+	virtual InstancePtr Create() const noexcept = 0;
+};
 	
 namespace detail
 {
-	class ClassCreator
-	{
-	public:
-		virtual TypeId GetTypeId() const = 0;
-		virtual InstancePtr Create() const = 0;
-	};
-
 	template <typename T>
-	class ClassCreatorOf : public ClassCreator, public Singleton<ClassCreatorOf<T>>
+	class ClassReflectionOf : public ClassReflection, public Singleton<ClassReflectionOf<T>>
 	{
 	public:
-		ClassCreatorOf()
+		ClassReflectionOf() noexcept
 		{
 			EntryClass(*this);
 		}
 		
-		TypeId GetTypeId() const override
+		TypeId GetTypeId() const noexcept override
 		{
 			return MakeTypeId<T>();
 		}
 
-		InstancePtr Create() const override
+		InstancePtr Create() const noexcept override
 		{
 			return InstancePtr(new T);
 		}
 	};
 
 	// 型名から生成できるクラスを登録する
-	void EntryClass(const ClassCreator& creator);
+	void EntryClass(const ClassReflection& creator);
 }
 
-/// @brief 型名から生成できるクラスを登録する
+/// 型名から生成できるクラスを登録する
 template <class T>
 inline void EntryClass()
 {
-	detail::ClassCreatorOf<T>::CreateInstance();
+	detail::ClassReflectionOf<T>::CreateInstance();
 }
 
-// 型名から生成できるクラスを登録するマクロ
-#define TOFU_REFLECTION_CLASS(type)  TOFU_STATIC_CALL(::tofu::reflection::detail::ClassCreatorOf<type>::CreateInstance)
+/// 型名から生成できるクラスを登録するマクロ
+#define TOFU_REFLECTION_CLASS(type)  TOFU_STATIC_CALL(::tofu::reflection::detail::ClassReflectionOf<type>::CreateInstance)
 
-/// @brief 型名からクラスインスタンスを生成する
-InstancePtr Create(std::string_view typeName);
+/// 型名からクラスリフレクションクラスを取得する
+SafePtr<const ClassReflection> FindClassReflection(std::string_view name) noexcept;
 
-/// @brief 型名から派生クラスのshared_ptrを作る
-/// @tparam T 基底クラス
-/// @param typeName 生成するクラス名
-/// @return 生成したクラスを基底クラスのshared_ptrとして取得
-#if 0
-template <class T>
-inline std::shared_ptr<T> CreateInstance(std::string_view typeName)
-{
-}
-#endif
+/// 型名からクラスインスタンスを生成する
+InstancePtr Create(std::string_view type_name);
 
 } // reflection
 } // tofu

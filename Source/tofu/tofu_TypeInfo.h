@@ -19,11 +19,13 @@
 
 #include <tofu_TypeTraits.h>
 #include <tofu_TypeName.h>
-#include <detail/tofu_BaseClassInfo.h>
+//#include <detail/tofu_BaseClassInfo.h>
 
 namespace tofu {
 
 // 前方宣言
+namespace rtti_detail { class BaseClassInfo; }
+
 class TypeInfo;
 
 template <typename T>
@@ -284,25 +286,5 @@ constexpr TypeId MakeTypeId( T& ) noexcept
 {
 	return TypeId::Make<T>();
 };
-	
-//------------------------------------------------------------------------------
-
-// 継承関係を定義させる
-template <class DerivedT, class BaseT>
-requires std::derived_from<DerivedT, BaseT>
-constexpr void DefineDerivedFrom() noexcept
-{
-	rtti_detail::DefineDerivedFrom<std::remove_cv_t<DerivedT>, std::remove_cv_t<BaseT>>();
-}
-
-/// 独自RTTIの継承関係を定義するマクロ
-#define TOFU_RTTI_DERIVED_FROM(Derived, Base)  TOFU_STATIC_CALL(::tofu::DefineDerivedFrom<Derived, Base>)
-
-// 継承関係を定義させる
-template <class DerivedT>
-constexpr void DefineDerivedFromAuto() noexcept
-{
-	rtti_detail::DefineDerivedFromAuto<DerivedT>();
-}
 
 } // tofu

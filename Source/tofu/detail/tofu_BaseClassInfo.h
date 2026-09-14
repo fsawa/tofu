@@ -16,15 +16,9 @@
 #include <type_traits>
 
 #include <tofu_TypeTraits.h>
+#include <tofu_TypeInfo.h>
 
 namespace tofu {
-	
-// 前方宣言
-class TypeInfo;
-
-template <typename T>
-requires (!std::is_const_v<T> && !std::is_volatile_v<T> && !std::is_reference_v<T>)
-class TypeInfoOf;
 
 namespace rtti_detail {
 
@@ -177,7 +171,7 @@ namespace detail
 template <class DerivedT>
 constexpr void DefineDerivedFromAuto() noexcept
 {
-	using derived_type = std::remove_cv_t<DerivedT>;
+	using derived_type = std::remove_cvref_t<DerivedT>;
 	if constexpr (detail::BaseTypeDetect<derived_type>::value)
 	{
 		using base_type = typename detail::BaseTypeDetect<derived_type>::type;
@@ -195,4 +189,26 @@ constexpr void DefineDerivedFromAuto() noexcept
 //------------------------------------------------------------------------------
 
 } // rtti_detail
+
+	
+//------------------------------------------------------------------------------
+
+// 継承関係を定義させる
+template <class DerivedT, class BaseT>
+requires std::derived_from<DerivedT, BaseT>
+constexpr void DefineDerivedFrom() noexcept
+{
+	rtti_detail::DefineDerivedFrom<std::remove_cvref_t<DerivedT>, std::remove_cvref_t<BaseT>>();
+}
+
+/// 独自RTTIの継承関係を定義するマクロ
+#define TOFU_RTTI_DERIVED_FROM(Derived, Base)  TOFU_STATIC_CALL(::tofu::DefineDerivedFrom<Derived, Base>)
+
+// 継承関係を定義させる
+template <class DerivedT>
+constexpr void DefineDerivedFromAuto() noexcept
+{
+	rtti_detail::DefineDerivedFromAuto<DerivedT>();
+}
+
 } // tofu
