@@ -54,7 +54,7 @@ consteval auto TypeName<T>::Make()
 	if constexpr (std::is_reference_v<T>)
 	{
 		constexpr auto name_ = TypeName<std::remove_reference_t<T>>::Value;
-		return name_ + " &";
+		return name_ + "&";
 	}
 	// const外す
 	else if constexpr (std::is_const_v<T>)
@@ -72,7 +72,7 @@ consteval auto TypeName<T>::Make()
 	else if constexpr (std::is_pointer_v<T>)
 	{
 		constexpr auto name_ = TypeName<std::remove_pointer_t<T>>::Value;
-		return name_ + " *";
+		return name_ + "*";
 	}
 	else
 	{
@@ -86,7 +86,8 @@ consteval auto TypeName<T>::Make()
 		// static auto tofu::TypeName<test::F<const int, 1>>::Test() [T = test::F<const int, 1>]
 		// tofu::TypeName<void (int)>::Test
 			
-		constexpr auto name = mpl::String<TOFU_FUNCTION_NAME>();
+		constexpr auto name = mpl::String<TOFU_FUNCTION_NAME>()
+			| mpl::ReplaceString<"(anonymous namespace)", "()">;
 
 		constexpr size_t pos_s = name.view().find_first_of('<') + 1;
 		constexpr size_t pos_eq = name.view().find_last_of('=');
@@ -105,7 +106,7 @@ consteval auto TypeName<T>::Make()
 			| mpl::ReplaceString<"struct ", "">
 			| mpl::ReplaceString<"enum ", "">
 			| mpl::ReplaceString<"__cdecl", "">
-			| mpl::ReplaceString<"`anonymous namespace'", "(anonymous namespace)">;
+			| mpl::ReplaceString<"`anonymous namespace'", "()">;
 
 		constexpr size_t pos_s = name.view().find_first_of('<') + 1;
 		constexpr size_t pos_e = name.view().find_last_of('>');
