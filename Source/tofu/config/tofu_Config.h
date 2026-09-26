@@ -41,7 +41,7 @@
 /// デバッグ機能の有効
 #define TOFU_DEBUG
 
-#define TOFU_ENABLE_PRINT
+#define TOFU_ENABLE_LOG
 #define TOFU_ENABLE_ASSERT
 #define TOFU_ENABLE_WARNING
 
@@ -55,7 +55,7 @@
 /// デバッグ機能の有効
 #define TOFU_DEBUG
 
-#define TOFU_ENABLE_PRINT
+#define TOFU_ENABLE_LOG
 #define TOFU_ENABLE_ASSERT
 #define TOFU_ENABLE_WARNING
 
@@ -69,7 +69,7 @@
 /// デバッグ機能の有効
 //#define TOFU_DEBUG
 
-//#define TOFU_ENABLE_PRINT
+//#define TOFU_ENABLE_LOG
 //#define TOFU_ENABLE_ASSERT
 //#define TOFU_ENABLE_WARNING
 

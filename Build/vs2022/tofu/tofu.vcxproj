@@ -118,6 +118,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\Source\math\tofu_math_Angle.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\base\tofu_Assert.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\base\tofu_Log.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu_BaseClassInfo.cpp" />
     <ClCompile Include="..\..\..\Source\tofu\tofu_Reflection.cpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseTypes.h" />
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseUtil.h" />
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_Concepts.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Log.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Compiler.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Config.h" />
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h" />

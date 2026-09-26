@@ -15,6 +15,7 @@
 #include <config/tofu_Platform.h>
 #include <config/tofu_Compiler.h>
 #include <base/tofu_BaseUtil.h>
+#include <base/tofu_Log.h>
 #include <base/tofu_Assert.h>
 #include <base/tofu_BaseTypes.h>
 #include <base/tofu_Concepts.h>

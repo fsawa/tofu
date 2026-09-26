@@ -39,7 +39,9 @@ namespace detail
 					return;
 				}
 				
-				std::cout << "EntryClass: " << name << std::endl;
+				//std::cout << "EntryClass: " << name << std::endl;
+				//TOFU_LOGF("EntryClass: %s", name.data());
+				TOFU_LOG("EntryClass: {}", name);
 				m_Classes.try_emplace(name, &creator);
 			}
 

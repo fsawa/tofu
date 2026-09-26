@@ -54,6 +54,9 @@
     <ClCompile Include="..\..\..\Source\tofu\tofu_BaseClassInfo.cpp">
       <Filter>src\tofu</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu\base\tofu_Log.cpp">
+      <Filter>src\tofu\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Source\tofu\tofu.h">
@@ -139,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Source\tofu\tofu_BaseClassInfo.h">
       <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Log.h">
+      <Filter>src\tofu\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
