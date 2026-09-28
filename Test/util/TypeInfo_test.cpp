@@ -67,12 +67,12 @@ IUTEST(util, TypeInfo)
 
 	// StringData
 	using namespace tofu::string_literals;
-	static_assert(tofu::mpl::String<"hoge">::Length == 4);
-	static_assert(tofu::StringData("hoge").Length == 4);
-	static_assert(("hoge"_sd + "test").Length == 8);
-	static_assert((tofu::StringData("123") + tofu::StringData("4567")).Length == 7);
-	static_assert((tofu::StringData("123") + "4567").Length == 7);
-	static_assert(("123" + tofu::StringData("4567")).Length == 7);
+	static_assert(tofu::mpl::String<"hoge">::MaxLength == 4);
+	static_assert(tofu::StringData("hoge").MaxLength == 4);
+	static_assert(("hoge"_sd + "test").MaxLength == 8);
+	static_assert((tofu::StringData("123") + tofu::StringData("4567")).MaxLength == 7);
+	static_assert((tofu::StringData("123") + "4567").MaxLength == 7);
+	static_assert(("123" + tofu::StringData("4567")).MaxLength == 7);
 
 	IUTEST_ASSERT(tofu::StringData("123") == tofu::StringData("12") + "3");
 
