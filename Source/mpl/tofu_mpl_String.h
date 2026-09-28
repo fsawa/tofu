@@ -35,14 +35,14 @@ struct String
 	static constexpr auto Data = str;
 	
 	// 文字列の長さ
-	static constexpr size_t Length = data_t::Length;
+	static constexpr size_t MaxLength = data_t::MaxLength;
 	
 public:
 	// string_view形式で文字列取得
-	static constexpr std::string_view GetView() { return Data.view(); }
+	static constexpr std::string_view GetView() noexcept { return Data.view(); }
 
     // C言語styleのNULL終端文字列ポインタ取得
-    static inline const char* GetPtr()        { return Data.data; }
+    static inline const char* GetPtr() noexcept { return Data.data; }
 	
 	// 文字列位置検索
 	template <StringData str1>
@@ -57,6 +57,21 @@ public:
 		return String<Data.template substr<Pos, Count>()>();
 	}
 	
+	// 文字列置換
+	template <StringData str1, StringData str2>
+	static consteval auto Replace() noexcept
+	{
+		constexpr size_t pos = Find<str1>();
+		if constexpr (pos == std::string_view::npos)
+		{
+			return String<Data>();
+		}
+		else
+		{
+			return String<Data.template substr<0, pos>() + str2 + Data.template substr<std::min(pos + str1.MaxLength, Data.MaxLength)>()>();
+		}
+	}
+	
 public:
 	consteval String() = default;
 	
@@ -65,7 +80,7 @@ public:
 
 // String: 結合
 template <StringData data1, StringData data2>
-inline consteval auto operator+(const String<data1>& str1, const String<data2>& str2)
+inline consteval auto operator+(const String<data1>&, const String<data2>&)
 {
 	return String<data1 + data2>();
 }
@@ -96,7 +111,7 @@ namespace detail
 		}
 		else
 		{
-			return String<str.template substr<0, pos>() + str2 + str.template substr<std::min(pos + str1.Length, str.Length)>()>();
+			return String<str.template substr<0, pos>() + str2 + str.template substr<std::min(pos + str1.MaxLength, str.MaxLength)>()>();
 		}
 	}
 }
