@@ -31,15 +31,15 @@ namespace detail
 {
 
 	//------------------------------------------------------------------------------
-	void FormatLog( std::string_view filename, int line, std::string_view msg )
+	void Log( std::string_view filename, int line, std::string_view msg )
 	{
 		std::format_to(std::ostream_iterator<char>(std::cout), 
-                   "{}({}): {}\n", 
-                   filename, line, msg);
+			"{}({}): {}\n", 
+			filename, line, msg);
 	}
 
 	//------------------------------------------------------------------------------
-	void  Log(const char* filename, [[maybe_unused]] int line, const char* msg)
+	void  Log_old(const char* filename, [[maybe_unused]] int line, const char* msg)
 	{
 		if (!filename) filename = "";
 		if (!msg) msg = "";
@@ -57,7 +57,7 @@ namespace detail
 		std::cout << str << std::endl;
 	}
 	//------------------------------------------------------------------------------
-	void  Logf(const char* filename, int line, const char* format, ...)
+	void  Logf(std::string_view filename, int line, const char* format, ...)
 	{
 		if (format)
 		{
