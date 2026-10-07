@@ -35,17 +35,17 @@ struct String
 	static constexpr auto value = ShrinkToFit<str>();
 	
 	// 文字列の長さ
-	static constexpr size_t Length = value_type::MaxLength;
+	static constexpr size_t Length = value.MaxLength;
 	
 public:
 
-	static consteval value_type GetData() { return value; }
+	static consteval const value_type& GetData() { return value; }
 
 	// string_view形式で文字列取得
 	static constexpr std::string_view GetView() noexcept { return value.view(); }
 
     // C言語styleのNULL終端文字列ポインタ取得
-    static inline const char* GetPtr() noexcept { return value.data; }
+    static constexpr const char* GetPtr() noexcept { return value.data; }
 	
 	//--------------------------------------------------------------------------------
 
