@@ -87,11 +87,11 @@ consteval auto TypeName<T>::Make()
 		// tofu::TypeName<void (int)>::Test
 			
 		constexpr auto name = mpl::String<TOFU_FUNCTION_NAME>()
-			| mpl::ReplaceString<"(anonymous namespace)", "()">;
+			.template Replace<"(anonymous namespace)", "()">();
 
-		constexpr size_t pos_s = name.view().find_first_of('<') + 1;
-		constexpr size_t pos_eq = name.view().find_last_of('=');
-		constexpr size_t pos_e = name.view().find_last_of('>', pos_eq);
+		constexpr size_t pos_s = name.GetView().find_first_of('<') + 1;
+		constexpr size_t pos_eq = name.GetView().find_last_of('=');
+		constexpr size_t pos_e = name.GetView().find_last_of('>', pos_eq);
 // Microsoft Visual C++
 #elif defined(_MSC_VER)
 		// tofu::TypeName<int>::Debug
@@ -102,19 +102,19 @@ consteval auto TypeName<T>::Make()
 			
 		// structやclassを除外
 		constexpr auto name = mpl::String<TOFU_FUNCTION_NAME>()
-			| mpl::ReplaceString<"class ", "">
-			| mpl::ReplaceString<"struct ", "">
-			| mpl::ReplaceString<"enum ", "">
-			| mpl::ReplaceString<"__cdecl", "">
-			| mpl::ReplaceString<"`anonymous namespace'", "()">;
+			.template Replace<"class ", "">()
+			.template Replace<"struct ", "">()
+			.template Replace<"enum ", "">()
+			.template Replace<"__cdecl", "">()
+			.template Replace<"`anonymous namespace'", "()">();
 
-		constexpr size_t pos_s = name.view().find_first_of('<') + 1;
-		constexpr size_t pos_e = name.view().find_last_of('>');
+		constexpr size_t pos_s = name.GetView().find_first_of('<') + 1;
+		constexpr size_t pos_e = name.GetView().find_last_of('>');
 #else
 		/// @todo 
 		return name;
 #endif
-		return name | mpl::SubString<pos_s, pos_e - pos_s> | mpl::ToData;
+		return name.template Substr<pos_s, pos_e - pos_s>().GetData();
 	}
 };
 

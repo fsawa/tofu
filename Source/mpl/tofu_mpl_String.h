@@ -29,53 +29,69 @@ namespace mpl {
 template <StringData str>
 struct String
 {
-	using data_t = decltype(str);
+	using value_type = decltype(str);
 
 	// 文字列データ
-	static constexpr auto Data = str;
+	static constexpr auto value = ShrinkToFit<str>();
 	
 	// 文字列の長さ
-	static constexpr size_t MaxLength = data_t::MaxLength;
+	static constexpr size_t Length = value_type::MaxLength;
 	
 public:
+
+	static consteval value_type GetData() { return value; }
+
 	// string_view形式で文字列取得
-	static constexpr std::string_view GetView() noexcept { return Data.view(); }
+	static constexpr std::string_view GetView() noexcept { return value.view(); }
 
     // C言語styleのNULL終端文字列ポインタ取得
-    static inline const char* GetPtr() noexcept { return Data.data; }
+    static inline const char* GetPtr() noexcept { return value.data; }
 	
+	//--------------------------------------------------------------------------------
+
 	// 文字列位置検索
 	template <StringData str1>
 	static consteval auto Find()
 	{
-		return Data.template find<str1>();
+		return value.template find<str1>();
 	}
 	
+	// 部分文字列取得
 	template <size_t Pos, size_t Count = std::string_view::npos>
 	static consteval auto Substr()
 	{
-		return String<Data.template substr<Pos, Count>()>();
+		return String<value.template substr<Pos, Count>()>();
 	}
 	
 	// 文字列置換
 	template <StringData str1, StringData str2>
-	static consteval auto Replace() noexcept
+	static consteval auto Replace()
 	{
 		constexpr size_t pos = Find<str1>();
 		if constexpr (pos == std::string_view::npos)
 		{
-			return String<Data>();
+			return String<value>();
 		}
 		else
 		{
-			return String<Data.template substr<0, pos>() + str2 + Data.template substr<std::min(pos + str1.MaxLength, Data.MaxLength)>()>();
+			constexpr auto s = value.template substr<0, pos>()
+				+ str2
+				+ value.template substr<pos + str1.MaxLength>();
+			return String<s>();
 		}
+	}
+	
+	// 文字列追加
+	template <StringData str1>
+	static consteval auto Add()
+	{
+		return String<value + str>();
 	}
 	
 public:
 	consteval String() = default;
 	
-	constexpr std::string_view view() const { return Data.view(); }
+	constexpr std::string_view view() const { return value.view(); }
 };
 
 // String: 結合
@@ -84,6 +100,7 @@ inline consteval auto operator+(const String<data1>&, const String<data2>&)
 {
 	return String<data1 + data2>();
 }
+
 
 namespace detail
 {
@@ -102,7 +119,7 @@ namespace detail
 	struct ReplaceString{};
 
 	template <StringData str, StringData str1, StringData str2>
-	inline consteval auto operator|(const String<str>&, const ReplaceString<str1, str2>&)
+	inline consteval auto operator|(String<str>, ReplaceString<str1, str2>)
 	{
 		constexpr size_t pos = str.template find<str1>();
 		if constexpr (pos == std::string_view::npos)

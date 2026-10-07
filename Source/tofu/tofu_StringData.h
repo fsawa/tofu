@@ -42,39 +42,55 @@ public:
 	{
 		std::copy_n(str, BufferSize, data);
 	};
-
-	constexpr size_t length() const noexcept
+	
+	template <size_t SrcN>
+	consteval StringData(const char (&str)[SrcN], size_t n)
 	{
-		return std::string_view(data).size();
+		if(n > 0)
+		{
+			n = std::min(std::min(MaxLength, SrcN-1), n);
+			std::copy_n(str, n, data);
+			data[n] = '\0';
+		}
+	};
+	
+	consteval size_t length() const noexcept
+	{
+        if constexpr (MaxLength == 0) return 0;
+        for (std::size_t i = 0; i < MaxLength; ++i) if (data[i] == '\0') return i;
+        return MaxLength;
+		//return std::string_view(data).size();
 	}
 
-	constexpr size_t size() const noexcept { return length(); }
+	consteval size_t size() const noexcept { return length(); }
 	
-    constexpr std::size_t capacity() const noexcept { return MaxLength; }
+    consteval std::size_t capacity() const { return MaxLength; }
 
 	// 部分文字列取得
 	template <size_t Pos, size_t Count = std::string_view::npos>
 	consteval auto substr() const noexcept
 	{
-		StringData<std::min(Count, MaxLength - Pos)> ret;
-		for(size_t i=0; i<ret.MaxLength; ++i)
+		if constexpr (Pos >= MaxLength)
 		{
-			ret[i] = data[Pos + i];
+			return StringData("");
 		}
-		return ret;
+		else
+		{
+			StringData<std::min(Count, MaxLength - Pos)> ret;
+			for(size_t i=0; i<ret.MaxLength; ++i)
+			{
+				ret[i] = data[Pos + i];
+			}
+			ret[ret.MaxLength] = '\0';
+			return ret;
+		}
 	}
 	
 	// 文字列位置検索
-	template <auto str1>
-	consteval auto find() const noexcept
+	template <::tofu::StringData str1>
+	consteval auto find() const
 	{
 		return view().find(str1.view());
-	}
-	
-	template <size_t N1>
-	consteval auto find(const char (&str1)[N1]) const noexcept
-	{
-		return view().find(str1);
 	}
 
 	// string_viewで参照
@@ -88,7 +104,7 @@ public:
 
 	// string化
 	constexpr explicit operator std::string() const noexcept {
-		return std::string(data, length());
+		return std::string(data);
 	}
 
 	[[nodiscard]] consteval auto operator[](size_t n) const {
@@ -100,7 +116,7 @@ public:
 	}
 
 	friend auto operator<=>(const StringData&, const StringData&) = default;
-
+	
 	// format文字列を書き込む
 	template <::tofu::StringData fmt, typename... Args>
 	StringData& Format(Args&&... args) noexcept
@@ -140,6 +156,14 @@ template <size_t N1, size_t N2>
 inline consteval auto operator+(const char (&src1)[N1], const StringData<N2>& src2)
 {
 	return StringData(src1) + src2;
+}
+
+// null終端までの文字列だけのStringDataに変換
+template <StringData Str>
+inline consteval auto ShrinkToFit()
+{
+	constexpr auto len = Str.length();
+	return Str.template substr<0, len>();
 }
 
 inline namespace string_literals
