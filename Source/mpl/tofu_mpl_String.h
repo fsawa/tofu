@@ -26,26 +26,30 @@ namespace mpl {
 //------------------------------------------------------------------------------
 
 /// コンパイル時文字列クラス
-template <StringData str>
+template <StringData TData>
 struct String
 {
-	using value_type = decltype(str);
+	using DataType = decltype(TData);
 
 	// 文字列データ
-	static constexpr auto value = ShrinkToFit<str>();
+	static constexpr auto Data = ShrinkToFit<TData>();
+	
+	// 文字列View
+	static constexpr auto View = Data.view();
 	
 	// 文字列の長さ
-	static constexpr size_t Length = value.MaxLength;
+	static constexpr size_t Length = Data.MaxLength;
 	
 public:
 
-	static consteval const value_type& GetData() { return value; }
+	// StringData取得
+	static consteval const DataType& GetData() { return Data; }
 
 	// string_view形式で文字列取得
-	static constexpr std::string_view GetView() noexcept { return value.view(); }
+	static constexpr std::string_view GetView() noexcept { return View; }
 
     // C言語styleのNULL終端文字列ポインタ取得
-    static constexpr const char* GetPtr() noexcept { return value.data; }
+    static constexpr const char* GetPtr() noexcept { return Data.data; }
 	
 	//--------------------------------------------------------------------------------
 
@@ -53,14 +57,14 @@ public:
 	template <StringData str1>
 	static consteval auto Find()
 	{
-		return value.template find<str1>();
+		return Data.template find<str1>();
 	}
 	
 	// 部分文字列取得
 	template <size_t Pos, size_t Count = std::string_view::npos>
 	static consteval auto Substr()
 	{
-		return String<value.template substr<Pos, Count>()>();
+		return String<Data.template substr<Pos, Count>()>();
 	}
 	
 	// 文字列置換
@@ -70,13 +74,13 @@ public:
 		constexpr size_t pos = Find<str1>();
 		if constexpr (pos == std::string_view::npos)
 		{
-			return String<value>();
+			return String<Data>();
 		}
 		else
 		{
-			constexpr auto s = value.template substr<0, pos>()
+			constexpr auto s = Data.template substr<0, pos>()
 				+ str2
-				+ value.template substr<pos + str1.MaxLength>();
+				+ Data.template substr<pos + str1.length()>();
 			return String<s>();
 		}
 	}
@@ -85,13 +89,11 @@ public:
 	template <StringData str1>
 	static consteval auto Add()
 	{
-		return String<value + str>();
+		return String<Data + str1>();
 	}
 	
 public:
 	consteval String() = default;
-	
-	constexpr std::string_view view() const { return value.view(); }
 };
 
 // String: 結合
