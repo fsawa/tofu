@@ -17,7 +17,7 @@
 #include <string>
 #include <string_view>
 
-#include <tofu_mpl_String.h>
+#include <tofu_meta_String.h>
 
 namespace tofu {
 	
@@ -86,7 +86,7 @@ consteval auto TypeName<T>::Make()
 		// static auto tofu::TypeName<test::F<const int, 1>>::Test() [T = test::F<const int, 1>]
 		// tofu::TypeName<void (int)>::Test
 			
-		constexpr auto name = mpl::String<TOFU_FUNCTION_NAME>()
+		constexpr auto name = meta::String<TOFU_FUNCTION_NAME>()
 			.template Replace<"(anonymous namespace)", "()">();
 
 		constexpr size_t pos_s = name.GetView().find_first_of('<') + 1;
@@ -101,7 +101,7 @@ consteval auto TypeName<T>::Make()
 		// tofu::TypeName<void __cdecl(int)>::Test
 			
 		// structやclassを除外
-		constexpr auto name = mpl::String<TOFU_FUNCTION_NAME>()
+		constexpr auto name = meta::String<TOFU_FUNCTION_NAME>()
 			.template Replace<"class ", "">()
 			.template Replace<"struct ", "">()
 			.template Replace<"enum ", "">()

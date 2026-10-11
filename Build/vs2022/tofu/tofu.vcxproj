@@ -84,7 +84,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">
     <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDIr)..\..\Source\tofu;$(SolutionDIr)..\..\Source\math;$(SolutionDIr)..\..\Source\mpl;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDIr)..\..\Source\tofu;$(SolutionDIr)..\..\Source\math;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
@@ -129,7 +129,6 @@
     <ClInclude Include="..\..\..\Source\math\tofu_math_MathCommon.h" />
     <ClInclude Include="..\..\..\Source\math\tofu_math_Nearly.h" />
     <ClInclude Include="..\..\..\Source\mpl\tofu_mpl_Common.h" />
-    <ClInclude Include="..\..\..\Source\mpl\tofu_mpl_String.h" />
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_Assert.h" />
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseTypes.h" />
     <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseUtil.h" />
@@ -140,6 +139,7 @@
     <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_BaseClassInfo.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_meta_String.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_SubPtr.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_AnyPtr.h" />
     <ClInclude Include="..\..\..\Source\tofu\tofu_DisallowCopy.h" />

@@ -1,6 +1,6 @@
 ﻿//------------------------------------------------------------------------------
 /**
- * @file   mpl_String.h
+ * @file   tofu_meta_String.h
  * @brief  コンパイル時文字列処理ライブラリ
  * 
  * @author      y.fujisawa
@@ -18,10 +18,9 @@
 #include <string_view>
 
 #include <tofu_StringData.h>
-#include <tofu_mpl_Common.h>
 
 namespace tofu {
-namespace mpl {
+namespace meta {
 
 //------------------------------------------------------------------------------
 
@@ -42,13 +41,13 @@ struct String
 	
 public:
 
-	// StringData取得
+	// 静的StringData取得
 	static consteval const DataType& GetData() { return Data; }
 
-	// string_view形式で文字列取得
+	// 静的文字列をstring_view形式で取得
 	static constexpr std::string_view GetView() noexcept { return View; }
 
-    // C言語styleのNULL終端文字列ポインタ取得
+    // 静的なNULL終端文字列ポインタ取得
     static constexpr const char* GetPtr() noexcept { return Data.data; }
 	
 	//--------------------------------------------------------------------------------
@@ -106,13 +105,19 @@ inline consteval auto operator+(const String<data1>&, const String<data2>&)
 
 namespace detail
 {
+	// データ取り出し
+	struct ToData {};
+
 	// 文字列データ取り出し
 	template <StringData str>
 	inline consteval auto operator|(const String<str>&, const ToData&)
 	{
-		return str;
+		return String<str>::Data;
 	}
 }
+
+// データ取り出し
+inline constexpr auto ToData = detail::ToData();
 
 namespace detail
 {
@@ -158,5 +163,15 @@ inline constexpr auto SubString = detail::SubString<Pos, Count>();
 
 //------------------------------------------------------------------------------
 
-} // mpl
+} // meta
+
+inline namespace string_literals
+{
+	// MetaStringのユーザー定義リテラル
+	template <StringData data>
+	constexpr auto operator""_ms() {
+		return meta::String<data>();
+	}
+}
+
 } // tofu

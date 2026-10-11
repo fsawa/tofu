@@ -81,7 +81,7 @@ public:
 			{
 				ret[i] = data[Pos + i];
 			}
-			ret[ret.MaxLength] = '\0';
+			//ret[ret.MaxLength] = '\0';
 			return ret;
 		}
 	}
@@ -142,7 +142,7 @@ inline consteval auto operator+(const StringData<N1>& str1, const StringData<N2>
 	size_t n = 0;
 	for(size_t i=0; i<len1; ++i) { ret[n++] = str1[i]; }
 	for(size_t i=0; i<len2; ++i) { ret[n++] = str2[i]; }
-	ret[n] = '\0';
+	//ret[n] = '\0'; // 初期化時に0fillされているから不要
 	return ret;
 }
 // StringData: 結合
