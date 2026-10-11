@@ -40,7 +40,7 @@ namespace
 	template <typename T>
 	void PrintDebugTypeName()
 	{
-		std::cout << tofu::GetTypeName<T>() << std::endl;
+		std::cout << tofu::TypeName<T>::GetView() << std::endl;
 		std::cout << "        " << tofu::TypeName<T>::TestValue.view() << std::endl;
 	}
 }

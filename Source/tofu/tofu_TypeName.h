@@ -44,6 +44,12 @@ public:
 	
 	/// 環境依存確認用のテスト値
 	static constexpr auto TestValue = Test();
+	
+	// 静的文字列をstring_view形式で取得
+	static constexpr std::string_view GetView() noexcept { return Value.view(); }
+
+    // 静的なNULL終端文字列ポインタ取得
+    static constexpr const char* GetPtr() noexcept { return Value.data; }
 };
 
 // 型名文字列の生成
@@ -120,9 +126,9 @@ consteval auto TypeName<T>::Make()
 
 // 名前空間を含む型名文字列の取得
 template <typename T>
-static constexpr std::string_view GetTypeName()
+static constexpr std::string_view GetTypeNameView()
 {
-	return TypeName<T>::Value.view();
+	return TypeName<T>::GetView();
 }
 
 } // tofu
