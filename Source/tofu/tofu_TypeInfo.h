@@ -66,9 +66,13 @@ public:
 	template <typename BaseT>
 	BaseT* TryUpcast(copy_cv_to_t<BaseT, void>* p) const noexcept
 	{
-		using base_type_no_cv = std::remove_cv<BaseT>::type;
-		auto result = TryUpcast(p, TypeInfoOf<base_type_no_cv>::Instance());
-		return static_cast<BaseT*>(result);
+		if(m_BaseClassInfo)
+		{
+			using base_type_no_cv = std::remove_cv<BaseT>::type;
+			auto result = TryUpcast(p, TypeInfoOf<base_type_no_cv>::Instance());
+			return static_cast<BaseT*>(result);
+		}
+		return nullptr;
 	}
 	
 	// 対象型のvoid*を、指定のTypeInfoの型へアップキャストする
