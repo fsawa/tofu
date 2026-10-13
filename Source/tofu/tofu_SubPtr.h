@@ -234,11 +234,6 @@ public:
 //------------------------------------------------------------------------------
 private:
 	
-	static constexpr void iDummy() noexcept
-	{
-		DefineDerivedFromAuto<T>();
-	}
-
 	/// TypeIdのCV修飾を、このクラスのTに合わせる
 	static constexpr TypeId ConvertType(TypeId id) noexcept
 	{
@@ -255,7 +250,8 @@ private:
 	requires safe_castable_to<U, T>
 	void iSetTypeIdFrom() noexcept
 	{
-		DefineDerivedFrom<U, T>();
+		// Uと基底クラスTの間に親クラスがあったときのために、
+		// 継承情報の自動登録を試みる
 		DefineDerivedFromAuto<U>();
 		m_type_id = MakeTypeId<copy_cv_to_t<T, U>>();
 	}
@@ -273,7 +269,7 @@ private:
 	requires (std::derived_from<U, T> && !safe_castable_to<T, U>)
 	U* iTryCastImpl() const noexcept
 	{
-		DefineDerivedFrom<U, T>();
+		// Uが保持している型である、もしくは、保持している型の親クラスの場合OK
 		if(!m_type_id.IsEmpty() && m_type_id.info().IsDerivedFrom<U>())
 		{
 			return static_cast<U*>(m_holder.get());

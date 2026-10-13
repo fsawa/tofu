@@ -69,8 +69,8 @@ class BaseClassInfoOf final : public BaseClassInfo
 	
 public:
 	// インスタンスを実体化させるため参照
-	static constexpr void Fetch() noexcept {
-		(void)s_dummy;
+	static consteval auto Fetch() noexcept {
+		return []() { return s_dummy; };
 	}
 
 public:

@@ -95,7 +95,10 @@ public:
 	{
 		using base_t = std::remove_cv_t<BaseT>;
 		const auto& base_info = TypeInfoOf<base_t>::Instance();
-		return IsDerivedFrom(base_info);
+		// 自分自身
+		if(*this == base_info) return true;
+		// 派生情報チェック
+		return m_BaseClassInfo != nullptr && IsDerivedFrom(base_info);
 	}
 	
 protected:
