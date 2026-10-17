@@ -143,7 +143,7 @@ IUTEST(util, TypeInfo)
 		auto& info = tofu::GetTypeInfo<const C&>();
 		std::cout << "-- const C& -- " << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
-		std::cout << info.GetName() << std::endl;
+		std::cout << info.GetNameView() << std::endl;
 		std::cout << info.GetNamePtr() << std::endl;
 	}
 	{

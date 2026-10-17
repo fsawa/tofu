@@ -25,19 +25,13 @@ namespace tofu {
 // 前方宣言
 namespace rtti_detail { class BaseClassInfo; }
 
-class TypeInfo;
-
-template <typename T>
-requires (!std::is_const_v<T> && !std::is_volatile_v<T> && !std::is_reference_v<T>)
-class TypeInfoOf;
-
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief      型情報クラス
 /// 
 ////////////////////////////////////////////////////////////////////////////////
 class TypeInfo
 {
-	using self_type = TypeInfo;
+	using SelfType = TypeInfo;
 
 	friend class rtti_detail::BaseClassInfo;
 	using BaseClassInfo = rtti_detail::BaseClassInfo;
@@ -48,7 +42,7 @@ public:
 	const char* GetNamePtr() const noexcept { return m_Name.data(); }
 	
 	/// 型名取得
-	std::string_view GetName() const noexcept { return m_Name; }
+	std::string_view GetNameView() const noexcept { return m_Name; }
 	
 	//------------------------------------------------------------------------------
 	
@@ -64,16 +58,7 @@ public:
 
 	// 対象型のvoid*を、BaseType*へアップキャストを試みる
 	template <typename BaseT>
-	BaseT* TryUpcast(copy_cv_to_t<BaseT, void>* p) const noexcept
-	{
-		if(m_BaseClassInfo)
-		{
-			using base_type_no_cv = std::remove_cv<BaseT>::type;
-			auto result = TryUpcast(p, TypeInfoOf<base_type_no_cv>::Instance());
-			return static_cast<BaseT*>(result);
-		}
-		return nullptr;
-	}
+	BaseT* TryUpcast(copy_cv_to_t<BaseT, void>* p) const noexcept;
 	
 	// 対象型のvoid*を、指定のTypeInfoの型へアップキャストする
 	void* TryUpcast(void* p, const TypeInfo& target_type_info) const noexcept;
@@ -81,29 +66,14 @@ public:
 
 	// 型がTと同じか
 	template <typename T>
-	bool IsSame() const noexcept
-	{
-		const TypeInfo* const target_info = &TypeInfoOf<T>::Instance();
-		if(target_info == this){
-			return true;
-		}
-		return false;
-	}
+	bool IsSame() const noexcept;
 
 	// base_infoから派生しているかどうか
 	bool IsDerivedFrom(const TypeInfo& base_info) const noexcept;
 
 	// BaseTから派生しているかどうか
 	template <typename BaseT>
-	bool IsDerivedFrom() const noexcept
-	{
-		using base_t = std::remove_cv_t<BaseT>;
-		const auto& base_info = TypeInfoOf<base_t>::Instance();
-		// 自分自身
-		if(*this == base_info) return true;
-		// 派生情報チェック
-		return m_BaseClassInfo != nullptr && IsDerivedFrom(base_info);
-	}
+	bool IsDerivedFrom() const noexcept;
 	
 protected:
 
@@ -129,7 +99,7 @@ template <typename T>
 requires (!std::is_const_v<T> && !std::is_volatile_v<T> && !std::is_reference_v<T>)
 class TypeInfoOf final : public TypeInfo
 {
-	using self_type = TypeInfoOf;
+	using SelfType = TypeInfoOf;
 	
 public:
 	
@@ -137,25 +107,59 @@ public:
 	
 public:
 
-	static constexpr auto Name = TypeName<T>::Value;
-	
 	/// インスタンス取得
-	static self_type& Instance() noexcept
+	static SelfType& Instance() noexcept
 	{
-		static self_type sInstance;
+		static SelfType sInstance;
 		return sInstance;
 	}
 	
 	//------------------------------------------------------------------------------
 	
 	TypeInfoOf() noexcept
-		: TypeInfo(Name.view())
+		: TypeInfo(TypeName<T>::GetView())
 	{
 	}
 	virtual ~TypeInfoOf() = default;
 	
 };
 // << TypeInfoOf
+
+//------------------------------------------------------------------------------
+template <typename BaseT>
+BaseT* TypeInfo::TryUpcast(copy_cv_to_t<BaseT, void>* p) const noexcept
+{
+	if(m_BaseClassInfo)
+	{
+		using base_type_no_cv = std::remove_cv<BaseT>::type;
+		auto result = TryUpcast(p, TypeInfoOf<base_type_no_cv>::Instance());
+		return static_cast<BaseT*>(result);
+	}
+	return nullptr;
+}
+
+//------------------------------------------------------------------------------
+template <typename T>
+bool TypeInfo::IsSame() const noexcept
+{
+	const TypeInfo* const target_info = &TypeInfoOf<T>::Instance();
+	if(target_info == this){
+		return true;
+	}
+	return false;
+}
+
+//------------------------------------------------------------------------------
+template <typename BaseT>
+bool TypeInfo::IsDerivedFrom() const noexcept
+{
+	using base_t = std::remove_cv_t<BaseT>;
+	const auto& base_info = TypeInfoOf<base_t>::Instance();
+	// 自分自身
+	if(*this == base_info) return true;
+	// 派生情報チェック
+	return m_BaseClassInfo != nullptr && IsDerivedFrom(base_info);
+}
 
 //------------------------------------------------------------------------------
 
@@ -168,7 +172,7 @@ inline TypeInfoOf<std::remove_cvref_t<T>>& GetTypeInfo() noexcept
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief      型ID
-/// 
+/// @note cv修飾の違いを別IDとして認識する
 ////////////////////////////////////////////////////////////////////////////////
 class TypeId final
 {
@@ -276,7 +280,7 @@ private:
 		uintptr_t m_data;
 	};
 };
-
+	
 //------------------------------------------------------------------------------
 
 /// TypeId作成

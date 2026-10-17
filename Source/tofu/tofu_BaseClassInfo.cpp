@@ -22,7 +22,7 @@ BaseClassInfo::BaseClassInfo(TypeInfo& derived, const TypeInfo& base)
 	: m_BaseTypeInfo(base)
 	, m_Next{ derived.AddBaseInfo(*this) }
 {
-	std::cout << "BaseClassInfo: " << derived.GetName() << " from " << base.GetName() << std::endl;
+	std::cout << "BaseClassInfo: " << derived.GetNameView() << " from " << base.GetNameView() << std::endl;
 }
 
 //------------------------------------------------------------------------------

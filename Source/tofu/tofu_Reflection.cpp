@@ -33,7 +33,7 @@ namespace detail
 			void EntryClass(const ClassReflection& creator)
 			{
 				TypeId typeId = creator.GetTypeId();
-				std::string_view name = typeId.info().GetName();
+				std::string_view name = typeId.info().GetNameView();
 				// 登録済みは何もしない
 				if(m_Classes.contains(name)){
 					return;

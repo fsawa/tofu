@@ -106,8 +106,8 @@ IUTEST(tofu, Reflection)
 	{
 		auto ptr = tofu::reflection::Create("test::A");
 		IUTEST_ASSERT_NE(ptr.get(), nullptr);
-		std::cout << ptr.type().info().GetName() << std::endl;
-		IUTEST_ASSERT_EQ(ptr.type().info().GetName(), "test::A");
+		std::cout << ptr.type().info().GetNameView() << std::endl;
+		IUTEST_ASSERT_EQ(ptr.type().info().GetNameView(), "test::A");
 		IUTEST_ASSERT_EQ(test::s_CountA, 1);
 
 		test::A* a = ptr;
