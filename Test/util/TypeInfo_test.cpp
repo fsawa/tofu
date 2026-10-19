@@ -69,6 +69,8 @@ IUTEST(util, TypeInfo)
 	// StringData
 	using namespace tofu::string_literals;
 	static_assert(tofu::StringData<10>().length() == 0);
+	static_assert(tofu::u8StringData<10>().length() == 0);
+	static_assert(tofu::u16StringData<10>().length() == 0);
 	static_assert(tofu::ShrinkToFit<"abc\0xyz">().MaxLength == 3);
 	static_assert(tofu::ShrinkToFit<"abc\0xyz">().length() == 3);
 	static_assert(tofu::meta::String<"hoge">::Length == 4);
@@ -78,6 +80,9 @@ IUTEST(util, TypeInfo)
 	static_assert((tofu::StringData("123") + tofu::StringData("4567")).MaxLength == 7);
 	static_assert((tofu::StringData("123") + "4567").MaxLength == 7);
 	static_assert(("123" + tofu::StringData("4567")).MaxLength == 7);
+	static_assert(("123"_sd).MaxLength == 3);
+	static_assert((u8"123"_sd).MaxLength == 3);
+	static_assert(tofu::StringData("hoge").MaxLength == 4);
 
 	IUTEST_ASSERT(tofu::StringData("123") == tofu::StringData("12") + "3");
 
