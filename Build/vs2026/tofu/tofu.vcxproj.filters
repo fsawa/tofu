@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{36820363-4faf-4acb-ad91-5fed1ce39c08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tofu">
+      <UniqueIdentifier>{a7f6a92b-1658-4c79-8790-a7d222d76d65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tofu\base">
+      <UniqueIdentifier>{173a4b9d-d179-498a-bfdb-30c5e64608f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tofu\config">
+      <UniqueIdentifier>{9353be78-8135-434c-abd0-55f6e3e9a0e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\math">
+      <UniqueIdentifier>{d1649927-1bae-49d8-86ba-aa5c4f591a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mpl">
+      <UniqueIdentifier>{0b7d5dda-db3c-422f-bee1-016d1810f5b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\tofu\detail">
+      <UniqueIdentifier>{d1492ec9-087e-4504-abfe-55bedabf9627}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Source\tofu\tofu.cpp">
+      <Filter>src\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu\tofu_TypeInfo.cpp">
+      <Filter>src\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu\base\tofu_Assert.cpp">
+      <Filter>src\tofu\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\math\tofu_math_Angle.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu\tofu_Reflection.cpp">
+      <Filter>src\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu\tofu_BaseClassInfo.cpp">
+      <Filter>src\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Source\tofu\base\tofu_Log.cpp">
+      <Filter>src\tofu\base</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Source\tofu\tofu.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SubPtr.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_AnyPtr.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_DisallowCopy.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Finalizer.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_LooseSingleton.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SafePtr.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Singleton.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonPolicy.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonUtil.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeInfo.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\config\tofu_Compiler.h">
+      <Filter>src\tofu\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\config\tofu_Config.h">
+      <Filter>src\tofu\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h">
+      <Filter>src\tofu\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Assert.h">
+      <Filter>src\tofu\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseTypes.h">
+      <Filter>src\tofu\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\math\tofu_math_Angle.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\math\tofu_math_MathCommon.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\math\tofu_math_Nearly.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\mpl\tofu_mpl_Common.h">
+      <Filter>src\mpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_StringData.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeName.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Reflection.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseUtil.h">
+      <Filter>src\tofu\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeTraits.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Concepts.h">
+      <Filter>src\tofu\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_BaseClassInfo.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Log.h">
+      <Filter>src\tofu\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\tofu\tofu_meta_String.h">
+      <Filter>src\tofu</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

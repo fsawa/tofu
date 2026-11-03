@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug-v143|Win32">
+      <Configuration>Debug-v143</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-v143|x64">
+      <Configuration>Debug-v143</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{45abe17f-63bb-423b-865b-e30a23abd4db}</ProjectGuid>
+    <Keyword>Clang</Keyword>
+    <RootNamespace>tofu</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-v143|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141_clang_c2</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>ClangCL</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>ClangCL</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-v143|Win32'">
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDIr)..\..\Source\tofu;$(SolutionDIr)..\..\Source\math;$(SolutionDIr)..\..\Source\mpl;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDIr)..\..\Source\tofu;$(SolutionDIr)..\..\Source\math;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)$(PlatformTarget)\$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDIr)..\..\Source\tofu;$(SolutionDIr)..\..\Source\math;$(SolutionDIr)..\..\Source\mpl;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug-v143|Win32'">WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</RuntimeTypeInfo>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Debug-v143|Win32'">false</RuntimeTypeInfo>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</RuntimeTypeInfo>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</RuntimeTypeInfo>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">false</RuntimeTypeInfo>
+      <RuntimeTypeInfo Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</RuntimeTypeInfo>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">true</MultiProcessorCompilation>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/clang:-std=c++23 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp23</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</LanguageStandard>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">stdcpp23</LanguageStandard>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug-v143|x64'">Level4</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level4</WarningLevel>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Source\math\tofu_math_Angle.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\base\tofu_Assert.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\base\tofu_Log.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\tofu.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\tofu_BaseClassInfo.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\tofu_Reflection.cpp" />
+    <ClCompile Include="..\..\..\Source\tofu\tofu_TypeInfo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Source\math\tofu_math_Angle.h" />
+    <ClInclude Include="..\..\..\Source\math\tofu_math_MathCommon.h" />
+    <ClInclude Include="..\..\..\Source\math\tofu_math_Nearly.h" />
+    <ClInclude Include="..\..\..\Source\mpl\tofu_mpl_Common.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Assert.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseTypes.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_BaseUtil.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Concepts.h" />
+    <ClInclude Include="..\..\..\Source\tofu\base\tofu_Log.h" />
+    <ClInclude Include="..\..\..\Source\tofu\config\tofu_Compiler.h" />
+    <ClInclude Include="..\..\..\Source\tofu\config\tofu_Config.h" />
+    <ClInclude Include="..\..\..\Source\tofu\config\tofu_Platform.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_BaseClassInfo.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_meta_String.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SubPtr.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_AnyPtr.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_DisallowCopy.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Finalizer.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_LooseSingleton.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Reflection.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SafePtr.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_Singleton.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonPolicy.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_SingletonUtil.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_StringData.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeInfo.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeName.h" />
+    <ClInclude Include="..\..\..\Source\tofu\tofu_TypeTraits.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

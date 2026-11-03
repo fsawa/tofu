@@ -6,7 +6,7 @@ cd ..
 set "PROGRAM_ROOT=%CD%"
 echo PROGRAM_ROOT=%PROGRAM_ROOT%
 
-start Build\vs2022\tofu.sln
+start Build\vs2026\tofu.sln
 
 :END
 
