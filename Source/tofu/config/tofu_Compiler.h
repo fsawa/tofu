@@ -1,7 +1,7 @@
 ﻿//------------------------------------------------------------------------------
 /**
- * @file   TypeInfo.h
- * @brief  型情報クラスと型IDクラス
+ * @file   tofu_Compiler.h
+ * @brief  コンパイラの違いを吸収
  * 
  * @author      y.fujisawa
  * @par         copyright
