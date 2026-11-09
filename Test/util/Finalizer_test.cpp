@@ -20,13 +20,6 @@ namespace
 	int g_fin_count = 0;
 	bool g_bad_order = false;
 	
-	class A
-	{
-	public:
-		A()  {}
-		~A() { std::cout << "~A" << std::endl;}
-	};
-
 	class SingleA : public tofu::LooseSingleton<SingleA>
 	{
 		int m_count;
@@ -46,7 +39,7 @@ namespace
 
 	static void func1()
 	{
-		std::cout << "func1" << std::endl;
+		TOFU_LOG("func1\n");
 	}
 }
 
@@ -55,13 +48,22 @@ IUTEST(util, Finalizer)
 	{
 		tofu::Finalizer fin;
 		
-		fin.add( new SingleA )->func();
-		fin.addFunctor(func1);
-		fin.addArray( new A[3] );
-		fin.add( new SingleB )->func();
+		auto single_a = std::make_shared<SingleA>();
+		single_a->func();
+		//fin.Push( std::move(single_a) );
+		fin.Push( single_a );
+		single_a.reset();
+
+		fin.PushFunctor(func1);
+
+		fin += std::make_unique<SingleB>();
+		SingleB::Instance().func();
 		
+		IUTEST_ASSERT_EQ( SingleA::ExistInstance(), true);
+		IUTEST_ASSERT_EQ( SingleB::ExistInstance(), true);
+
 		g_fin_count = g_add_count;
-		fin.finalize();
+		fin.Finalize();
 
 		IUTEST_ASSERT((g_bad_order == false));
 		
