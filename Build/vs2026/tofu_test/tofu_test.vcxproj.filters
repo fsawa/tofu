@@ -12,9 +12,6 @@
     <Filter Include="Source Files\math">
       <UniqueIdentifier>{b52a79bc-ab76-4051-a1e5-94649d323dbe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\util">
-      <UniqueIdentifier>{c17723bd-a831-4b48-ad2a-101c3a045627}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\tofu">
       <UniqueIdentifier>{6cc7ee1c-e2ab-420b-9800-d6b39d681088}</UniqueIdentifier>
     </Filter>
@@ -29,25 +26,25 @@
     <ClCompile Include="..\..\..\Test\math\Nearly_test.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Test\util\SubPtr_test.cpp">
-      <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Test\util\AnyPtr_test.cpp">
-      <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Test\util\Finalizer_test.cpp">
-      <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Test\util\SafePtr_test.cpp">
-      <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Test\util\Singleton_test.cpp">
-      <Filter>Source Files\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Test\util\TypeInfo_test.cpp">
-      <Filter>Source Files\util</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Test\tofu\Reflection_test.cpp">
+      <Filter>Source Files\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Test\tofu\Finalizer_test.cpp">
+      <Filter>Source Files\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Test\tofu\SafePtr_test.cpp">
+      <Filter>Source Files\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Test\tofu\Singleton_test.cpp">
+      <Filter>Source Files\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Test\tofu\SubPtr_test.cpp">
+      <Filter>Source Files\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Test\tofu\TypeInfo_test.cpp">
+      <Filter>Source Files\tofu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Test\tofu\AnyPtr_test.cpp">
       <Filter>Source Files\tofu</Filter>
     </ClCompile>
   </ItemGroup>

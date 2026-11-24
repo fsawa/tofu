@@ -149,13 +149,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\Test\math\Angle_test.cpp" />
     <ClCompile Include="..\..\..\Test\math\Nearly_test.cpp" />
+    <ClCompile Include="..\..\..\Test\tofu\AnyPtr_test.cpp" />
+    <ClCompile Include="..\..\..\Test\tofu\Finalizer_test.cpp" />
     <ClCompile Include="..\..\..\Test\tofu\Reflection_test.cpp" />
-    <ClCompile Include="..\..\..\Test\util\SubPtr_test.cpp" />
-    <ClCompile Include="..\..\..\Test\util\AnyPtr_test.cpp" />
-    <ClCompile Include="..\..\..\Test\util\Finalizer_test.cpp" />
-    <ClCompile Include="..\..\..\Test\util\SafePtr_test.cpp" />
-    <ClCompile Include="..\..\..\Test\util\Singleton_test.cpp" />
-    <ClCompile Include="..\..\..\Test\util\TypeInfo_test.cpp" />
+    <ClCompile Include="..\..\..\Test\tofu\SafePtr_test.cpp" />
+    <ClCompile Include="..\..\..\Test\tofu\Singleton_test.cpp" />
+    <ClCompile Include="..\..\..\Test\tofu\SubPtr_test.cpp" />
+    <ClCompile Include="..\..\..\Test\tofu\TypeInfo_test.cpp" />
     <ClCompile Include="tofu_test.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
