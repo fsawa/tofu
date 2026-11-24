@@ -99,7 +99,7 @@ IUTEST(tofu, Reflection)
 	PrintDebugTypeName<test::E1>();
 	PrintDebugTypeName<test::E2>();
 	PrintDebugTypeName<test::F<const int, 1>>();
-	PrintDebugTypeName<void(int)>();
+	PrintDebugTypeName<void(int, const test::A&)>();
 	std::cout << "----" << std::endl;
 
 	// 派生クラスを文字列から

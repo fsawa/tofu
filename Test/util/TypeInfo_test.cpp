@@ -41,31 +41,13 @@ namespace
 	void PrintDebugTypeName()
 	{
 		std::cout << tofu::TypeName<T>::GetView() << std::endl;
+		//std::cout << typeid(T).name() << std::endl;
 		std::cout << "        " << tofu::TypeName<T>::TestValue.view() << std::endl;
 	}
 }
 
 IUTEST(util, TypeInfo)
 {
-	std::cout << "-- Print --" << std::endl;
-	PrintDebugTypeName<int>();
-	PrintDebugTypeName<int&>();
-	PrintDebugTypeName<int*>();
-	PrintDebugTypeName<int**>();
-	PrintDebugTypeName<int[]>();
-	PrintDebugTypeName<int[3]>();
-	PrintDebugTypeName<const int[3][4]>();
-	PrintDebugTypeName<const volatile int&>();
-	PrintDebugTypeName<test::A>();
-	PrintDebugTypeName<const volatile test::A* const>();
-	PrintDebugTypeName<C>();
-	PrintDebugTypeName<test::D>();
-	PrintDebugTypeName<test::E1>();
-	PrintDebugTypeName<test::E2>();
-	PrintDebugTypeName<test::F<const int, 1>>();
-	PrintDebugTypeName<void(int)>();
-	std::cout << "----" << std::endl;
-
 	// StringData
 	using namespace tofu::string_literals;
 	static_assert(tofu::StringData<10>().length() == 0);

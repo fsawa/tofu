@@ -60,25 +60,33 @@ consteval auto TypeName<T>::Make()
 	if constexpr (std::is_reference_v<T>)
 	{
 		constexpr auto name_ = TypeName<std::remove_reference_t<T>>::Value;
-		return name_ + "&";
+		return name_ + " &";
 	}
 	// const外す
 	else if constexpr (std::is_const_v<T>)
 	{
 		constexpr auto name_ = TypeName<std::remove_const_t<T>>::Value;
-		return name_ + " const";
+		// pointerなら後ろに
+		if constexpr (std::is_pointer_v<T>)
+			return name_ + " const";
+		else
+			return "const " + name_;
 	}
 	// volatile外す
 	else if constexpr (std::is_volatile_v<T>)
 	{
 		constexpr auto name_ = TypeName<std::remove_volatile_t<T>>::Value;
-		return name_ + " volatile";
+		// pointerなら後ろに
+		if constexpr (std::is_pointer_v<T>)
+			return name_ + " volatile";
+		else
+			return "volatile " + name_;
 	}
 	// pointer外す
 	else if constexpr (std::is_pointer_v<T>)
 	{
 		constexpr auto name_ = TypeName<std::remove_pointer_t<T>>::Value;
-		return name_ + "*";
+		return name_ + " *";
 	}
 	else
 	{
