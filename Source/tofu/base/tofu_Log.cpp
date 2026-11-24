@@ -33,9 +33,17 @@ namespace detail
 	//------------------------------------------------------------------------------
 	void Log( std::string_view filename, int line, std::string_view msg )
 	{
+#if 0
 		std::format_to(std::ostream_iterator<char>(std::cout), 
-			"{}({}): {}\n", 
+			"{}({}): {}", 
 			filename, line, msg);
+#else
+		(void)filename;
+		(void)line;
+		std::format_to(std::ostream_iterator<char>(std::cout), 
+			"{}", 
+			msg);
+#endif
 	}
 
 	//------------------------------------------------------------------------------
